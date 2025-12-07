@@ -1,0 +1,173 @@
+MOON DATA
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Phase, Rise, Dawn, and Location Tracker</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.2/build/global/luxon.min.js"></script>
+    <style>
+        body {
+            background: url('https://source.unsplash.com/1920x1080/?moon') fixed;
+            background-size: cover;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1,
+        h2,
+        label,
+        p,
+        ul {
+            color: white;
+        }
+
+        h1,
+        h2 {
+            color: green;
+        }
+
+        .main-heading {
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .mid-page-heading {
+            text-align: center;
+            font-size: 1.5em;
+            color: #8cff66;
+            /* Light Green */
+        }
+    </style>
+</head>
+
+<body>
+    <img src="www.urfrequency.com/UR SPACE" alt=“URFrequency” style="width: 100px; height: auto; position: absolute; top: 20px; right: 20px;">
+
+    <div class="mid-page-heading">UR Frequency</div>
+
+    <h1 class="main-heading">Moon Phase, Rise, Dawn, and Location Tracker</h1>
+    <h2> This is our very 1st sucess in 2023</h2>
+
+    <label for="city">Select City:</label>
+    <select id="city">
+          <option value="71.5249,30.1575">Multan</option>
+    <option value="71.8156,30.0487">Jahanian</option>
+    <option value="74.3587,31.5204">Lahore</option>
+    <option value="70.2989,28.4212">Rahim Yar Khan</option>
+    <option value="73.0479,33.6844">Islamabad</option>
+    <option value="121.4737,31.2304">Shanghai</option>
+    <option value="37.6173,55.7558">Moscow</option>
+    <option value="28.9784,41.0082">Istanbul</option>
+    <option value="21.3891,39.8579">Makkah</option>
+    <option value="24.5247,39.5692">Madinah</option>
+    <option value="25.2854,51.5310">Doha</option>
+    <option value="106.8229,6.1944">Jakarta</option>
+
+        <!-- Add more cities and their coordinates as needed -->
+    </select>
+
+    <label for="days">Number of Days:</label>
+    <input type="number" id="days" value="1" min="1" max="30">
+
+    <button onclick="getMoonData()">Get Moon Data</button>
+
+    <h2>Moon Phase Information</h2>
+    <p id="moonPhase"></p>
+    <h2>Moonrise and Moonset Times</h2>
+    <ul id="moonTimes"></ul>
+    <h2>Current Moon Position</h2>
+    <p id="moonPosition"></p>
+
+
+    <script>
+        function getMoonData() {
+            const cityCoords = document.getElementById('city').value.split(',');
+            const numDays = parseInt(document.getElementById('days').value);
+
+            const moonPhase = calculateMoonPhase(cityCoords[1], cityCoords[0]);
+            document.getElementById('moonPhase').innerText = `Current Moon Phase: ${moonPhase}`;
+
+            displayMoonTimes(cityCoords[1], cityCoords[0], numDays);
+            displayMoonPosition();
+            displayMoonLocation(cityCoords[1], cityCoords[0]);
+        }
+
+        function calculateMoonPhase(latitude, longitude) {
+            const today = luxon.DateTime.local();
+            const moonIllumination = SunCalc.getMoonIllumination(today.toJSDate(), latitude, longitude);
+            const phaseName = getMoonPhaseName(moonIllumination.phase);
+
+            return phaseName;
+        }
+
+        function getMoonPhaseName(phase) {
+            if (phase < 0.03 || phase >= 0.97) {
+                return "New Moon";
+            } else if (phase < 0.5) {
+                return "First Quarter Waxing Crescent";
+            } else if (phase < 0.53) {
+                return "First Quarter Waxing Gibbous";
+            } else if (phase < 0.97) {
+                return "Last Quarter Waning Gibbous";
+            } else {
+                return "Last Quarter Waning Crescent";
+            }
+        }
+
+        function displayMoonTimes(latitude, longitude, numDays) {
+            const today = luxon.DateTime.local();
+            const endDate = today.plus({ days: numDays });
+
+            let currentDate = today;
+            const moonTimesList = document.getElementById('moonTimes');
+            moonTimesList.innerHTML = '';
+
+            while (currentDate <= endDate) {
+                const moonrise = getMoonTime(currentDate.toJSDate(), 'rise', latitude, longitude);
+                const moonset = getMoonTime(currentDate.toJSDate(), 'set', latitude, longitude);
+
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `${currentDate.toFormat('EEE, MMM dd')}: Moonrise - ${moonrise}, Moonset - ${moonset}`;
+                moonTimesList.appendChild(listItem);
+
+                currentDate = currentDate.plus({ days: 1 });
+            }
+        }
+
+        function displayMoonPosition() {
+            const today = luxon.DateTime.local();
+            const moonPosition = SunCalc.getMoonPosition(today.toJSDate(), 0, 0); // Using 0, 0 as the reference point
+
+            const azimuth = moonPosition.azimuth * (180 / Math.PI);
+            const altitude = moonPosition.altitude * (180 / Math.PI);
+
+            document.getElementById('moonPosition').innerText = `Current Moon Position: Azimuth - ${azimuth.toFixed(2)}°, Altitude - ${altitude.toFixed(2)}°`;
+        }
+
+        function displayMoonLocation(latitude, longitude) {
+            fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`)
+                .then(response => response.json())
+                .then(data => {
+                    const country = data.countryName || 'Unknown';
+                    document.getElementById('moonLocation').innerText = `Current Moon Location: ${country}`;
+                })
+                .catch(error => {
+                    console.error('Error fetching location data:', error);
+                });
+        }
+
+        function getMoonTime(date, eventType, latitude, longitude) {
+            const moonTimes = SunCalc.getMoonTimes(date, latitude, longitude);
+            const time = eventType === 'rise' ? moonTimes.rise : moonTimes.set;
+            return luxon.DateTime.fromJSDate(time).toLocaleString(luxon.DateTime.TIME_24_SIMPLE);
+        }
+    </script>
+</body>
+
+</html>
