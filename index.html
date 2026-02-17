@@ -1,87 +1,1856 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roza Sehri & Iftaar Timings 2026 - Gujranwala</title>
+    <title>UR Frequency - Astronomical Research & Data</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Retro Terminal Color Palette */
+        :root {
+            --terminal-black: #0a0a0a;
+            --terminal-dark: #001100;
+            --terminal-green: #00ff00;
+            --terminal-green-dark: #00cc00;
+            --terminal-green-darker: #009900;
+            --terminal-green-glow: rgba(0, 255, 0, 0.6);
+            --terminal-text: #f0f0f0;
+            --terminal-gray: #1a1a1a;
+            --terminal-gray-light: #3a3a3a;
+            --terminal-accent: #00ff88;
+        }
+
+        /* Global Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f8f8f8;
+            background-color: var(--terminal-black);
+            color: var(--terminal-text);
+            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            line-height: 1.8;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
         }
-        table {
+
+        /* Advanced Scanlines Effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
+            height: 100%;
+            background:
+                linear-gradient(to bottom,
+                    transparent 50%,
+                    rgba(0, 30, 0, 0.08) 50%),
+                linear-gradient(to right,
+                    rgba(0, 255, 0, 0.03) 1px,
+                    transparent 1px),
+                linear-gradient(to bottom,
+                    rgba(0, 255, 0, 0.03) 1px,
+                    transparent 1px);
+            background-size: 100% 4px, 20px 100%, 100% 20px;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: overlay;
         }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px 12px;
+
+        /* CRT Curvature Effect */
+        .crt-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at center,
+                    transparent 0%,
+                    transparent 50%,
+                    rgba(0, 30, 0, 0.1) 100%);
+            pointer-events: none;
+            z-index: 9998;
+        }
+
+        /* Glow Animations */
+        @keyframes glow-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 10px var(--terminal-green-glow),
+                    0 0 20px rgba(0, 255, 0, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px var(--terminal-green-glow),
+                    0 0 40px rgba(0, 255, 0, 0.5);
+            }
+        }
+
+        @keyframes text-glow {
+
+            0%,
+            100% {
+                text-shadow: 0 0 8px var(--terminal-green-glow),
+                    0 0 16px rgba(0, 255, 0, 0.3);
+            }
+
+            50% {
+                text-shadow: 0 0 16px var(--terminal-green-glow),
+                    0 0 32px rgba(0, 255, 0, 0.5);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-10px) rotate(2deg);
+            }
+        }
+
+        @keyframes matrix-fall {
+            0% {
+                transform: translateY(-100%) rotateX(90deg);
+                opacity: 0;
+            }
+
+            5% {
+                opacity: 0.8;
+            }
+
+            95% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(100vh) rotateX(0deg);
+                opacity: 0;
+            }
+        }
+
+        /* Matrix Rain Background */
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .matrix-char {
+            position: absolute;
+            color: var(--terminal-green);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            animation: matrix-fall linear infinite;
+            text-shadow: 0 0 5px var(--terminal-green);
+        }
+
+        /* Header - Fixed with Custom Logo */
+        header {
+            background: linear-gradient(to bottom,
+                    rgba(0, 30, 0, 0.98) 0%,
+                    rgba(0, 20, 0, 0.95) 100%);
+            border-bottom: 1px solid var(--terminal-green);
+            padding: 12px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 30px rgba(0, 255, 0, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header.scrolled {
+            padding: 8px 40px;
+            box-shadow: 0 8px 40px rgba(0, 255, 0, 0.25);
+            border-bottom-width: 2px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Logo Icon with your custom image */
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--terminal-green);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 15px var(--terminal-green-glow);
+            background: var(--terminal-black);
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+            filter: brightness(1.2) contrast(1.3) saturate(1.5);
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent,
+                    var(--terminal-accent),
+                    transparent 30%);
+            animation: rotate 4s linear infinite;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Fixed Logo Text - No more weird box around "Y" */
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--terminal-green);
+            letter-spacing: 2px;
+            position: relative;
+            animation: text-glow 4s ease-in-out infinite;
+            font-family: 'Orbitron', sans-serif;
+            white-space: nowrap;
+            /* Prevent text wrapping */
+        }
+
+        /* Fixed cursor position */
+        .logo-text::after {
+            content: '';
+            position: absolute;
+            right: -18px;
+            color: var(--terminal-green);
+            animation: blink 1s infinite;
+            font-size: 26px;
+            line-height: 1;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Navigation - Advanced */
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--terminal-text);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            overflow: hidden;
+            background: linear-gradient(45deg,
+                    transparent 0%,
+                    rgba(0, 255, 0, 0.1) 50%,
+                    transparent 100%);
+            background-size: 200% 100%;
+            background-position: -100% 0;
+        }
+
+        nav a:hover {
+            color: var(--terminal-green);
+            background-position: 100% 0;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.2);
+        }
+
+        nav a::before {
+            content: '>';
+            position: absolute;
+            left: -10px;
+            opacity: 0;
+            transition: all 0.3s;
+            color: var(--terminal-accent);
+        }
+
+        nav a:hover::before {
+            left: 5px;
+            opacity: 1;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 74px;
+            position: relative;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 120px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-size: 3.5rem;
+            color: var(--terminal-green);
+            margin-bottom: 70px;
             text-align: center;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            animation: text-glow 5s ease-in-out infinite;
         }
-        th {
-            background-color: #28a745; /* green */
-            color: #000000; /* black text */
+
+        .section-title::before,
+        .section-title::after {
+            content: '┃';
+            position: absolute;
+            color: var(--terminal-accent);
+            font-size: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.8;
         }
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+
+        .section-title::before {
+            left: -40px;
         }
-        caption {
-            caption-side: top;
-            font-size: 1.5em;
+
+        .section-title::after {
+            right: -40px;
+        }
+
+        /* Hero Section - Ultimate Polish with Your Logo */
+        .hero {
+            background:
+                radial-gradient(ellipse at 15% 15%,
+                    rgba(0, 60, 0, 0.4) 0%,
+                    transparent 60%),
+                radial-gradient(ellipse at 85% 85%,
+                    rgba(0, 40, 0, 0.3) 0%,
+                    transparent 60%),
+                linear-gradient(135deg,
+                    rgba(0, 10, 0, 0.95) 0%,
+                    rgba(0, 5, 0, 0.98) 100%),
+                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="glow"><feGaussianBlur stdDeviation="1" result="coloredBlur"/><feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><g filter="url(%23glow)"><circle cx="20" cy="20" r="0.4" fill="%2300ff00"/><circle cx="40" cy="60" r="0.3" fill="%2300ff88"/><circle cx="70" cy="30" r="0.5" fill="%2300cc00"/><circle cx="85" cy="75" r="0.2" fill="%2300ff00"/></g></svg>');
+            background-size: cover;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                repeating-linear-gradient(0deg,
+                    rgba(0, 255, 0, 0.02) 0px,
+                    rgba(0, 255, 0, 0.02) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 5.5rem;
+            color: var(--terminal-green);
+            margin-bottom: 30px;
+            letter-spacing: 6px;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            animation: text-glow 6s ease-in-out infinite;
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 3px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-accent),
+                    var(--terminal-green),
+                    var(--terminal-accent),
+                    transparent);
+            border-radius: 2px;
+        }
+
+        .hero-logo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 50px;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo-graphic {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 30%,
+                    var(--terminal-accent) 0%,
+                    var(--terminal-green) 30%,
+                    transparent 70%);
+            border-radius: 50%;
+            border: 4px solid transparent;
+            position: relative;
+            box-shadow:
+                0 0 40px rgba(0, 255, 0, 0.4),
+                inset 0 0 40px rgba(0, 255, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .logo-graphic::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(var(--terminal-green),
+                    var(--terminal-accent),
+                    var(--terminal-green),
+                    var(--terminal-accent),
+                    var(--terminal-green));
+            border-radius: 50%;
+            animation: rotate 3s linear infinite;
+        }
+
+        .logo-graphic::after {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--terminal-black);
+            border-radius: 50%;
+        }
+
+        /* Logo image inside hero section - CENTERED */
+        .logo-image-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .logo-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: brightness(1.3) contrast(1.5) saturate(1.8) drop-shadow(0 0 15px var(--terminal-green));
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: brightness(1.3) contrast(1.5) saturate(1.8) drop-shadow(0 0 10px var(--terminal-green));
+            }
+
+            50% {
+                transform: scale(1.05);
+                filter: brightness(1.5) contrast(1.7) saturate(2) drop-shadow(0 0 20px var(--terminal-green));
+            }
+        }
+
+        .real-time-clock {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: rgba(0, 20, 0, 0.85);
+            border: 2px solid var(--terminal-green);
+            padding: 20px 25px;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            z-index: 3;
+            backdrop-filter: blur(15px);
+            animation: glow-pulse 4s ease-in-out infinite;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .real-time-clock:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 0, 0.4);
+        }
+
+        .clock-time {
+            font-size: 2.2rem;
+            color: var(--terminal-green);
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--terminal-green);
+            letter-spacing: 2px;
+        }
+
+        .clock-date {
+            font-size: 1rem;
+            color: var(--terminal-text);
+            letter-spacing: 1px;
+            opacity: 0.9;
+        }
+
+        /* News Button - Premium */
+        .news-button-section {
+            background: linear-gradient(135deg,
+                    rgba(0, 25, 0, 0.95) 0%,
+                    rgba(0, 15, 0, 0.98) 100%);
+            padding: 100px 40px;
+            text-align: center;
+            min-height: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .news-button-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .news-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 25px;
+            background: linear-gradient(145deg,
+                    rgba(0, 40, 0, 0.9),
+                    rgba(0, 20, 0, 0.95));
+            border: 2px solid var(--terminal-green);
+            border-radius: 12px;
+            padding: 25px 50px;
+            color: var(--terminal-green);
+            text-decoration: none;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', sans-serif;
+            animation: glow-pulse 5s ease-in-out infinite;
+        }
+
+        .news-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(0, 255, 0, 0.2),
+                    transparent);
+            transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .news-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow:
+                0 10px 40px rgba(0, 255, 0, 0.4),
+                0 0 60px rgba(0, 255, 0, 0.2);
+            border-color: var(--terminal-accent);
+            color: var(--terminal-accent);
+        }
+
+        .news-button:hover::before {
+            left: 100%;
+        }
+
+        .news-button i {
+            font-size: 2rem;
+            transition: all 0.4s;
+        }
+
+        .news-button:hover i {
+            transform: rotate(360deg);
+        }
+
+        /* Services Grid - Ultimate */
+        .services-section {
+            background: var(--terminal-black);
+            position: relative;
+        }
+
+        .services-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .service-btn {
+            background: linear-gradient(145deg,
+                    rgba(0, 25, 0, 0.8),
+                    rgba(0, 15, 0, 0.9));
+            border: 1px solid var(--terminal-gray-light);
+            border-radius: 12px;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: var(--terminal-text);
+            position: relative;
+            overflow: hidden;
+            min-height: 170px;
+            backdrop-filter: blur(10px);
+        }
+
+        .service-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+            transform: scaleX(0);
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .service-btn::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg,
+                    transparent 30%,
+                    rgba(0, 255, 0, 0.1) 50%,
+                    transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .service-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow:
+                0 15px 35px rgba(0, 255, 0, 0.25),
+                0 0 40px rgba(0, 255, 0, 0.1);
+            border-color: var(--terminal-green);
+            color: var(--terminal-accent);
+            background: linear-gradient(145deg,
+                    rgba(0, 35, 0, 0.9),
+                    rgba(0, 25, 0, 0.95));
+        }
+
+        .service-btn:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-btn:hover::after {
+            opacity: 1;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: var(--terminal-green);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .service-btn:hover .service-icon {
+            transform: scale(1.2) rotate(10deg);
+            color: var(--terminal-accent);
+        }
+
+        .service-name {
+            font-size: 0.95rem;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s;
+        }
+
+        /* Earth Data - Premium */
+        .earth-data-section {
+            background: linear-gradient(135deg,
+                    rgba(0, 25, 0, 0.95) 0%,
+                    rgba(0, 15, 0, 0.98) 100%);
+            position: relative;
+        }
+
+        .earth-data-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .earth-data-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .earth-data-card {
+            background: linear-gradient(145deg,
+                    rgba(0, 25, 0, 0.8),
+                    rgba(0, 15, 0, 0.9));
+            border: 1px solid var(--terminal-gray-light);
+            border-radius: 15px;
+            padding: 35px 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .earth-data-card:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 15px 35px rgba(0, 255, 0, 0.25),
+                0 0 40px rgba(0, 255, 0, 0.1);
+            border-color: var(--terminal-green);
+        }
+
+        .earth-data-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    var(--terminal-accent),
+                    var(--terminal-green));
+            opacity: 0.8;
+        }
+
+        .earth-data-icon {
+            font-size: 3.5rem;
+            color: var(--terminal-green);
+            margin-bottom: 25px;
+            transition: all 0.4s;
+        }
+
+        .earth-data-card:hover .earth-data-icon {
+            transform: scale(1.1);
+            color: var(--terminal-accent);
+        }
+
+        .earth-data-title {
+            color: var(--terminal-green);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .earth-data-value {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--terminal-text);
             margin-bottom: 10px;
-            font-weight: bold;
-            color: #000000;
-            
-            padding: 5px;
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 15px var(--terminal-green);
+            transition: all 0.3s;
+        }
+
+        .earth-data-card:hover .earth-data-value {
+            color: var(--terminal-accent);
+        }
+
+        .earth-data-unit {
+            color: var(--terminal-gray-light);
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+        }
+
+        /* About Section - Compact & Elegant */
+        .about-section {
+            background: var(--terminal-black);
+            position: relative;
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .about-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .about-btn {
+            background: linear-gradient(145deg,
+                    rgba(0, 25, 0, 0.8),
+                    rgba(0, 15, 0, 0.9));
+            border: 1px solid var(--terminal-gray-light);
+            border-radius: 12px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: var(--terminal-text);
+            text-align: center;
+            min-height: 140px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(0, 255, 0, 0.1),
+                    transparent);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .about-btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow:
+                0 10px 30px rgba(0, 255, 0, 0.2),
+                0 0 30px rgba(0, 255, 0, 0.1);
+            border-color: var(--terminal-green);
+            color: var(--terminal-accent);
+            background: linear-gradient(145deg,
+                    rgba(0, 35, 0, 0.9),
+                    rgba(0, 25, 0, 0.95));
+        }
+
+        .about-btn:hover::before {
+            left: 100%;
+        }
+
+        .about-btn i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--terminal-green);
+            transition: all 0.4s;
+        }
+
+        .about-btn:hover i {
+            transform: scale(1.2);
+            color: var(--terminal-accent);
+        }
+
+        .about-btn span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s;
+        }
+
+        /* Join Section - Compact & Elegant */
+        .join-section {
+            background: linear-gradient(135deg,
+                    rgba(0, 25, 0, 0.95) 0%,
+                    rgba(0, 15, 0, 0.98) 100%);
+            position: relative;
+        }
+
+        .join-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .join-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .join-btn {
+            background: linear-gradient(145deg,
+                    rgba(0, 25, 0, 0.8),
+                    rgba(0, 15, 0, 0.9));
+            border: 1px solid var(--terminal-gray-light);
+            border-radius: 12px;
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            color: var(--terminal-text);
+            text-align: center;
+            min-height: 140px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .join-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(0, 255, 0, 0.1),
+                    transparent);
+            transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .join-btn:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow:
+                0 10px 30px rgba(0, 255, 0, 0.2),
+                0 0 30px rgba(0, 255, 0, 0.1);
+            border-color: var(--terminal-green);
+            color: var(--terminal-accent);
+            background: linear-gradient(145deg,
+                    rgba(0, 35, 0, 0.9),
+                    rgba(0, 25, 0, 0.95));
+        }
+
+        .join-btn:hover::before {
+            left: 100%;
+        }
+
+        .join-btn i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--terminal-green);
+            transition: all 0.4s;
+        }
+
+        .join-btn:hover i {
+            transform: scale(1.2);
+            color: var(--terminal-accent);
+        }
+
+        .join-btn span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s;
+        }
+
+        /* Footer - Premium */
+        footer {
+            background: linear-gradient(to top,
+                    rgba(0, 30, 0, 0.98) 0%,
+                    rgba(0, 20, 0, 0.95) 100%);
+            border-top: 2px solid var(--terminal-green);
+            padding: 70px 40px 30px;
+            backdrop-filter: blur(15px);
+            position: relative;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--terminal-green),
+                    var(--terminal-accent),
+                    var(--terminal-green),
+                    transparent);
+        }
+
+        .footer-content {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-section h3 {
+            color: var(--terminal-green);
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--terminal-accent);
+            border-radius: 1px;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .contact-link {
+            color: var(--terminal-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--terminal-green);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .contact-link:hover {
+            color: var(--terminal-accent);
+            background: rgba(0, 255, 0, 0.08);
+            transform: translateX(10px);
+        }
+
+        .contact-link:hover::before {
+            transform: scaleY(1);
+        }
+
+        .contact-link i {
+            font-size: 1.2rem;
+            width: 30px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover i {
+            transform: scale(1.2);
+            color: var(--terminal-accent);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(0, 255, 0, 0.2);
+            color: var(--terminal-gray-light);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .copyright::before {
+            content: '>>> ';
+            color: var(--terminal-green);
+            animation: blink 2s infinite;
+        }
+
+        /* Responsive Design - Premium */
+        @media (max-width: 1200px) {
+
+            .services-grid,
+            .earth-data-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .join-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hero-title {
+                font-size: 4.5rem;
+            }
+
+            .section-title {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            header {
+                flex-direction: column;
+                padding: 15px 20px;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .services-grid,
+            .earth-data-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-buttons,
+            .join-buttons {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .hero-title {
+                font-size: 3.5rem;
+            }
+
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+
+            .logo-text::after {
+                right: -15px;
+                font-size: 22px;
+            }
+
+            .logo-icon {
+                width: 45px;
+                height: 45px;
+            }
+
+            .hero-logo {
+                width: 170px;
+                height: 170px;
+            }
+
+            .logo-image-container {
+                width: 65%;
+                height: 65%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 80px 20px;
+            }
+
+            .services-grid,
+            .earth-data-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-title {
+                font-size: 2.8rem;
+                letter-spacing: 4px;
+            }
+
+            .hero-logo {
+                width: 150px;
+                height: 150px;
+            }
+
+            .real-time-clock {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 30px auto;
+                width: 250px;
+            }
+
+            .news-button {
+                padding: 20px 30px;
+                font-size: 1.4rem;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 40px;
+            }
+
+            .section-title::before,
+            .section-title::after {
+                display: none;
+            }
+
+            .logo-text {
+                font-size: 20px;
+                letter-spacing: 1.5px;
+            }
+
+            .logo-text::after {
+                right: -12px;
+                font-size: 20px;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            nav a {
+                font-size: 12px;
+                padding: 6px 12px;
+            }
+
+            .logo-image-container {
+                width: 60%;
+                height: 60%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 18px;
+                letter-spacing: 1px;
+            }
+
+            .logo-text::after {
+                right: -10px;
+                font-size: 18px;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            nav a {
+                font-size: 11px;
+                padding: 5px 10px;
+            }
+
+            .hero-title {
+                font-size: 2.2rem;
+            }
+
+            .hero-logo {
+                width: 130px;
+                height: 130px;
+            }
+
+            .logo-image-container {
+                width: 55%;
+                height: 55%;
+            }
+
+            .about-buttons,
+            .join-buttons {
+                gap: 15px;
+            }
+
+            .about-btn,
+            .join-btn {
+                min-height: 120px;
+                padding: 20px 15px;
+            }
+
+            .about-btn i,
+            .join-btn i {
+                font-size: 2rem;
+                margin-bottom: 10px;
+            }
+
+            .about-btn span,
+            .join-btn span {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .logo-text {
+                font-size: 16px;
+            }
+
+            .logo-text::after {
+                display: none;
+            }
+
+            .logo-container {
+                gap: 10px;
+            }
+
+            .hero-logo {
+                width: 110px;
+                height: 110px;
+            }
+
+            .logo-image-container {
+                width: 50%;
+                height: 50%;
+            }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 </head>
+
 <body>
-    <h1> UR Frquency Calenders</h1>
-    <table>
-        <caption>Roza Sehri & Iftaar Timings 2026 - Gujranwala</caption>
-        <thead>
-            <tr>
-                <th>Roza</th>
-                <th>Date</th>
-                <th>Sehri</th>
-                <th>Iftaar</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td>01</td><td>19 February 2026</td><td>05:20 AM</td><td>05:52 PM</td></tr>
-            <tr><td>02</td><td>20 February 2026</td><td>05:19 AM</td><td>05:53 PM</td></tr>
-            <tr><td>03</td><td>21 February 2026</td><td>05:18 AM</td><td>05:54 PM</td></tr>
-            <tr><td>04</td><td>22 February 2026</td><td>05:17 AM</td><td>05:55 PM</td></tr>
-            <tr><td>05</td><td>23 February 2026</td><td>05:16 AM</td><td>05:56 PM</td></tr>
-            <tr><td>06</td><td>24 February 2026</td><td>05:15 AM</td><td>05:57 PM</td></tr>
-            <tr><td>07</td><td>25 February 2026</td><td>05:14 AM</td><td>05:57 PM</td></tr>
-            <tr><td>08</td><td>26 February 2026</td><td>05:13 AM</td><td>05:58 PM</td></tr>
-            <tr><td>09</td><td>27 February 2026</td><td>05:12 AM</td><td>05:59 PM</td></tr>
-            <tr><td>10</td><td>28 February 2026</td><td>05:11 AM</td><td>06:00 PM</td></tr>
-            <tr><td>11</td><td>01 March 2026</td><td>05:10 AM</td><td>06:00 PM</td></tr>
-            <tr><td>12</td><td>02 March 2026</td><td>05:09 AM</td><td>06:01 PM</td></tr>
-            <tr><td>13</td><td>03 March 2026</td><td>05:07 AM</td><td>06:02 PM</td></tr>
-            <tr><td>14</td><td>04 March 2026</td><td>05:06 AM</td><td>06:03 PM</td></tr>
-            <tr><td>15</td><td>05 March 2026</td><td>05:05 AM</td><td>06:04 PM</td></tr>
-            <tr><td>16</td><td>06 March 2026</td><td>05:04 AM</td><td>06:04 PM</td></tr>
-            <tr><td>17</td><td>07 March 2026</td><td>05:03 AM</td><td>06:05 PM</td></tr>
-            <tr><td>18</td><td>08 March 2026</td><td>05:01 AM</td><td>06:06 PM</td></tr>
-            <tr><td>19</td><td>09 March 2026</td><td>05:00 AM</td><td>06:07 PM</td></tr>
-            <tr><td>20</td><td>10 March 2026</td><td>04:59 AM</td><td>06:07 PM</td></tr>
-            <tr><td>21</td><td>11 March 2026</td><td>04:58 AM</td><td>06:08 PM</td></tr>
-            <tr><td>22</td><td>12 March 2026</td><td>04:56 AM</td><td>06:09 PM</td></tr>
-            <tr><td>23</td><td>13 March 2026</td><td>04:55 AM</td><td>06:09 PM</td></tr>
-            <tr><td>24</td><td>14 March 2026</td><td>04:54 AM</td><td>06:10 PM</td></tr>
-            <tr><td>25</td><td>15 March 2026</td><td>04:53 AM</td><td>06:11 PM</td></tr>
-            <tr><td>26</td><td>16 March 2026</td><td>04:51 AM</td><td>06:12 PM</td></tr>
-            <tr><td>27</td><td>17 March 2026</td><td>04:50 AM</td><td>06:12 PM</td></tr>
-            <tr><td>28</td><td>18 March 2026</td><td>04:49 AM</td><td>06:13 PM</td></tr>
-            <tr><td>29</td><td>19 March 2026</td><td>04:47 AM</td><td>06:14 PM</td></tr>
-        </tbody>
-    </table>
+    <!-- Advanced Effects -->
+    <div class="scanlines"></div>
+    <div class="crt-effect"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Header with your custom logo -->
+    <header id="mainHeader">
+        <div class="logo-container">
+            <div class="logo-icon">
+                <img src="https://i.ibb.co/nMMKcSWC/ur-logo.png" alt="UR Frequency Logo"
+                     onerror="this.style.display='none'; this.parentElement.innerHTML='<span>UR</span>';">
+            </div>
+            <div class="logo-text">UR FREQUENCY</div>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#news">News</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#earth">Earth Data</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#join">Join Us</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Section 1: Hero -->
+        <section id="home" class="hero">
+            <div class="real-time-clock">
+                <div class="clock-time" id="clock">00:00:00</div>
+                <div class="clock-date" id="date">Loading...</div>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-logo">
+                    <div class="logo-graphic">
+                        <!-- Your logo image in hero section - NOW PERFECTLY CENTERED -->
+                        <div class="logo-image-container">
+                            <img src="https://i.ibb.co/nMMKcSWC/ur-logo.png" alt="UR Frequency Logo" class="logo-image" style="transform: scale(1.2);">
+
+<span style=\"color: var(--terminal-green); font-size: 3rem; font-weight: 900; font-family: Orbitron, sans-serif; text-shadow: 0 0 20px var(--terminal-green);\"></span>
+                        </div>';">
+                    </div>
+                </div>
+            </div>
+
+            <h1 class="hero-title">UR FREQUENCY</h1>
+            
+            </div>
+        </section>
+
+        <!-- Section 2: News Button -->
+        <section id="news" class="news-button-section">
+            <a href="https://www.nasa.gov/news/releases/latest/" target="_blank" class="news-button">
+                <i class="fas fa-satellite"></i>
+                <span>SPACE NEWS FROM NASA</span>
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+        </section>
+
+        <!-- Section 3: Services -->
+        <section id="services" class="services-section">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <!-- Row 1 -->
+                <a href="https://www.https://urfrequency.github.io/urfrequency//celestial_data" class="service-btn">
+                    <i class="fas fa-star-and-crescent service-icon"></i>
+                    <span class="service-name">Celestial Data</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//celestial_data" class="service-btn">
+                    <i class="fas fa-sun service-icon"></i>
+                    <span class="service-name">Moon & Sun Data</span>
+                </a>
+                <a href="https://eyes.nasa.gov/apps/asteroids/#/watch/2024_rl4" class="service-btn">
+                    <i class="fas fa-satellite-dish service-icon"></i>
+                    <span class="service-name">Live NASA</span>
+                </a>
+                <a href="#" class="service-btn">
+                    <i class="fas fa-telescope service-icon"></i>
+                    <span class="service-name">Live Telescope</span>
+                </a>
+
+                <!-- Row 2 -->
+                <a href="http://www.https://urfrequency.github.io/urfrequency//ramadan/" class="service-btn">
+                    <i class="fas fa-moon service-icon"></i>
+                    <span class="service-name">Ramadan</span>
+                </a>
+                <a href="http://www.https://urfrequency.github.io/urfrequency//research" class="service-btn">
+                    <i class="fas fa-flask service-icon"></i>
+                    <span class="service-name">Research</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//books/" class="service-btn">
+                    <i class="fas fa-book-open service-icon"></i>
+                    <span class="service-name">Books</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//lessons" class="service-btn">
+                    <i class="fas fa-newspaper service-icon"></i>
+                    <span class="service-name">Articles</span>
+                </a>
+
+                <!-- Row 3 -->
+                <a href="https://www.https://urfrequency.github.io/urfrequency//uni" class="service-btn">
+                    <i class="fas fa-graduation-cap service-icon"></i>
+                    <span class="service-name">Courses</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//games" class="service-btn">
+                    <i class="fas fa-gamepad service-icon"></i>
+                    <span class="service-name">Games</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//apps" class="service-btn">
+                    <i class="fab fa-app-store service-icon"></i>
+                    <span class="service-name">APP STORE</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//terminal" class="service-btn">
+                    <i class="fas fa-terminal service-icon"></i>
+                    <span class="service-name">Terminal</span>
+                </a>
+
+                <!-- Row 4 -->
+                <a href="https://www.https://urfrequency.github.io/urfrequency//news" class="service-btn">
+                    <i class="fas fa-broadcast-tower service-icon"></i>
+                    <span class="service-name">News</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//toons" class="service-btn">
+                    <i class="fas fa-tv service-icon"></i>
+                    <span class="service-name">Cartoons TV</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 4: Earth Data -->
+        <section id="earth" class="earth-data-section">
+            <h2 class="section-title">Real-time Earth Data</h2>
+            <p>This data isn't real time we are working on codes</p>
+            <div class="earth-data-container">
+                <div class="earth-data-card">
+                    <i class="fas fa-thermometer-half earth-data-icon"></i>
+                    <h3 class="earth-data-title">Global Temperature</h3>
+                    <div class="earth-data-value" id="tempValue">15.2°</div>
+                    <div class="earth-data-unit">Celsius</div>
+                </div>
+                <div class="earth-data-card">
+                    <i class="fas fa-wind earth-data-icon"></i>
+                    <h3 class="earth-data-title">CO₂ Levels</h3>
+                    <div class="earth-data-value" id="co2Value">417</div>
+                    <div class="earth-data-unit">parts per million</div>
+                </div>
+                <div class="earth-data-card">
+                    <i class="fas fa-water earth-data-icon"></i>
+                    <h3 class="earth-data-title">Sea Level</h3>
+                    <div class="earth-data-value" id="seaValue">+3.4</div>
+                    <div class="earth-data-unit">mm/year rise</div>
+                </div>
+                <div class="earth-data-card">
+                    <i class="fas fa-layer-group earth-data-icon"></i>
+                    <h3 class="earth-data-title">Ozone Layer</h3>
+                    <div class="earth-data-value" id="ozoneValue">285</div>
+                    <div class="earth-data-unit">Dobson Units</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: About Us -->
+        <section id="about" class="about-section">
+            <h2 class="section-title">About UR Frequency</h2>
+            <div class="about-buttons">
+                <a href="https://www.https://urfrequency.github.io/urfrequency//team" class="about-btn">
+                    <i class="fas fa-users"></i>
+                    <span>Team</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//timeline" class="about-btn">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//progress" class="about-btn">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+                <a href="https://www.https://urfrequency.github.io/urfrequency//firstsucess" class="about-btn">
+                    <i class="fas fa-award"></i>
+                    <span>First Achievement</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 6: Join Us -->
+        <section id="join" class="join-section">
+            <h2 class="section-title">Join Our Mission</h2>
+            <div class="join-buttons">
+                <a href="#" class="join-btn">
+                    <i class="fas fa-user-astronaut"></i>
+                    <span>Team</span>
+                </a>
+                <a href="#" class="join-btn">
+                    <i class="fas fa-satellite-dish"></i>
+                    <span>Live Telescope</span>
+                </a>
+                <a href="#" class="join-btn">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>Teaching Courses</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>UR FREQUENCY</h3>
+                <p style="margin-top: 25px; line-height: 1.8; font-size: 0.95rem; opacity: 0.9;">
+                    Premium Astronomical Research & Data Services<br>
+                    Advancing Cosmic Exploration Since 2015
+                </p>
+            </div>
+
+            <div class="footer-section">
+                <h3>CONTACT US</h3>
+                <div class="contact-links">
+                    <a href="mailto:" 
+                    class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@urfrequency.com (serive not avalable)</span>
+                    </a>
+                    <a href=" https://whatsapp.com/channel/0029Va81n3cKmCPT5Ejf013K" class="contact-link">
+                        <i class="fab fa-whatsapp"></i>
+                        <span>UR Frequency whatsapp channel</span>
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>QUICK LINKS</h3>
+                <div class="contact-links">
+                    <a href="#home" class="contact-link">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                    <a href="#services" class="contact-link">
+                        <i class="fas fa-cogs"></i>
+                        <span>Services</span>
+                    </a>
+                    <a href="#news" class="contact-link">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Space News</span>
+                    </a>
+                    <a href="#about" class="contact-link">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About Us</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            2023 UR FREQUENCY | PREMIUM ASTRONOMICAL RESEARCH SERVICES
+        </div>
+    </footer>
+
+    <script>
+        // Matrix Rain Effect
+        function createMatrixRain() {
+            const matrixRain = document.getElementById('matrixRain');
+            const chars = '01';
+            const charCount = 100;
+            
+            for (let i = 0; i < charCount; i++) {
+                const char = document.createElement('div');
+                char.className = 'matrix-char';
+                char.textContent = chars.charAt(Math.floor(Math.random() * chars.length));
+                char.style.left = `${Math.random() * 100}%`;
+                char.style.animationDelay = `${Math.random() * 5}s`;
+                char.style.animationDuration = `${3 + Math.random() * 7}s`;
+                char.style.opacity = `${0.2 + Math.random() * 0.3}`;
+                matrixRain.appendChild(char);
+            }
+        }
+
+        // Enhanced Real-time clock
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const date = now.toLocaleDateString('en-US', { 
+                weekday: 'short',
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            document.getElementById('clock').textContent = time;
+            document.getElementById('date').textContent = date;
+        }
+        
+        // Advanced Earth data animation
+        function updateEarthData() {
+            const baseTemp = 15.2;
+            const tempVariation = (Math.sin(Date.now() / 1000000) * 0.3).toFixed(1);
+            const currentTemp = (baseTemp + parseFloat(tempVariation)).toFixed(1);
+            
+            const baseCO2 = 417;
+            const co2Increase = (Date.now() / 1000000000).toFixed(2);
+            const currentCO2 = (baseCO2 + parseFloat(co2Increase)).toFixed(0);
+            
+            const baseSea = 3.4;
+            const seaVariation = (Math.sin(Date.now() / 2000000) * 0.1).toFixed(1);
+            const currentSea = (baseSea + parseFloat(seaVariation)).toFixed(1);
+            
+            const baseOzone = 285;
+            const ozoneRecovery = (Date.now() / 10000000000).toFixed(1);
+            const currentOzone = (baseOzone + parseFloat(ozoneRecovery)).toFixed(0);
+            
+            // Advanced animations with particle effect simulation
+            animateValueAdvanced('tempValue', currentTemp + '°');
+            animateValueAdvanced('co2Value', currentCO2);
+            animateValueAdvanced('seaValue', '+' + currentSea);
+            animateValueAdvanced('ozoneValue', currentOzone);
+        }
+        
+        function animateValueAdvanced(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.style.opacity = '0.3';
+                element.style.transform = 'scale(0.9)';
+                
+                setTimeout(() => {
+                    element.textContent = newValue;
+                    element.style.opacity = '1';
+                    element.style.transform = 'scale(1)';
+                }, 200);
+            }
+        }
+        
+        // Advanced smooth scrolling
+        document.querySelectorAll('nav a, .contact-link[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+                    
+                    if (targetSection) {
+                        const headerOffset = 74;
+                        const elementPosition = targetSection.offsetTop;
+                        const offsetPosition = elementPosition - headerOffset;
+                        
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Header scroll effect
+        let lastScroll = 0;
+        const header = document.getElementById('mainHeader');
+        
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            
+            // Header effect
+            if (scrolled > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            // Parallax effect for hero
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                hero.style.backgroundPosition = `${0}px ${scrolled * 0.4}px`;
+            }
+            
+            lastScroll = scrolled;
+        });
+        
+        // Initialize everything
+        createMatrixRain();
+        updateClock();
+        updateEarthData();
+        
+        // Update clock every second
+        setInterval(updateClock, 1000);
+        
+        // Update Earth data every 4 seconds
+        setInterval(updateEarthData, 4000);
+        
+        // Initialize with fade in
+        document.body.style.opacity = '0';
+        document.body.style.transition = 'opacity 1s ease-in-out';
+        
+        setTimeout(() => {
+            document.body.style.opacity = '1';
+        }, 100);
+    </script>
 </body>
-<p> Refrence Hanfi Jantari</p>
+
 </html>
