@@ -1,1 +1,85 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roza Sehri & Iftaar Timings 2026 - Kot Adu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f8f8f8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #28a745; /* green */
+            color: #000000; /* black text */
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        caption {
+            caption-side: top;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>UR Frequency Calenders</h1>
+    <table>
+        <caption>Roza Sehri & Iftaar Timings 2026 - Kot Adu</caption>
+        <thead>
+            <tr>
+                <th>Roza</th>
+                <th>Date</th>
+                <th>Sehri</th>
+                <th>Iftaar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>01</td><td>19 February 2026</td><td>05:33 AM</td><td>06:07 PM</td></tr>
+            <tr><td>02</td><td>20 February 2026</td><td>05:32 AM</td><td>06:08 PM</td></tr>
+            <tr><td>03</td><td>21 February 2026</td><td>05:31 AM</td><td>06:09 PM</td></tr>
+            <tr><td>04</td><td>22 February 2026</td><td>05:30 AM</td><td>06:09 PM</td></tr>
+            <tr><td>05</td><td>23 February 2026</td><td>05:29 AM</td><td>06:10 PM</td></tr>
+            <tr><td>06</td><td>24 February 2026</td><td>05:28 AM</td><td>06:11 PM</td></tr>
+            <tr><td>07</td><td>25 February 2026</td><td>05:27 AM</td><td>06:12 PM</td></tr>
+            <tr><td>08</td><td>26 February 2026</td><td>05:26 AM</td><td>06:12 PM</td></tr>
+            <tr><td>09</td><td>27 February 2026</td><td>05:25 AM</td><td>06:13 PM</td></tr>
+            <tr><td>10</td><td>28 February 2026</td><td>05:24 AM</td><td>06:14 PM</td></tr>
+            <tr><td>11</td><td>01 March 2026</td><td>05:23 AM</td><td>06:14 PM</td></tr>
+            <tr><td>12</td><td>02 March 2026</td><td>05:22 AM</td><td>06:15 PM</td></tr>
+            <tr><td>13</td><td>03 March 2026</td><td>05:21 AM</td><td>06:16 PM</td></tr>
+            <tr><td>14</td><td>04 March 2026</td><td>05:20 AM</td><td>06:17 PM</td></tr>
+            <tr><td>15</td><td>05 March 2026</td><td>05:18 AM</td><td>06:17 PM</td></tr>
+            <tr><td>16</td><td>06 March 2026</td><td>05:17 AM</td><td>06:18 PM</td></tr>
+            <tr><td>17</td><td>07 March 2026</td><td>05:16 AM</td><td>06:19 PM</td></tr>
+            <tr><td>18</td><td>08 March 2026</td><td>05:15 AM</td><td>06:19 PM</td></tr>
+            <tr><td>19</td><td>09 March 2026</td><td>05:14 AM</td><td>06:20 PM</td></tr>
+            <tr><td>20</td><td>10 March 2026</td><td>05:13 AM</td><td>06:21 PM</td></tr>
+            <tr><td>21</td><td>11 March 2026</td><td>05:12 AM</td><td>06:21 PM</td></tr>
+            <tr><td>22</td><td>12 March 2026</td><td>05:10 AM</td><td>06:22 PM</td></tr>
+            <tr><td>23</td><td>13 March 2026</td><td>05:09 AM</td><td>06:23 PM</td></tr>
+            <tr><td>24</td><td>14 March 2026</td><td>05:08 AM</td><td>06:23 PM</td></tr>
+            <tr><td>25</td><td>15 March 2026</td><td>05:07 AM</td><td>06:24 PM</td></tr>
+            <tr><td>26</td><td>16 March 2026</td><td>05:05 AM</td><td>06:25 PM</td></tr>
+            <tr><td>27</td><td>17 March 2026</td><td>05:04 AM</td><td>06:25 PM</td></tr>
+            <tr><td>28</td><td>18 March 2026</td><td>05:03 AM</td><td>06:26 PM</td></tr>
+            <tr><td>29</td><td>19 March 2026</td><td>05:02 AM</td><td>06:27 PM</td></tr>
+        </tbody>
+    </table>
+</body>
+<p>Refrence Hanfi Jantari</p>
+</html>
