@@ -98,8 +98,10 @@ button:hover{
 <!-- CITY SELECTION -->
 <div class="card">
     
-    <p>Local Time:</p>
-    <div id="detailed-clock"></div>
+    <p>Local Time:</p><div class="card">
+    <h2>Local Time – Detailed</h2>
+    <div id="detailed-clock" style="font-size:20px; font-weight:bold;"></div>
+</div>
     </div>
     <div class="card">
     <h2>Select City</h2>
@@ -190,22 +192,7 @@ button:hover{
 <script>
 
 // CLOCK
-function updateClock(){
-    const now = luxon.DateTime.local();
-    document.getElementById("clock-time").innerText =
-        now.toFormat("HH:mm:ss");
-}
-setInterval(updateClock,1000);
-updateClock();
 
-// GET COORDS
-function getCoords(){
-    const coords = document.getElementById("city").value.split(",");
-    return {
-        lon: parseFloat(coords[0]),
-        lat: parseFloat(coords[1])
-    };
-}
 function updateDetailedClock() {
     const now = luxon.DateTime.local();
 
@@ -214,7 +201,7 @@ function updateDetailedClock() {
     const seconds = now.toFormat("ss");
     const millis = now.millisecond.toString().padStart(3, "0");
 
-    // Nanoseconds and picoseconds (simulate since JS only supports milliseconds)
+    // Nanoseconds and picoseconds (simulated from milliseconds)
     const nano = (now.millisecond * 1e6).toString().padStart(9, "0");
     const pico = (now.millisecond * 1e9).toString().padStart(12, "0");
 
@@ -223,31 +210,17 @@ function updateDetailedClock() {
     const year = now.toFormat("yyyy");
     const century = Math.floor(year / 100) + 1;
 
-    // Cosmic date: Julian Date approximation
+    // Cosmic date (Julian Date approximation)
     const jd = 2440587.5 + now.toSeconds() / 86400;
 
     document.getElementById("detailed-clock").innerHTML = `
-        <p>Local Time: ${hours}:${minutes}:${seconds}:${millis}:${nano}:${pico}</p>
+        <p>Time: ${hours}:${minutes}:${seconds}:${millis}:${nano}:${pico}</p>
         <p>Date: ${day}:${month}:${year} | Century: ${century}</p>
         <p>Cosmic Date (Julian): ${jd.toFixed(5)}</p>
     `;
 }
 
-setInterval(updateDetailedClock, 50); // update ~20 times/sec
-updateDetailedClock();
-// MOON DATA
-function getMoonData(){
-    const {lat,lon} = getCoords();
-    const today = luxon.DateTime.local();
-    const moonIllumination = SunCalc.getMoonIllumination(today.toJSDate());
-    const phaseName = getMoonPhaseName(moonIllumination.phase);
 
-    document.getElementById("moonPhase").innerText =
-        "Current Phase: " + phaseName;
-
-    displayMoonTimes(lat,lon);
-    displayMoonPosition(lat,lon);
-}
 
 // MOON PHASE NAME
 function getMoonPhaseName(phase){
