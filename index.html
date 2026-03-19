@@ -208,33 +208,13 @@
 
 <!-- Earth Data -->
 <section id="earth">
-    <h2>Real‑Time Weather — Jahanian, Punjab</h2>
-    <div class="grid">
-
-        <div class="card">
-            <p>Temperature</p>
-            <div class="data-box" id="tempReal">Loading...</div>
-        </div>
-
-        <div class="card">
-            <p>Wind Speed</p>
-            <div class="data-box" id="windReal">Loading...</div>
-        </div>
-
-        <div class="card">
-            <p>Humidity</p>
-            <div class="data-box" id="humidityReal">Loading...</div>
-        </div>
-
-        <div class="card">
-            <p>Weather Code</p>
-            <div class="data-box" id="weatherCodeReal">Loading...</div>
-        </div>
-
-    </div>
+   <a class="weatherwidget-io" href="https://forecast7.com/en/30d0571d82/jahanian/" data-label_1="OUR Location" data-label_2="WEATHER" data-font="Arial Black" data-theme="dark" >OUR location WEATHER</a>
+<script>
+!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+</script>
 </section>
     <section id="astronomy">
-  <h2>Real-Time Sun & Moon Times — Jahanian, Punjab</h2>
+  <h2>Real-Time Sun & Moon Times — OUR Location</h2>
   <div class="grid">
     <div class="card"><p>Sunrise</p><div id="sunriseTime">Loading...</div></div>
     <div class="card"><p>Sunset</p><div id="sunsetTime">Loading...</div></div>
@@ -266,36 +246,6 @@ function closeVideo() {
     let iframe = document.getElementById("videoFrame");
     iframe.src = iframe.src;
 }
-
-    async function getRealtimeWeather() {
-    const lat = 30.0487;
-    const lon = 71.8156;
-
-    // Open‑Meteo endpoint for current weather
-    const url =
-      `https://api.open‑meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
-
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        // Extract values
-        const weather = data.current_weather;
-        document.getElementById("tempReal").textContent = weather.temperature + " °C";
-        document.getElementById("windReal").textContent = weather.windspeed + " km/h";
-        document.getElementById("humidityReal").textContent = weather.relativehumidity_2m + " %";
-        document.getElementById("weatherCodeReal").textContent = weather.weathercode;
-    } catch (err) {
-        console.error("Weather API Error:", err);
-        document.getElementById("tempReal").textContent = "N/A";
-        document.getElementById("windReal").textContent = "N/A";
-        document.getElementById("humidityReal").textContent = "N/A";
-        document.getElementById("weatherCodeReal").textContent = "N/A";
-    }
-}
-
-// Fetch data on load
-getRealtimeWeather();
 
 // Optional: refresh every 5 minutes
 setInterval(getRealtimeWeather, 300000);
