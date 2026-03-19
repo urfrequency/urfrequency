@@ -255,11 +255,17 @@ button:hover{
     <p>Moon where blue mark is perpendicular to that country head</p>
     <div id="map"></div>
 </div>
-
+<div class="card">
+    <h2>📊 Moon Altitude Graph</h2>
+    <button onclick="drawMoonGraph()">Show Moon Graph</button>
+    <canvas id="moonChart" style="margin-top:20px;"></canvas>
+</div>
 <footer class="footer">
 © 2026 UR Frequency | Celestial Dashboard
 </footer>
 
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // DETAILED CLOCK
 function updateCelestialClock() {
@@ -295,6 +301,7 @@ function updateCelestialClock() {
 // START CLOCK
 setInterval(updateCelestialClock, 50);
 updateCelestialClock();
+
 // GET COORDS
 function getCoords(){
     const coords = document.getElementById("city").value.split(",");
@@ -404,6 +411,63 @@ var now = new Date();
 addMoonPath(now);
 addMoonMarker(now);
 updateMoonLocation();
+
+
+let moonChartInstance = null;
+
+function drawMoonGraph(){
+    const {lat, lon} = getCoords();
+    const hours = [];
+    const altitudes = [];
+
+    for(let i = 0; i < 24; i++){
+        const date = new Date();
+        date.setHours(i);
+
+        const pos = SunCalc.getMoonPosition(date, lat, lon);
+        const altitude = pos.altitude * 180 / Math.PI;
+
+        hours.push(i + ":00");
+        altitudes.push(altitude.toFixed(2));
+    }
+
+    const ctx = document.getElementById('moonChart').getContext('2d');
+
+    // Destroy old chart if exists
+    if(moonChartInstance){
+        moonChartInstance.destroy();
+    }
+
+    moonChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: hours,
+            datasets: [{
+                label: 'Moon Altitude (°)',
+                data: altitudes,
+                tension: 0.4,
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    labels: { color: "white" }
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: "white" }
+                },
+                y: {
+                    ticks: { color: "white" }
+                }
+            }
+        }
+    });
+}
 </script>
 
 </body>
