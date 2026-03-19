@@ -49,17 +49,13 @@ body{
 
 /* Big Hours:Minutes:Seconds */
 #big-time {
-  font-size: 50px;
+  font-size: 20px;
   font-weight: bold;
-  color: #00f7ff;
+  color: black;
   letter-spacing: 2px;
 }
 
-/* Millis / Nano / Pico */
-#small-time {
-  font-size: 18px;
-  color: #8ff;
-}
+
 
 /* Date */
 #date-container {
@@ -67,9 +63,9 @@ body{
 }
 
 #date-big {
-  font-size: 24px;
+  font-size: 14px;
   font-weight: bold;
-  color: #7fff7f;
+  color: black;
 }
 
 #date-small {
@@ -83,7 +79,7 @@ body{
   color: #ffbf00;
   font-weight: bold;
   margin-top: 10px;
-  text-shadow: 0 0 10px #ffbf00, 0 0 20px #ffbf00;
+
 }
 /* BUTTON */
 button{
@@ -212,11 +208,42 @@ button:hover{
     <p id="moonPhase"></p>
     <ul id="moonTimes"></ul>
     <p id="moonPosition"></p>
+    <h3 id="phaseHeading" style="display:none;">🌘 Phase</h3>
+
+<div id="moonImageContainer" style="display:none; margin-top:15px;">
+    <table cellpadding="0" cellspacing="0" border="0" width="130">
+        <tr>
+            <td align="center">
+                <img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" />
+            </td>
+            <td background="https://www.moonmodule.com/cs/dm/vn.gif" valign="bottom" align="center">
+                <a href="https://www.moonconnection.com" target="mc_moon_ph">
+                    <img src="https://www.moonmodule.com/cs/dm/s.gif" width="128" height="150" border="0" alt="" />
+                </a>
+                <table cellpadding="0" cellspacing="0" border="0" width="120" height="20">
+                    <tr>
+                        <td align="center" bgcolor="#000000">
+                            <a href="https://www.moonconnection.com/moon_phases.phtml" target="mc_moon_ph">
+                                <span style="color:#7F7F7F;font-family:arial,helvetica,sans-serif;font-size:10px;">
+                                    moon phase info
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+                <img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="4" border="0" alt="" />
+            </td>
+            <td>
+                <img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" />
+            </td>
+        </tr>
+    </table>
+</div>
 </div>
 
 <!-- SUN CARD -->
 <div class="card">
-    <h2>☀ Sun Data</h2>
+    <h2>☀️ Sun Data</h2>
     <button onclick="getSunData()">Get Sun Data</button>
     <ul id="sunTimes"></ul>
     <p id="sunPosition"></p>
@@ -242,28 +269,32 @@ function updateCelestialClock() {
     const minutes = now.toFormat("mm");
     const seconds = now.toFormat("ss");
     const millis = now.millisecond.toString().padStart(3,"0");
-    const nano = (now.millisecond*1e6).toString().padStart(9,"0");
-    const pico = (now.millisecond*1e9).toString().padStart(12,"0");
 
-    document.getElementById("big-time").innerText = `${hours}:${minutes}:${seconds}`;
-    document.getElementById("small-time").innerText = `.${millis} ms | ${nano} ns | ${pico} ps`;
+    // ✅ Time with milliseconds inline
+    document.getElementById("big-time").innerText =
+        `${hours}:${minutes}:${seconds}.${millis}`;
+
+    // ❌ Remove small-time (no longer needed)
+    document.getElementById("small-time").innerText = "";
 
     const day = now.toFormat("dd");
     const month = now.toFormat("MM");
     const year = now.toFormat("yyyy");
     const century = Math.floor(year/100)+1;
 
-    document.getElementById("date-big").innerText = `${day}:${month}:${year}`;
-    document.getElementById("date-small").innerText = `Century: ${century}`;
+    // ✅ Date with century inline
+    document.getElementById("date-big").innerText =
+        `${day}:${month}:${year} (Century: ${century})`;
 
-    // Cosmic date using Julian Date (or from cosmos approximation)
+    document.getElementById("date-small").innerText = "";
+
     const jd = 2440587.5 + now.toSeconds()/86400;
-    document.getElementById("cosmic-date").innerText = `🌌 Cosmic Date: ${jd.toFixed(5)}`;
+    document.getElementById("cosmic-date").innerText =
+        `🌌 Cosmic Date: ${jd.toFixed(5)}`;
 }
-
+// START CLOCK
 setInterval(updateCelestialClock, 50);
 updateCelestialClock();
-
 // GET COORDS
 function getCoords(){
     const coords = document.getElementById("city").value.split(",");
@@ -280,6 +311,10 @@ function getMoonData(){
     document.getElementById("moonPhase").innerText = "Current Phase: " + phaseName;
     displayMoonTimes(lat,lon);
     displayMoonPosition(lat,lon);
+
+    // ✅ SHOW PHASE HEADING + IMAGE
+    document.getElementById("phaseHeading").style.display = "block";
+    document.getElementById("moonImageContainer").style.display = "block";
 }
 
 function getMoonPhaseName(phase){
@@ -369,357 +404,6 @@ var now = new Date();
 addMoonPath(now);
 addMoonMarker(now);
 updateMoonLocation();
-</script>
-
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Celestial | UR Frequency</title>
-
-<link rel="icon" href="https://img.hotimg.com/1ef97f5ba533d7bd7.png">
-
-<!-- Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/suncalc/1.8.0/suncalc.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/luxon@2.4.0/build/global/luxon.min.js"></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<style>
-body{
-    margin:0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color:black;
-    color:white;
-}
-
-/* HEADER */
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:15px 30px;
-    background:rgba(0,50,0,0.6);
-    backdrop-filter:blur(10px);
-}
-.logo{
-    font-size:22px;
-    font-weight:bold;
-    letter-spacing:2px;
-}
-
-/* CARD */
-.card{
-    background:rgba(150,200,150,0.5);
-    backdrop-filter:blur(12px);
-    border-radius:20px;
-    padding:30px;
-    margin:40px auto;
-    max-width:900px;
-    box-shadow:0 0 30px rgba(0,0,0,0.4);
-}
-
-/* BUTTON */
-button{
-    padding:12px 25px;
-    border:none;
-    border-radius:30px;
-    background:linear-gradient(45deg,#00c6ff,#0072ff);
-    color:white;
-    cursor:pointer;
-    transition:0.3s;
-}
-button:hover{
-    transform:scale(1.05);
-    box-shadow:0 0 15px #00c6ff;
-}
-
-/* CLOCK */
-#clock-time{
-    font-size:24px;
-    font-weight:bold;
-    letter-spacing:2px;
-}
-
-/* MAP */
-#map{
-    height:400px;
-    border-radius:15px;
-}
-
-/* FOOTER */
-.footer{
-    text-align:center;
-    padding:20px;
-    background:#111;
-    margin-top:50px;
-}
-</style>
-</head>
-
-<body>
-
-<header class="header">
-   <div style="display:flex; align-items:center; gap:8px; font-size:24px; font-weight:bold;">
-  <img src="https://i.ibb.co/nMMKcSWC/ur-logo.png" alt="UR Frequency Logo" 
-       style="width:40px; height:40px; object-fit:contain; border-radius:8px;">
-  UR Frequency – Celestial
-</div>
-</header>
-
-<!-- CITY SELECTION -->
-<div class="card">
-    
-    <p>Local Time:</p><div class="card">
-    <h2>Local Time – Detailed</h2>
-    <div id="detailed-clock" style="font-size:20px; font-weight:bold;"></div>
-</div>
-    </div>
-    <div class="card">
-    <h2>Select City</h2>
-    <select id="city">
- <option value="71.5249,30.1575">Multan</option>
-    <option value="71.8156,30.0487">Jahanian</option>
-    <option value="74.3587,31.5204">Lahore</option>
-    <option value="70.2989,28.4212">Rahim Yar Khan</option>
-    <option value="73.0479,33.6844">Islamabad</option>
-    <option value="121.4737,31.2304">Shanghai</option>
-    <option value="37.6173,55.7558">Moscow</option>
-    <option value="28.9784,41.0082">Istanbul</option>
-    <option value="21.3891,39.8579">Makkah</option>
-    <option value="24.5247,39.5692">Madinah</option>
-    <option value="25.2854,51.5310">Doha</option>
-    <option value="120.9842,14.5995">Manila</option>
-    <option value="106.8229,6.1944">Jakarta</option>
-    <option value="41.7036,19.8717">Perrenjas</option>
-<option value="41.1386,37.3886">Batman City</option>
-<option value="85.0985,20.9517">Odisha</option>
-<option value="77.1025,28.6139">Delhi</option>
-<option value="27.1428,38.4192">Izmir</option>
-<option value="32.8541,39.9334">Ankara</option>
-<option value="44.3661,33.3152">Baghdad</option>
-<option value="28.5421,-12.9637">Ndola</option>
-<option value="55.9754,21.4735">Oman</option>
-<option value="2.3522,48.8566">Paris</option>
-<option value="70.4450,28.3063">Sadiqabad</option>
-<option value="71.6749,29.3707">Bahawalpur</option>
-<option value="72.4258,30.6702">Sahiwal</option>
-<option value="72.6749,32.0836">Sargodha</option>
-<option value="73.3937,35.8304">Murree</option>
-<option value="72.2265,35.2342">Swabi</option>
-<option value="75.9648,39.4677">Kashgar</option>
-<option value="125.7625,39.0392">Pyongyang</option>
-<option value="125.3746,38.7374">Nampo</option>
-<option value="51.3890,35.6895">Tehran</option>
-<option value="44.2088,15.3695">Sana'a</option>
-<option value="35.2137,31.7683">Jerusalem (Palestine) </option>
-<option value="36.2021,33.5138">Damascus</option>
-<option value="35.4971,33.8938">Beirut</option>
-<option value="30.7133,36.8969">Antalya</option>
-<option value="14.4310,27.0376">Sabha Libya</option>
-<option value="13.1913,32.8868">Tripoli</option>
-<option value="10.1658,36.8065">Tunis</option>
-<option value="3.0588,36.7538">Algiers</option>
-<option value="3.3792,6.5244">Lagos</option>
-<option value="174.7762,-41.2866">Wellington</option>
-<option value="91.1821,23.4682">Cumilla</option>
-<option value="30.3014,71.9322">Khanewal</option>
-<option value="30.9744,72.3986">Toba Tek Singh</option>
-<option value="30.0474,70.6536">Dera Ghazi Khan</option>
-<option value="33.7380,72.8351">Taxila</option>
-    </select>
-
-    <input type="number" id="days" value="1" min="1" max="10">
-</div>
-
-<!-- MOON CARD -->
-<div class="card">
-    <h2>🌙 Moon Data</h2>
-    <br>
-    <button onclick="getMoonData()">Get Moon Data</button>
-    <p id="moonPhase"></p>
-    <ul id="moonTimes"></ul>
-    <p id="moonPosition"></p>
-</div>
-
-<!-- SUN CARD -->
-<div class="card">
-    <h2>☀ Sun Data</h2>
-    <button onclick="getSunData()">Get Sun Data</button>
-    <ul id="sunTimes"></ul>
-    <p id="sunPosition"></p>
-</div>
-
-<!-- MAP CARD -->
-<div class="card">
-    <h2>🌍 Moon Position Map</h2>
-    <p>Moon where blue mark is perpendicular to that country head</p>
-    <div id="map"></div>
-</div>
-
-<footer class="footer">
-© 2026 UR Frequency | Celestial Dashboard
-</footer>
-
-<script>
-
-// CLOCK
-
-function updateDetailedClock() {
-    const now = luxon.DateTime.local();
-
-    const hours = now.toFormat("HH");
-    const minutes = now.toFormat("mm");
-    const seconds = now.toFormat("ss");
-    const millis = now.millisecond.toString().padStart(3, "0");
-
-    // Nanoseconds and picoseconds (simulated from milliseconds)
-    const nano = (now.millisecond * 1e6).toString().padStart(9, "0");
-    const pico = (now.millisecond * 1e9).toString().padStart(12, "0");
-
-    const day = now.toFormat("dd");
-    const month = now.toFormat("MM");
-    const year = now.toFormat("yyyy");
-    const century = Math.floor(year / 100) + 1;
-
-    // Cosmic date (Julian Date approximation)
-    const jd = 2440587.5 + now.toSeconds() / 86400;
-
-    document.getElementById("detailed-clock").innerHTML = `
-        <p>Time: ${hours}:${minutes}:${seconds}:${millis}:${nano}:${pico}</p>
-        <p>Date: ${day}:${month}:${year} | Century: ${century}</p>
-        <p>Cosmic Date (Julian): ${jd.toFixed(5)}</p>
-    `;
-}
-
-
-
-// MOON PHASE NAME
-function getMoonPhaseName(phase){
-    if(phase <0.03 || phase >0.97) return "New Moon";
-    if(phase <0.22) return "Waxing Crescent";
-    if(phase <0.28) return "First Quarter";
-    if(phase <0.47) return "Waxing Gibbous";
-    if(phase <0.53) return "Full Moon";
-    if(phase <0.72) return "Waning Gibbous";
-    if(phase <0.78) return "Last Quarter";
-    return "Waning Crescent";
-}
-
-// MOON TIMES
-function displayMoonTimes(lat,lon){
-    const today = new Date();
-    const times = SunCalc.getMoonTimes(today,lat,lon);
-
-    const list = document.getElementById("moonTimes");
-    list.innerHTML = `
-        <li>Moonrise: ${luxon.DateTime.fromJSDate(times.rise).toFormat("HH:mm")}</li>
-        <li>Moonset: ${luxon.DateTime.fromJSDate(times.set).toFormat("HH:mm")}</li>
-    `;
-}
-
-// MOON POSITION
-function displayMoonPosition(lat,lon){
-    const today = new Date();
-    const pos = SunCalc.getMoonPosition(today,lat,lon);
-
-    const az = (pos.azimuth*180/Math.PI).toFixed(2);
-    const alt = (pos.altitude*180/Math.PI).toFixed(2);
-
-    document.getElementById("moonPosition").innerText =
-        `Azimuth: ${az}° | Altitude: ${alt}°`;
-}
-
-// SUN DATA
-function getSunData(){
-    const {lat,lon} = getCoords();
-    const today = new Date();
-    const times = SunCalc.getTimes(today,lat,lon);
-
-    document.getElementById("sunTimes").innerHTML = `
-        <li>Sunrise: ${luxon.DateTime.fromJSDate(times.sunrise).toFormat("HH:mm")}</li>
-        <li>Sunset: ${luxon.DateTime.fromJSDate(times.sunset).toFormat("HH:mm")}</li>
-    `;
-
-    const pos = SunCalc.getPosition(today,lat,lon);
-    const az = (pos.azimuth*180/Math.PI).toFixed(2);
-    const alt = (pos.altitude*180/Math.PI).toFixed(2);
-
-    document.getElementById("sunPosition").innerText =
-        `Azimuth: ${az}° | Altitude: ${alt}°`;
-}
-
-
-
-
-    // Initialize Leaflet map
-    var map = L.map('map').setView([0, 0], 2);
-
-    // Add OpenStreetMap tile layer
-   L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-  {
-    attribution: 'Tiles © Esri'
-  }
-).addTo(map);
-
-
-    // Function to add moon path to the map
-    function addMoonPath(date) {
-        var moonPath = [];
-
-        // Calculate moon positions for each hour of the day
-        for (var i = 0; i <= 24; i++) {
-            var moonPos = SunCalc.getMoonPosition(new Date(date.getFullYear(), date.getMonth(), date.getDate(), i), 0, 0);
-            var moonLat = moonPos.altitude * (180 / Math.PI);
-            var moonLng = moonPos.azimuth * (180 / Math.PI);
-            moonPath.push([moonLat, moonLng]);
-        }
-
-        // Draw moon path as a blue polyline
-        L.polyline(moonPath, {color: 'blue'}).addTo(map);
-    }
-
-    // Function to add moon marker to the map
-    function addMoonMarker(date) {
-        // Calculate moon position
-        var moonPos = SunCalc.getMoonPosition(date, 0, 0);
-
-        // Convert moon position to lat, lon
-        var moonLat = moonPos.altitude * (180 / Math.PI);
-        var moonLng = moonPos.azimuth * (180 / Math.PI);
-
-        // Add moon marker to the map
-        L.marker([moonLat, moonLng]).addTo(map).bindPopup('Moon').openPopup();
-    }
-
-    // Function to update moon location and path when map is zoomed
-    function updateMoonLocation() {
-        map.on('zoomend', function() {
-            // Remove existing moon marker and path
-            map.eachLayer(function(layer) {
-                if (layer instanceof L.Marker || layer instanceof L.Polyline) {
-                    map.removeLayer(layer);
-                }
-            });
-
-            // Add updated moon marker and path
-            var currentDate = new Date();
-            addMoonPath(currentDate);
-            addMoonMarker(currentDate);
-        });
-    }
-
-    // Add moon path and marker for current date
-    var currentDate = new Date();
-    addMoonPath(currentDate);
-    addMoonMarker(currentDate);
-
-    // Update moon location when map is zoomed
-    updateMoonLocation();
-    
 </script>
 
 </body>
