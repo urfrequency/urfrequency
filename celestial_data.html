@@ -99,7 +99,7 @@ button:hover{
 <div class="card">
     
     <p>Local Time:</p>
-    <div id="clock-time"></div>
+    <div id="detailed-clock"></div>
     </div>
     <div class="card">
     <h2>Select City</h2>
@@ -206,7 +206,35 @@ function getCoords(){
         lat: parseFloat(coords[1])
     };
 }
+function updateDetailedClock() {
+    const now = luxon.DateTime.local();
 
+    const hours = now.toFormat("HH");
+    const minutes = now.toFormat("mm");
+    const seconds = now.toFormat("ss");
+    const millis = now.millisecond.toString().padStart(3, "0");
+
+    // Nanoseconds and picoseconds (simulate since JS only supports milliseconds)
+    const nano = (now.millisecond * 1e6).toString().padStart(9, "0");
+    const pico = (now.millisecond * 1e9).toString().padStart(12, "0");
+
+    const day = now.toFormat("dd");
+    const month = now.toFormat("MM");
+    const year = now.toFormat("yyyy");
+    const century = Math.floor(year / 100) + 1;
+
+    // Cosmic date: Julian Date approximation
+    const jd = 2440587.5 + now.toSeconds() / 86400;
+
+    document.getElementById("detailed-clock").innerHTML = `
+        <p>Local Time: ${hours}:${minutes}:${seconds}:${millis}:${nano}:${pico}</p>
+        <p>Date: ${day}:${month}:${year} | Century: ${century}</p>
+        <p>Cosmic Date (Julian): ${jd.toFixed(5)}</p>
+    `;
+}
+
+setInterval(updateDetailedClock, 50); // update ~20 times/sec
+updateDetailedClock();
 // MOON DATA
 function getMoonData(){
     const {lat,lon} = getCoords();
