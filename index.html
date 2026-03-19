@@ -208,28 +208,31 @@
 
 <!-- Earth Data -->
 <section id="earth">
-    <h2>Earth Data</h2>
+    <h2>Real‑Time Weather — Jahanian, Punjab</h2>
     <div class="grid">
-        <div class="card">
-            <p>Global Temperature</p>
-            <div class="data-box">15.2 °C</div>
-        </div>
-        <div class="card">
-            <p>CO₂ Levels</p>
-            <div class="data-box">417 ppm</div>
-        </div>
-        <div class="card">
-            <p>Sea Level Rise</p>
-            <div class="data-box">+3.4 mm/year</div>
-        </div>
-        <div class="card">
-            <p>Ozone Layer</p>
-            <div class="data-box">285 DU</div>
-        </div>
-            </a></div>
-    
-</section>
 
+        <div class="card">
+            <p>Temperature</p>
+            <div class="data-box" id="tempReal">Loading...</div>
+        </div>
+
+        <div class="card">
+            <p>Wind Speed</p>
+            <div class="data-box" id="windReal">Loading...</div>
+        </div>
+
+        <div class="card">
+            <p>Humidity</p>
+            <div class="data-box" id="humidityReal">Loading...</div>
+        </div>
+
+        <div class="card">
+            <p>Weather Code</p>
+            <div class="data-box" id="weatherCodeReal">Loading...</div>
+        </div>
+
+    </div>
+</section>
 <!-- About -->
 <section id="about">
     <h2>About Us</h2>
@@ -252,6 +255,39 @@ function closeVideo() {
     let iframe = document.getElementById("videoFrame");
     iframe.src = iframe.src;
 }
+
+    async function getRealtimeWeather() {
+    const lat = 30.0487;
+    const lon = 71.8156;
+
+    // Open‑Meteo endpoint for current weather
+    const url =
+      `https://api.open‑meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        // Extract values
+        const weather = data.current_weather;
+        document.getElementById("tempReal").textContent = weather.temperature + " °C";
+        document.getElementById("windReal").textContent = weather.windspeed + " km/h";
+        document.getElementById("humidityReal").textContent = weather.relativehumidity_2m + " %";
+        document.getElementById("weatherCodeReal").textContent = weather.weathercode;
+    } catch (err) {
+        console.error("Weather API Error:", err);
+        document.getElementById("tempReal").textContent = "N/A";
+        document.getElementById("windReal").textContent = "N/A";
+        document.getElementById("humidityReal").textContent = "N/A";
+        document.getElementById("weatherCodeReal").textContent = "N/A";
+    }
+}
+
+// Fetch data on load
+getRealtimeWeather();
+
+// Optional: refresh every 5 minutes
+setInterval(getRealtimeWeather, 300000);
 </script>
 
 <footer>
