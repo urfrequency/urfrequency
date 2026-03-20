@@ -54,9 +54,35 @@ body{
   color: black;
   letter-spacing: 2px;
 }
+.card2 {
+    display: inline-block;       /* Inline cards */
+    width: 60px;                 /* Fixed width */
+    height: 40px;                /* Fixed height */
+    margin: 2px;                 /* Small gap between cards */
+    background: rgba(150,200,150,0.5);
+    backdrop-filter: blur(6px);
+    border-radius: 6px;
+    text-align: center;
+    line-height: 40px;           /* Vertically center text */
+    font-size: 12px;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
+.card2:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
 
-
+.card2 a {
+    text-decoration: none;
+    color: #0b3d91;
+    font-weight: bold;
+    display: block;
+    margin-top: 5px;
+}
 /* Date */
 #date-container {
   margin-top: 10px;
@@ -116,6 +142,21 @@ button:hover{
     background:#111;
     margin-top:50px;
 }
+#astronomy .card.iframe-card {
+    position: relative;
+    height: 300px; /* Adjust height as needed */
+    padding: 0;    /* Remove internal padding so iframe fills card */
+}
+#astronomy .card.iframe-card iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 6px;
+}
+
 </style>
 </head>
 
@@ -260,6 +301,60 @@ button:hover{
     <button onclick="drawMoonGraph()">Show Moon Graph</button>
     <canvas id="moonChart" style="margin-top:20px;"></canvas>
 </div>
+
+<section id="astronomy">
+     <div class="grid">
+         <div class="card">
+    <h2>Real-Time Sun & Moon Times — OUR Location</h2></div></div>
+    <div class="grid">
+        <div class="card"><p>Sunrise</p><div id="sunriseTime">Loading...</div></div>
+        <div class="card"><p>Sunset</p><div id="sunsetTime">Loading...</div></div>
+        <div class="card"><p>Moonrise</p><div id="moonriseTime">Loading...</div></div>
+        <div class="card"><p>Moonset</p><div id="moonsetTime">Loading...</div></div>
+        <div class="card">
+            <!-- Current Moon Phase HTML -->
+            <table cellpadding="0" cellspacing="0" border="0" width="130">
+                <tr>
+                    <td align="center"><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" /></td>
+                    <td background="https://www.moonmodule.com/cs/dm/vn.gif" valign="bottom" align="center">
+                        <a href="https://www.moonconnection.com" target="mc_moon_ph">
+                            <img src="https://www.moonmodule.com/cs/dm/s.gif" width="128" height="150" border="0" alt="" />
+                        </a>
+                        <table cellpadding="0" cellspacing="0" border="0" width="120" height="20">
+                            <tr>
+                                <td align="center" bgcolor="#000000">
+                                    <a href="https://www.moonconnection.com/moon_phases.phtml" target="mc_moon_ph">
+                                        <span style="color:#7F7F7F;font-family:arial,helvetica,sans-serif;font-size:10px;">moon phase info</span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                        <img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="4" border="0" alt="" />
+                    </td>
+                    <td><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" /></td>
+                </tr>
+            </table>
+        </div>
+        <div class="card"><h4>Sunlight (00:00 → now)</h4>
+    <canvas id="sunChart"></canvas></div>
+    
+        <div class="card">  <h4>Temperature Trend (simulated)</h4>
+    <canvas id="tempChart"></canvas></div>
+      <div class="card iframe-card"><h4>Cloud Cover (Windy)</h4>
+    <iframe 
+      src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=5&overlay=clouds&level=surface&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=default&metricTemp=default"></iframe>
+</div>
+
+<div class="card iframe-card"><h4>Wind Map (Windy)</h4>
+    <iframe 
+      src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=5&overlay=wind&level=surface&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=m%2Fs&metricTemp=default"></iframe>
+</div>
+    </div>
+</section>
+
+
+
+
 <footer class="footer">
 © 2026 UR Frequency | Celestial Dashboard
 </footer>
@@ -468,6 +563,74 @@ function drawMoonGraph(){
         }
     });
 }
+
+async function loadAstronomyData() {
+    const lat = 30.0487;
+    const lon = 71.8156;
+    const apiKey = "4baaeb64a9a645cfbe6f52908d32f807"; // Your API Key
+    const url = `https://api.ipgeolocation.io/astronomy?apiKey=${apiKey}&lat=${lat}&long=${lon}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        document.getElementById("sunriseTime").textContent = data.sunrise;
+        document.getElementById("sunsetTime").textContent = data.sunset;
+        document.getElementById("moonriseTime").textContent = data.moonrise;
+        document.getElementById("moonsetTime").textContent = data.moonset;
+
+    } catch (err) {
+        console.error("Astronomy API Error:", err);
+        alert("Failed to load astronomy data. Check your API key or network.");
+    }
+}
+
+loadAstronomyData();
+
+// Sunlight Graph (simulated example)
+const sunCtx = document.getElementById('sunChart').getContext('2d');
+const sunChart = new Chart(sunCtx, {
+    type: 'line',
+    data: {
+        labels: Array.from({length: 24}, (_, i) => `${i}:00`), // 0-23 hours
+        datasets: [{
+            label: 'Sunlight Intensity',
+            data: Array.from({length: 24}, () => Math.random() * 100), // Simulated data
+            borderColor: 'orange',
+            backgroundColor: 'rgba(255,165,0,0.3)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true, max: 100 }
+        }
+    }
+});
+
+// Temperature Graph (simulated example)
+const tempCtx = document.getElementById('tempChart').getContext('2d');
+const tempChart = new Chart(tempCtx, {
+    type: 'line',
+    data: {
+        labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+        datasets: [{
+            label: 'Temperature (°C)',
+            data: Array.from({length: 24}, () => 15 + Math.random() * 10), // Simulated
+            borderColor: 'red',
+            backgroundColor: 'rgba(255,0,0,0.2)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: false }
+        }
+    }
+});
+
 </script>
 
 </body>
