@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 <title>UR Frequency - Official Portal</title>
 
 <style>
@@ -147,6 +149,20 @@
         padding: 20px;
         margin-top: 40px;
     }
+ #hero-time {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    text-align: right;
+    font-size: 11px;
+    color: #0b3d91;
+    line-height: 1.3;
+}
+
+/* Make hero relative so positioning works */
+.hero {
+    position: relative;
+}
 </style>
 </head>
 
@@ -170,7 +186,14 @@
 <div class="hero" id="home">
     <h1>UR Frequency Official Portal</h1>
     <p>Astronomical Research & Data Services</p>
+    <div id="hero-time">
+  <div id="small-time"></div>
+  <div id="small-date"></div>
+  <div id="small-century"></div>
+  <div id="cosmic-date"></div>
 </div>
+</div>
+
 
 <!-- Services -->
 <section id="services">
@@ -268,7 +291,44 @@
 </section>
 
 <!-- Scripts -->
+
 <script>
+function updateCelestialClock() {
+    const now = luxon.DateTime.local();
+
+    const hours = now.toFormat("HH");
+    const minutes = now.toFormat("mm");
+    const seconds = now.toFormat("ss");
+    const millis = now.millisecond.toString().padStart(3, "0");
+
+    const day = now.toFormat("dd");
+    const month = now.toFormat("MM");
+    const year = parseInt(now.toFormat("yyyy"));
+
+    // Century calculation
+    const century = Math.floor((year - 1) / 100) + 1;
+
+    // Julian Date (Cosmic Date)
+    const jd = 2440587.5 + now.toSeconds() / 86400;
+
+    // Output
+    document.getElementById("small-time").innerText =
+        `${hours}:${minutes}:${seconds}.${millis}`;
+
+    document.getElementById("small-date").innerText =
+        `${day}:${month}:${year}`;
+
+    document.getElementById("small-century").innerText =
+        `Century: ${century}`;
+
+    document.getElementById("cosmic-date").innerText =
+        `Cosmic: ${jd.toFixed(5)}`;
+}
+
+// Smooth update (milliseconds visible)
+setInterval(updateCelestialClock, 50);
+updateCelestialClock();
+
 function openVideo() {
     document.getElementById("videoModal").style.display = "block";
 }
