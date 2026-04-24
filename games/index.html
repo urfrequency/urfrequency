@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Juegos Retro</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="retro-grid"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>🎮 GENERADOR DE JUEGOS RETRO</h1>
+            <p class="subtitle">Crea juegos clásicos con inteligencia artificial</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="panel">
+                <h2>🚀 Generador de Juegos</h2>
+                <div class="prompt-section">
+                    <textarea 
+                        class="prompt-input" 
+                        id="gamePrompt" 
+                        placeholder="Describe el juego que quieres crear...&#10;&#10;Ejemplo: 'Quiero un juego donde una serpiente come manzanas y crece, pero con obstáculos que se mueven'"
+                    ></textarea>
+                    
+                    <div class="quick-prompts">
+                        <div class="quick-prompt" onclick="setPrompt('snake')">🐍 Snake </div>
+                        <div class="quick-prompt" onclick="setPrompt('tetris')">🧩 Tetris</div>
+                        <div class="quick-prompt" onclick="setPrompt('pong')">🏓 Pong</div>
+                        <div class="quick-prompt" onclick="setPrompt('breakout')">🧱 Breakout</div>
+                        <div class="quick-prompt" onclick="setPrompt('asteroids')">🚀 Asteroids</div>
+                        <div class="quick-prompt" onclick="setPrompt('pacman')">👻 Pac-Man</div>
+                    </div>
+                    
+                    <button class="generate-btn" onclick="generateGame()">
+                        🎮 Generar Juego
+                    </button>
+                </div>
+            </div>
+            
+            <div class="panel">
+                <h2>🎯 Área de Juego</h2>
+                <div class="game-area">
+                    <div class="loading" id="loading">
+                        <div class="loading-spinner"></div>
+                        <p>Generando tu juego retro...</p>
+                    </div>
+                    
+                    <div id="gameContainer" style="display: none;">
+                        <div class="game-info">
+                            <span id="gameTitle">Juego Generado</span>
+                            <span id="gameScore">Puntuación: 0</span>
+                        </div>
+                        <canvas id="gameCanvas" class="game-canvas" width="400" height="400"></canvas>
+                        <div class="game-controls">
+                            <button class="control-btn" onclick="startGame()">▶️ Iniciar</button>
+                            <button class="control-btn" onclick="pauseGame()">⏸️ Pausar</button>
+                            <button class="control-btn" onclick="resetGame()">🔄 Reiniciar</button>
+                        </div>
+                    </div>
+                    
+                    <div id="welcomeMessage">
+                        <h3>🎮 ¡Bienvenido al Generador de Juegos Retro!</h3>
+                        <p>Describe cualquier juego retro que quieras crear y yo lo programaré para ti.</p>
+                        <br>
+                        <p>✨ Ejemplos de lo que puedo crear:</p>
+                        <div class="game-list">
+                            <div class="game-item">
+                                <h4>🐍 Snake</h4>
+                                <p>Con power-ups y obstáculos</p>
+                            </div>
+                            <div class="game-item">
+                                <h4>🧩 Tetris</h4>
+                                <p>Con efectos especiales</p>
+                            </div>
+                            <div class="game-item">
+                                <h4>🏓 Pong</h4>
+                                <p>Con IA adaptativa</p>
+                            </div>
+                            <div class="game-item">
+                                <h4>🚀 Asteroids</h4>
+                                <p>Con física realista</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
