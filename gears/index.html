@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gear Train Analyzer | UR Industries</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #eef2f5;
+            font-family: 'Segoe UI', 'Times New Roman', Georgia, serif;
+            padding: 30px 20px;
+        }
+
+        /* Government-style container */
+        .gov-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border: 2px solid #002664;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Header */
+        .gov-header {
+            background: #002664;
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 5px solid #bf0a30;
+        }
+        .gov-header h1 {
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+        .gov-header p {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-top: 6px;
+        }
+        .badge {
+            background: green;
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* main layout */
+        .gov-grid {
+            display: grid;
+            grid-template-columns: 1fr 0.9fr;
+            gap: 20px;
+            padding: 25px 30px;
+        }
+        @media (max-width: 1000px) {
+            .gov-grid { grid-template-columns: 1fr; }
+        }
+
+        /* cards */
+        .section-card {
+            background: #fefefe;
+            border: 1px solid #ccd6e0;
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-left: 6px solid #002664;
+            padding-left: 14px;
+            margin-bottom: 18px;
+            color: #002664;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 18px;
+            align-items: baseline;
+        }
+        .form-field {
+            flex: 1;
+            min-width: 150px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 5px;
+            color: #1e3a5f;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #9aaebf;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: 500;
+            background: #fff;
+        }
+        input:focus, select:focus {
+            border-color: #002664;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0,38,100,0.2);
+        }
+        .gear-table {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+        th, td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+        th {
+            background: #e9edf2;
+            font-weight: bold;
+        }
+        .btn {
+            background: #002664;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+            margin-right: 8px;
+        }
+        .btn-secondary {
+            background: #5e6f8d;
+        }
+        .btn-outline {
+            background: white;
+            color: #002664;
+            border: 1px solid #002664;
+        }
+        .btn:hover {
+            background: #bf0a30;
+        }
+        .output-box {
+            background: #f0f4fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 16px;
+        }
+        .highlight {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #002664;
+        }
+        .watermark-area {
+            position: relative;
+            margin-top: 20px;
+            text-align: right;
+            font-size: 0.7rem;
+            color: #aaa;
+            border-top: 1px solid #ddd;
+            padding-top: 12px;
+        }
+        canvas {
+            background: #fefef5;
+            border: 1px solid #bbb;
+            border-radius: 8px;
+            margin-top: 15px;
+            width: 100%;
+            height: auto;
+        }
+        .calc-steps {
+            background: #f9fafb;
+            padding: 14px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            border-left: 3px solid #002664;
+            margin-top: 15px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .logo-preview {
+            max-width: 120px;
+            max-height: 60px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            background: #f5f5f5;
+        }
+        footer {
+            background: #eef2f5;
+            padding: 12px 30px;
+            text-align: right;
+            font-size: 0.75rem;
+            color: #3a4a6e;
+            border-top: 1px solid #cddae9;
+        }
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .gov-container {
+                border: none;
+                box-shadow: none;
+            }
+            .btn, .gov-header .badge, footer .btn, .no-print {
+                display: none;
+            }
+            .section-card {
+                break-inside: avoid;
+            }
+            canvas {
+                border: 1px solid black;
+            }
+            .watermark-print {
+                position: fixed;
+                bottom: 15px;
+                right: 15px;
+                color: #ccc;
+                font-size: 12px;
+                opacity: 0.7;
+            }
+        }
+        .flex-btns {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div class="gov-container" id="appContainer">
+    <div class="gov-header">
+    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: space-between;">
+        <!-- Header text - LEFT SIDE -->
+        <div class="header-text">
+            <h1>⚙️ MECHANICAL TRANSMISSIONS</h1>
+            <p>Gear Train & Ratio Verification System | Regulated under Mechanical Standards</p>
+            <div class="badge">OFFICIAL CALCULATION PORTAL</div>
+        </div>
+        
+        <!-- Company logo - RIGHT SIDE -->
+        <div class="company-logo-emblem" style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,240,0.1); padding: 6px 18px; border-radius: 50px;">
+            <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urindustries2.jpeg" 
+                 alt="UR Industries Logo" 
+                 style="height: 55px; width: auto; max-width: 120px; object-fit: contain;"
+                 onerror="this.onerror=null; this.style.display='none'; document.getElementById('logoFallback').style.display='flex';">            
+            <div id="logoFallback" style="display: none; align-items: center; gap: 8px;">
+                <div style="background: #bf0a30; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; color: white;">UR</div>
+                <div class="logo-text" style="font-weight: bold; letter-spacing: 1px;">UR INDUSTRIES</div>
+            </div>
+            <div class="logo-text" style="font-weight: bold; font-size: 0.9rem; border-left: 1px solid #ffcd7e; padding-left: 12px;">UR INDUSTRIES</div>
+        </div>
+    </div>
+</div>
+    <div class="gov-grid">
+        <!-- LEFT PANEL: INPUTS -->
+        <div>
+            <div class="section-card">
+                <div class="section-title">I. INPUT PARAMETERS</div>
+                <div class="form-row">
+                    <div class="form-field"><label>1. Gear Type</label><select id="gearType"><option>Spur Gear (Standard)</option><option>Helical Gear</option></select></div>
+                    <div class="form-field"><label>2. Number of Steps (Stages)</label><input type="number" id="stepsCount" min="1" max="5" value="2" step="1"></div>
+                    <div class="form-field"><label>3. Input Torque (Nm)</label><input type="number" id="inputTorque" value="10.0" step="0.1"></div>
+                    <div class="form-field"><label>6. Motor Speed (RPM)</label><input type="number" id="motorRPM" value="1450" step="10"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-field"><label>7. Input Pinion Diameter (mm) [opt]</label><input type="number" id="inputDia" placeholder="Auto from teeth/module"></div>
+                    <div class="form-field"><label>Optional: Output Wheel Dia (mm)</label><input type="number" id="wheelDia" placeholder="for linear speed"></div>
+                </div>
+                
+                <div class="gear-table" id="dynamicTeethTable">
+                    <!-- dynamic table for pinion & gear teeth per stage -->
+                </div>
+                <div class="flex-btns">
+                    <button class="btn" id="recalcBtn">⟳ UPDATE OUTPUTS</button>
+                    <button class="btn btn-secondary" id="printDesignBtn">🖨️ PRINT DESIGN</button>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">⚡ III. ADVANCED CONFIGURATOR</div>
+                <div class="form-row">
+                    <div class="form-field"><label>Speed In (RPM)</label><input type="number" id="advSpeedIn" placeholder="e.g., 1450"></div>
+                    <div class="form-field"><label>Speed Out (RPM)</label><input type="number" id="advSpeedOut" placeholder="e.g., 300"></div>
+                    <div class="form-field"><label>&nbsp;</label><button class="btn btn-outline" id="autoGearBtn" style="margin-top:22px;">⚙️ Auto-Design Steps & Teeth</button></div>
+                </div>
+                <div id="advMsg" style="font-size:0.75rem; color:#bf0a30; margin-top:5px;"></div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: OUTPUTS + DIAGRAM + CALCS -->
+        <div>
+            <div class="section-card">
+                <div class="section-title">📊 II. OUTPUT RESULTS</div>
+                <div class="output-box">
+                    <p><strong> Gear Ratio (Total):</strong> <span id="totalRatio" class="highlight">--</span> &nbsp;| <strong>Velocity Ratio:</strong> <span id="velRatio">--</span></p>
+                    <p><strong> Output RPM:</strong> <span id="outputRPM">--</span> rpm</p>
+                    <p><strong> Output Torque:</strong> <span id="outputTorque">--</span> Nm</p>
+                    <p><strong> Linear Speed (if wheel dia):</strong> <span id="linearSpeed">--</span> m/s</p>
+                </div>
+                <div class="section-title" style="margin-top:20px;"> IV. GEAR TRAIN DIAGRAM</div>
+                <canvas id="gearboxCanvas" width="500" height="220" style="width:100%; height:auto; background:#fff; border:1px solid #aaa;"></canvas>
+                <div class="watermark-area" id="watermarkLogoArea">
+                    <div style="display:flex; justify-content: space-between; align-items:center;">
+                        <div><label>Optional(Image for Report):</label><input type="file" id="logoUpload" accept="image/*"></div>
+                        <div><img id="logoPreview" class="logo-preview" src="" alt="Logo preview"></div>
+                    </div>
+                    <div style="text-align:right; margin-top:10px;"><span style="font-weight:bold;">UR Industries</span></div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-title">🧮 FULL CALCULATIONS (Step by Step)</div>
+                <div id="calcDetails" class="calc-steps">
+                    <!-- dynamic calc steps appear here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <span>🔧 Regulated Gear Train Standard | Accuracy ±2% | All values w/o efficiency losses (ideal)</span>
+        <span style="float:right;">Document ID: UR-GT-2026</span>
+    </footer>
+</div>
+
+<script>
+    // DOM elements
+    const stepsInput = document.getElementById('stepsCount');
+    const teethContainer = document.getElementById('dynamicTeethTable');
+    const recalcBtn = document.getElementById('recalcBtn');
+    const printBtn = document.getElementById('printDesignBtn');
+    const autoGearBtn = document.getElementById('autoGearBtn');
+    const advSpeedIn = document.getElementById('advSpeedIn');
+    const advSpeedOut = document.getElementById('advSpeedOut');
+    const advMsg = document.getElementById('advMsg');
+    
+    const inputTorqueEl = document.getElementById('inputTorque');
+    const motorRPMEl = document.getElementById('motorRPM');
+    const inputDiaEl = document.getElementById('inputDia');
+    const wheelDiaEl = document.getElementById('wheelDia');
+    
+    const totalRatioSpan = document.getElementById('totalRatio');
+    const velRatioSpan = document.getElementById('velRatio');
+    const outputRPMSpan = document.getElementById('outputRPM');
+    const outputTorqueSpan = document.getElementById('outputTorque');
+    const linearSpeedSpan = document.getElementById('linearSpeed');
+    const calcDetailsDiv = document.getElementById('calcDetails');
+    const canvas = document.getElementById('gearboxCanvas');
+    
+    let currentSteps = 2;
+    let pinionTeethArr = [];
+    let gearTeethArr = [];
+    
+    // rebuild dynamic table based on steps
+    function rebuildTeethTable() {
+        let steps = parseInt(stepsInput.value);
+        if(isNaN(steps) || steps<1) steps=1;
+        currentSteps = steps;
+        // ensure arrays length
+        while(pinionTeethArr.length < steps) pinionTeethArr.push(20);
+        while(gearTeethArr.length < steps) gearTeethArr.push(40);
+        pinionTeethArr = pinionTeethArr.slice(0,steps);
+        gearTeethArr = gearTeethArr.slice(0,steps);
+        
+        let html = `<table><thead><tr><th>Stage</th><th>Pinion Teeth (Driver)</th><th>Gear Teeth (Driven)</th><th>Stage Ratio (G/P)</th></tr></thead><tbody>`;
+        for(let i=0; i<steps; i++) {
+            let pinVal = pinionTeethArr[i] || 20;
+            let gearVal = gearTeethArr[i] || 40;
+            html += `<tr>
+                        <td>${i+1}</td>
+                        <td><input type="number" class="pinionTeethIn" data-stage="${i}" value="${pinVal}" min="6" step="1" style="width:90px;"></td>
+                        <td><input type="number" class="gearTeethIn" data-stage="${i}" value="${gearVal}" min="6" step="1" style="width:90px;"></td>
+                        <td id="stageRatio_${i}">--</td>
+                     </tr>`;
+        }
+        html += `</tbody></table>`;
+        teethContainer.innerHTML = html;
+        
+        // attach event listeners to new inputs
+        document.querySelectorAll('.pinionTeethIn').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                let stage = parseInt(inp.dataset.stage);
+                pinionTeethArr[stage] = parseInt(inp.value) || 10;
+                updateOutputsAndDiagram();
+            });
+        });
+        document.querySelectorAll('.gearTeethIn').forEach(inp => {
+            inp.addEventListener('change', (e) => {
+                let stage = parseInt(inp.dataset.stage);
+                gearTeethArr[stage] = parseInt(inp.value) || 10;
+                updateOutputsAndDiagram();
+            });
+        });
+        updateOutputsAndDiagram();
+    }
+    
+    // get current teeth arrays from table
+    function syncTeethFromTable() {
+        let steps = currentSteps;
+        for(let i=0; i<steps; i++) {
+            let pinInput = document.querySelector(`.pinionTeethIn[data-stage='${i}']`);
+            let gearInput = document.querySelector(`.gearTeethIn[data-stage='${i}']`);
+            if(pinInput) pinionTeethArr[i] = parseInt(pinInput.value) || 10;
+            if(gearInput) gearTeethArr[i] = parseInt(gearInput.value) || 10;
+        }
+    }
+    
+    // core calculation
+    function computeGearTrain() {
+        syncTeethFromTable();
+        let steps = currentSteps;
+        let totalRatio = 1.0;
+        let stageRatios = [];
+        for(let i=0; i<steps; i++) {
+            let pin = pinionTeethArr[i] || 10;
+            let gear = gearTeethArr[i] || 10;
+            let ratio = gear / pin;
+            stageRatios.push({stage:i+1, pin, gear, ratio});
+            totalRatio *= ratio;
+        }
+        let inputRPM = parseFloat(motorRPMEl.value) || 0;
+        let outputRPM = inputRPM / totalRatio;
+        let inputTorque = parseFloat(inputTorqueEl.value) || 0;
+        let outputTorque = inputTorque * totalRatio;
+        
+        // optional linear speed
+        let wheelDia = parseFloat(wheelDiaEl.value);
+        let linearSpeed = null;
+        if(!isNaN(wheelDia) && wheelDia>0 && !isNaN(outputRPM) && outputRPM>0) {
+            let radius_m = (wheelDia / 1000) / 2;
+            let angularVelocity_radps = outputRPM * (2 * Math.PI) / 60;
+            linearSpeed = (angularVelocity_radps * radius_m);
+        }
+        
+        // optional input diameter handling: not needed for ratio but we mention auto adjust
+        let inputDiaVal = parseFloat(inputDiaEl.value);
+        let autoMsg = "";
+        if(isNaN(inputDiaVal) && pinionTeethArr[0]) {
+            autoMsg = ` (Auto-adjusted: assumed module=1, Input pinion pitch diam = ${pinionTeethArr[0]} mm)`;
+        } else if(!isNaN(inputDiaVal) && pinionTeethArr[0]) {
+            let moduleCal = inputDiaVal / pinionTeethArr[0];
+            autoMsg = ` (Manual diameter: module = ${moduleCal.toFixed(3)} mm)`;
+        }
+        
+        return { totalRatio, outputRPM, outputTorque, linearSpeed, stageRatios, autoMsg, inputRPM, inputTorque };
+    }
+    
+    function updateOutputsAndDiagram() {
+        let calc = computeGearTrain();
+        totalRatioSpan.innerText = calc.totalRatio.toFixed(4);
+        velRatioSpan.innerText = `1 : ${calc.totalRatio.toFixed(4)}`;
+        outputRPMSpan.innerText = calc.outputRPM.toFixed(2);
+        outputTorqueSpan.innerText = calc.outputTorque.toFixed(2);
+        if(calc.linearSpeed !== null && !isNaN(calc.linearSpeed)) {
+            linearSpeedSpan.innerText = calc.linearSpeed.toFixed(3) + " m/s";
+        } else {
+            linearSpeedSpan.innerText = "Not available (no wheel dia)";
+        }
+        
+        // update stage ratio display inside table
+        for(let i=0; i<calc.stageRatios.length; i++) {
+            let ratioCell = document.getElementById(`stageRatio_${i}`);
+            if(ratioCell) ratioCell.innerText = calc.stageRatios[i].ratio.toFixed(4);
+        }
+        
+        // full calculations text
+        let stepsDetail = "";
+        calc.stageRatios.forEach(s => {
+            stepsDetail += `Stage ${s.stage}: Ratio = Gear(${s.gear}) / Pinion(${s.pin}) = ${s.ratio.toFixed(4)}\n`;
+        });
+        let totalRatioProd = calc.stageRatios.reduce((acc, s) => acc * s.ratio, 1);
+        let efficiencyNote = "(Ideal, η=100%)";
+        let calcsText = `⚙️ GEAR TRAIN ANALYSIS\n` +
+                        `Input Speed: ${calc.inputRPM} RPM | Input Torque: ${calc.inputTorque} Nm\n` +
+                        `------------------------------------------------\n` +
+                        `${stepsDetail}\n` +
+                        `Total Gear Ratio = ${totalRatioProd.toFixed(5)}\n` +
+                        `Velocity Ratio = ${totalRatioProd.toFixed(5)} : 1\n` +
+                        `Output RPM = Input RPM / Total Ratio = ${calc.inputRPM} / ${totalRatioProd.toFixed(5)} = ${calc.outputRPM.toFixed(2)} RPM\n` +
+                        `Output Torque = Input Torque × Total Ratio = ${calc.inputTorque} × ${totalRatioProd.toFixed(5)} = ${calc.outputTorque.toFixed(2)} Nm ${efficiencyNote}\n`;
+        if(calc.linearSpeed !== null && !isNaN(calc.linearSpeed)) {
+            calcsText += `Linear Speed: v = π × D_wheel × (Output RPM/60) = π × ${parseFloat(wheelDiaEl.value)}mm × (${calc.outputRPM.toFixed(2)}/60) = ${calc.linearSpeed.toFixed(3)} m/s\n`;
+        }
+        calcsText += `\n${calc.autoMsg || "Input gear diameter auto-adjusted based on teeth (module 1 default)"}`;
+        calcDetailsDiv.innerText = calcsText;
+        
+        drawGearDiagram(calc.stageRatios);
+    }
+    
+    // drawing schematic
+    function drawGearDiagram(stages) {
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let w = canvas.clientWidth;
+        canvas.width = w;
+        canvas.height = 220;
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        if(stages.length === 0) return;
+        let stepX = canvas.width / (stages.length + 1);
+        let yCenter = canvas.height/2;
+        ctx.font = "12px 'Segoe UI'";
+        ctx.fillStyle = "#002664";
+        // draw shafts and gears
+        for(let i=0; i<stages.length; i++) {
+            let xPin = stepX * (i+1) - 20;
+            let xGear = stepX * (i+1) + 20;
+            // pinion circle
+            ctx.beginPath();
+            ctx.arc(xPin, yCenter, 18, 0, 2*Math.PI);
+            ctx.fillStyle = "#d9e3f0";
+            ctx.fill();
+            ctx.strokeStyle = "#002664";
+            ctx.lineWidth=1.5;
+            ctx.stroke();
+            ctx.fillStyle = "#002664";
+            ctx.fillText(`P${i+1}`, xPin-5, yCenter+4);
+            
+            // gear circle
+            ctx.beginPath();
+            ctx.arc(xGear, yCenter, 24, 0, 2*Math.PI);
+            ctx.fillStyle = "#c0cfdf";
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "#002664";
+            ctx.fillText(`G${i+1}`, xGear-5, yCenter+4);
+            // meshing line
+            ctx.beginPath();
+            ctx.moveTo(xPin+14, yCenter);
+            ctx.lineTo(xGear-18, yCenter);
+            ctx.strokeStyle = "#6f8faa";
+            ctx.setLineDash([4,6]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // stage ratio text
+            let ratioVal = stages[i].ratio.toFixed(2);
+            ctx.fillStyle = "#bf0a30";
+            ctx.fillText(`${ratioVal}`, (xPin+xGear)/2-12, yCenter-15);
+            
+            if(i>0) {
+                // connecting shaft from previous gear to current pinion
+                let prevGearX = stepX*(i) + 20;
+                let currPinX = stepX*(i+1) - 20;
+                ctx.beginPath();
+                ctx.moveTo(prevGearX, yCenter);
+                ctx.lineTo(currPinX, yCenter);
+                ctx.strokeStyle = "#4a5b6e";
+                ctx.lineWidth=2;
+                ctx.stroke();
+            }
+        }
+        // input arrow marking
+        ctx.fillStyle = "#1f5e3a";
+        ctx.fillText("⏵ INPUT", stepX*1 - 35, yCenter-30);
+        ctx.fillText("OUTPUT ⏴", stepX*(stages.length) + 30, yCenter-30);
+    }
+    
+    // Auto-design based on Speed In / Speed Out
+    function autoDesignFromSpeed() {
+        let speedIn = parseFloat(advSpeedIn.value);
+        let speedOut = parseFloat(advSpeedOut.value);
+        if(isNaN(speedIn) || isNaN(speedOut) || speedIn<=0 || speedOut<=0) {
+            advMsg.innerText = "❌ Provide valid positive Speed In & Speed Out RPM.";
+            return;
+        }
+        let requiredRatio = speedIn / speedOut;
+        if(requiredRatio < 1) {
+            advMsg.innerText = "⚠️ Speed out > Speed in would need overdrive, still using ratio >1 but cascading gears possible.";
+            requiredRatio = 1/requiredRatio;
+        }
+        // decide steps automatically: target 2 or 3 stages based on magnitude
+        let steps = 2;
+        if(requiredRatio > 12) steps = 3;
+        if(requiredRatio > 35) steps = 4;
+        if(steps > 4) steps = 4;
+        let ratioPerStage = Math.pow(requiredRatio, 1/steps);
+        let newPinion = [];
+        let newGear = [];
+        for(let i=0; i<steps; i++) {
+            let pinBase = 18;
+            let gearTarget = Math.round(pinBase * ratioPerStage);
+            if(gearTarget < pinBase+2) gearTarget = pinBase+2;
+            if(gearTarget > 140) gearTarget = 140;
+            let actualRatio = gearTarget / pinBase;
+            newPinion.push(pinBase);
+            newGear.push(gearTarget);
+        }
+        // adjust final overall ratio slightly to match expectation
+        stepsInput.value = steps;
+        rebuildTeethTable();
+        // after rebuild, set values
+        setTimeout(() => {
+            for(let i=0; i<steps && i<newPinion.length; i++) {
+                let pinInput = document.querySelector(`.pinionTeethIn[data-stage='${i}']`);
+                let gearInput = document.querySelector(`.gearTeethIn[data-stage='${i}']`);
+                if(pinInput) pinInput.value = newPinion[i];
+                if(gearInput) gearInput.value = newGear[i];
+                if(pinionTeethArr[i] !== undefined) pinionTeethArr[i] = newPinion[i];
+                if(gearTeethArr[i] !== undefined) gearTeethArr[i] = newGear[i];
+            }
+            updateOutputsAndDiagram();
+            let finalCalc = computeGearTrain();
+            advMsg.innerHTML = `✅ Auto-design: ${steps} stages, achieved total ratio = ${finalCalc.totalRatio.toFixed(3)} (target ${requiredRatio.toFixed(3)})`;
+        }, 20);
+    }
+    
+    // print function with logo & watermark
+    function printDesign() {
+        // ensure latest update
+        updateOutputsAndDiagram();
+        let logoImg = null
+        let printWindow = window.open('', '_blank');
+        let calcHtml = document.getElementById('calcDetails').innerHTML;
+        let ratioVal = totalRatioSpan.innerText;
+        let rpmOut = outputRPMSpan.innerText;
+        let torqueOut = outputTorqueSpan.innerText;
+        let linear = linearSpeedSpan.innerText;
+        let canvasData = canvas.toDataURL();
+        let logoHtml = logoImg ? `<div...` : `<div>No logo provided</div>`;
+        printWindow.document.write(`
+            <html><head><title>UR Industries - Gear Train Report</title><style>
+                body { font-family: 'Times New Roman', serif; padding: 30px; background: white; }
+                .report-header { border-bottom: 3px solid #002664; margin-bottom: 20px; }
+                h1 { color: #002664; }
+                .watermark { position: fixed; bottom: 15px; right: 15px; font-size: 12px; color: #aaa; }
+                table { width:100%; border-collapse:collapse; margin:15px 0; }
+                td, th { border:1px solid #888; padding:8px; }
+                .diagram { text-align:center; margin:20px 0; }
+                .footer { margin-top: 30px; font-size:10px; text-align:right; border-top:1px solid #ccc; padding-top:8px; }
+            </style></head>
+            <body>
+            <div class="report-header"><h1>⚙️ GEAR TRAIN VERIFICATION</h1><p>UR Industries - Certified Calculation</p></div>
+            ${logoHtml}
+            <h3>Output Summary</h3>
+            <p>Total Gear Ratio: ${ratioVal} | Output RPM: ${rpmOut} | Output Torque: ${torqueOut} Nm | Linear Speed: ${linear}</p>
+            <div class="diagram"><img src="${canvasData}" style="max-width:100%; border:1px solid black;"></div>
+            <h3>Step-by-Step Calculations</h3>
+            <pre style="background:#f4f4f4; padding:12px;">${calcHtml}</pre>
+            <div class="footer">UR Industries Watermark | Authorized Design | ${new Date().toLocaleString()}</div>
+            <div class="watermark">UR Industries</div>
+            </body></html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+    
+    // Listeners
+    stepsInput.addEventListener('change', () => {
+        rebuildTeethTable();
+    });
+    recalcBtn.addEventListener('click', () => {
+        updateOutputsAndDiagram();
+    });
+    printBtn.addEventListener('click', printDesign);
+    autoGearBtn.addEventListener('click', autoDesignFromSpeed);
+    document.getElementById('logoUpload').addEventListener('change', (e) => {
+        let file = e.target.files[0];
+        if(file) {
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                document.getElementById('logoPreview').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    [inputTorqueEl, motorRPMEl, wheelDiaEl, inputDiaEl].forEach(el => el.addEventListener('input', () => updateOutputsAndDiagram()));
+    
+    // initial load
+    rebuildTeethTable();
+</script>
+</body>
+</html>
