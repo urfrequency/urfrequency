@@ -1,1 +1,891 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR Industries - UR OTTO Gearbox Design Tool</title>
+    <style>
+        :root {
+            --bg: #1a1a2e;
+            --panel: #16213e;
+            --accent: #e67e22;
+            --accent2: #f39c12;
+            --text: #ecf0f1;
+            --text2: #bdc3c7;
+            --border: #2c3e50;
+            --input-bg: #1e2d3d;
+            --danger: #e74c3c;
+            --success: #2ecc71;
+            --table-hdr: #e67e22;
+            --highlight: #f39c12;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.4;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            border-bottom: 2px solid var(--accent);
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+            flex-wrap: wrap;
+        }
+        .header img {
+            height: 40px;
+            width: auto;
+            border-radius: 6px;
+        }
+        .header .title-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .header h1 {
+            font-size: 1.2rem;
+            color: var(--accent2);
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1.2;
+        }
+        .header .subtitle {
+            font-size: 0.75rem;
+            color: var(--text2);
+            letter-spacing: 1px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 0 20px;
+            background: #111827;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 66px;
+            z-index: 99;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 10px 24px;
+            background: transparent;
+            border: none;
+            color: var(--text2);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            position: relative;
+            top: 2px;
+        }
+        .tab-btn.active {
+            color: var(--accent2);
+            border-bottom-color: var(--accent);
+            background: #1a1a2e44;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px 20px;
+        }
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow);
+        }
+        .card h3 {
+            color: var(--accent2);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 8px;
+        }
+        .card h2 {
+            color: var(--accent);
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 12px;
+            align-items: flex-end;
+            margin-bottom: 8px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 120px;
+            flex: 1;
+        }
+        .form-group label {
+            font-size: 0.75rem;
+            color: var(--text2);
+            letter-spacing: 0.3px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 8px 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--input-bg);
+            color: var(--text);
+            font-size: 0.85rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .btn-primary { background: var(--accent); color: #fff; }
+        .btn-primary:hover { background: #d35400; }
+        .btn-secondary { background: #2c3e50; color: var(--text); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-success { background: var(--success); color: #fff; }
+        .btn-sm { padding: 5px 10px; font-size: 0.75rem; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 8px 0;
+            font-size: 0.8rem;
+        }
+        table th, table td {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        table th {
+            background: var(--table-hdr);
+            color: #fff;
+            font-weight: 700;
+        }
+        table tr:nth-child(even) { background: #ffffff06; }
+
+        .stage-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 6px 0;
+        }
+        .stage-chip {
+            background: #1e2d3d;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 4px 10px;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .canvas-container {
+            background: #0d1117;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            padding: 6px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: auto;
+        }
+        canvas {
+            display: block;
+            border-radius: 4px;
+        }
+
+        .calc-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            color: #bdc3c7;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+        .calc-block .result-highlight { color: #2ecc71; font-weight: bold; }
+
+        .output-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
+        }
+        .output-card {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 10px 12px;
+            text-align: center;
+        }
+        .output-card .value { font-size: 1.4rem; font-weight: 700; color: var(--accent2); }
+        .output-card .unit { font-size: 0.7rem; color: var(--text2); }
+        .output-card .label-text { font-size: 0.7rem; color: #888; text-transform: uppercase; }
+
+        /* PRINT STYLES - TIGHT SPACING */
+        @media print {
+            body {
+                background: #fff !important;
+                color: #000 !important;
+                margin: 0;
+                padding: 0;
+            }
+            .header {
+                background: #fff !important;
+                border-bottom: 1px solid #000 !important;
+                padding: 5px 15px !important;
+                position: static !important;
+                gap: 8px;
+                box-shadow: none;
+                margin: 0;
+            }
+            .header img { height: 28px !important; }
+            .header h1 { font-size: 1rem !important; color: #000 !important; margin: 0; }
+            .header .subtitle { font-size: 0.65rem !important; }
+
+            .tabs, .btn, .form-row, .stage-list, .no-print {
+                display: none !important;
+            }
+            .tab-panel { display: block !important; }
+
+            .main-container {
+                padding: 5px 10px !important;
+                margin: 0;
+            }
+            .card {
+                box-shadow: none !important;
+                border: 0.5px solid #ccc !important;
+                background: #fff !important;
+                padding: 6px 8px !important;
+                margin-bottom: 6px !important;
+                page-break-inside: avoid;
+            }
+            .card h3 {
+                font-size: 0.85rem !important;
+                margin-bottom: 4px !important;
+                padding-bottom: 3px !important;
+            }
+            .card h2 {
+                font-size: 0.95rem !important;
+                margin-bottom: 4px !important;
+            }
+            .output-grid {
+                gap: 4px !important;
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)) !important;
+            }
+            .output-card {
+                padding: 4px 6px !important;
+                border: 0.5px solid #ddd !important;
+            }
+            .output-card .value { font-size: 1rem !important; }
+            .output-card .unit, .output-card .label-text { font-size: 0.6rem !important; }
+
+            table {
+                margin: 4px 0;
+                font-size: 0.7rem !important;
+            }
+            table th, table td {
+                padding: 3px 6px !important;
+                border: 0.5px solid #999 !important;
+            }
+            table th {
+                background: #e0e0e0 !important;
+                color: #000 !important;
+            }
+
+            .canvas-container {
+                padding: 4px !important;
+                border: 0.5px solid #ccc !important;
+                background: #fff !important;
+                min-height: 150px;
+            }
+            canvas { max-width: 100%; height: auto; }
+
+            .calc-block {
+                background: #fafafa !important;
+                color: #000 !important;
+                border: 0.5px solid #ccc !important;
+                padding: 5px 8px !important;
+                font-size: 0.7rem !important;
+                line-height: 1.3 !important;
+                max-height: none;
+                margin: 0;
+            }
+            .calc-block .result-highlight {
+                font-weight: bold;
+                color: #c00 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <div class="header" id="printHeader">
+        <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urotto.png"
+             alt="UR OTTO Logo" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div style="display:none;width:40px;height:40px;background:#e67e22;border-radius:6px;align-items:center;justify-content:center;font-weight:bold;font-size:1rem;color:#fff;">
+            UR
+        </div>
+        <div class="title-group">
+            <h1>UR INDUSTRIES</h1>
+            <div class="subtitle">UR OTTO GEARBOX DESIGN TOOL</div>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs no-print">
+        <button class="tab-btn active" onclick="switchTab('manual')"> MANUAL DESIGN</button>
+        <button class="tab-btn" onclick="switchTab('auto')"> AUTO DESIGN</button>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-container">
+
+        <!-- ==================== MANUAL DESIGN PANEL ==================== -->
+        <div class="tab-panel active" id="panel-manual">
+            <div class="card no-print">
+                <h3> Engine & Wheel Parameters</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Engine RPM</label>
+                        <input type="number" id="inputRPM" placeholder="e.g. 3000" min="1" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Engine Torque (Nm)</label>
+                        <input type="number" id="inputTorque" placeholder="e.g. 200" min="0.1" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Module (mm)</label>
+                        <input type="number" id="inputModule" value="3" min="0.5" step="0.25">
+                    </div>
+                    <div class="form-group">
+                        <label>Wheel/Tyre Ø (mm) <span style="color:#888;">optional</span></label>
+                        <input type="number" id="inputWheelDia" placeholder="e.g. 600" min="1" step="any">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card no-print">
+                <h3>➕ Add Gear Stage(s) <span style="font-size:0.7rem;color:#888;">(max 15)</span></h3>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2;min-width:140px;">
+                        <label>Gear Type</label>
+                        <select id="gearTypeSelect" onchange="onGearTypeChange()">
+                            <option value="helical">Helical</option>
+                            <option value="spur">Spur</option>
+                            <option value="bevel">Bevel</option>
+                            <option value="herringbone">Herringbone</option>
+                            <option value="worm">Worm</option>
+                            <option value="rack_pinion">Rack & Pinion</option>
+                            <option value="planetary">Planetary</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="stepsGroup" style="flex:1;min-width:90px;">
+                        <label>How Many Steps/Sets?</label>
+                        <input type="number" id="numSteps" value="1" min="1" max="15" step="1">
+                    </div>
+                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
+                        <button class="btn btn-primary" onclick="addStage()">➕ Add</button>
+                    </div>
+                </div>
+                <div id="stepDetailsContainer" style="margin-top:8px;"></div>
+            </div>
+
+            <div class="card no-print">
+                <h3> Current Gearbox Stages (<span id="stageCount">0</span>/15)</h3>
+                <div id="stageListContainer" class="stage-list">
+                    <span style="color:#555;">No stages added yet.</span>
+                </div>
+                <button class="btn btn-danger btn-sm" onclick="clearAllStages()" style="margin-top:6px;">🗑️ Clear All</button>
+                <button class="btn btn-success btn-sm" onclick="calculateAndDisplay()" style="margin-top:6px;margin-left:6px;">📐 Calculate</button>
+            </div>
+
+            <div class="card" id="resultsCard" style="display:none;">
+                <h2>Calculation Results</h2>
+                <div class="output-grid" id="outputGrid"></div>
+                <h3 style="margin-top:12px;">🔩 Gear Train Table</h3>
+                <div style="overflow-x:auto;">
+                    <table id="gearTable">
+                        <thead><tr><th>Stage</th><th>Type</th><th>Gear Name</th><th>Teeth</th><th>Diameter (mm)</th><th>Stage Ratio</th></tr></thead>
+                        <tbody id="gearTableBody"></tbody>
+                    </table>
+                </div>
+                <h3 style="margin-top:12px;"> Gearbox Diagram</h3>
+                <div class="canvas-container" id="canvasContainer">
+                    <canvas id="gearCanvas"></canvas>
+                </div>
+                <h3 style="margin-top:12px;">Hand Calculations</h3>
+                <div class="calc-block" id="calcBlock"></div>
+                <button class="btn btn-primary no-print" onclick="printResults()" style="margin-top:10px;">🖨️ Print Results</button>
+            </div>
+        </div>
+
+        <!-- ==================== AUTO DESIGN PANEL ==================== -->
+        <div class="tab-panel" id="panel-auto">
+            <div class="card no-print">
+                <h3>Auto Design - Choose Vehicle</h3>
+                <div class="form-row">
+                    <div class="form-group" style="flex:2;min-width:130px;">
+                        <label>Vehicle Type</label>
+                        <select id="autoVehicle">
+                            <option value="car">Car</option>
+                            <option value="truck">Truck</option>
+                            <option value="bus">Bus</option>
+                            <option value="bike">Bike</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Desired Output Torque (Nm)</label>
+                        <input type="number" id="autoTorque" placeholder="e.g. 800" min="1" step="any">
+                    </div>
+                    <div class="form-group">
+                        <label>Desired Output RPM</label>
+                        <input type="number" id="autoRPM" placeholder="e.g. 500" min="1" step="any">
+                    </div>
+                    <div class="form-group" style="flex:0;min-width:auto;align-self:flex-end;">
+                        <button class="btn btn-primary" onclick="autoDesign()">🚀 Generate</button>
+                    </div>
+                </div>
+                <p style="font-size:0.7rem;color:#888;margin-top:4px;">Typical: Car 150Nm@4000→800@750, Truck 600@2500→3000@500</p>
+            </div>
+            <div class="card" id="autoResultsCard" style="display:none;">
+                <h2>Auto Design Results</h2>
+                <div class="output-grid" id="autoOutputGrid"></div>
+                <h3 style="margin-top:12px;">🔩 Generated Gear Train Table</h3>
+                <div style="overflow-x:auto;">
+                    <table id="autoGearTable">
+                        <thead><tr><th>Stage</th><th>Type</th><th>Gear Name</th><th>Teeth</th><th>Diameter (mm)</th><th>Stage Ratio</th></tr></thead>
+                        <tbody id="autoGearTableBody"></tbody>
+                    </table>
+                </div>
+                <h3 style="margin-top:12px;"> Gearbox Diagram</h3>
+                <div class="canvas-container" id="autoCanvasContainer">
+                    <canvas id="autoGearCanvas"></canvas>
+                </div>
+                <h3 style="margin-top:12px;">Hand Calculations</h3>
+                <div class="calc-block" id="autoCalcBlock"></div>
+                <button class="btn btn-primary no-print" onclick="printAutoResults()" style="margin-top:10px;">🖨️ Print OTTO Gearbox</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== GLOBAL STATE ====================
+        let gearboxStages = [];
+        const MAX_STAGES = 15;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('panel-' + tabName).classList.add('active');
+            if(tabName==='manual') document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            else document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        }
+
+        function onGearTypeChange() {
+            const type = document.getElementById('gearTypeSelect').value;
+            const stepsGroup = document.getElementById('stepsGroup');
+            const numSteps = parseInt(document.getElementById('numSteps').value) || 1;
+            if(type==='worm' || type==='rack_pinion'){
+                stepsGroup.style.display='none';
+                document.getElementById('numSteps').value=1;
+                renderStepDetails(type,1);
+            } else {
+                stepsGroup.style.display='';
+                renderStepDetails(type, numSteps);
+            }
+        }
+
+        function renderStepDetails(type, numSteps){
+            const container = document.getElementById('stepDetailsContainer');
+            let html = '<div style="display:flex;flex-wrap:wrap;gap:8px;">';
+            for(let i=1; i<=numSteps; i++){
+                html += `<div style="background:#1e2d3d;border-radius:6px;padding:8px 12px;border:1px solid var(--border);min-width:180px;flex:1;">`;
+                html += `<strong style="color:#f39c12;font-size:0.85rem;">${getStepLabel(type,i)} #${i}</strong><br>`;
+                if(type==='helical'||type==='spur'||type==='herringbone'||type==='bevel'){
+                    html += `<div style="display:flex;gap:6px;margin-top:4px;">`;
+                    html += `<div><label style="font-size:0.7rem;color:#888;">Pinion Teeth</label><input class="step-input" data-step="${i}" data-field="pinion" value="${18+i*2}" min="8" style="width:70px;padding:5px;border-radius:4px;border:1px solid #2c3e50;background:#0d1117;color:#ecf0f1;"></div>`;
+                    html += `<div><label style="font-size:0.7rem;color:#888;">Gear Teeth</label><input class="step-input" data-step="${i}" data-field="gear" value="${36+i*8}" min="8" style="width:70px;padding:5px;">`;
+                    html += `</div></div>`;
+                } else if(type==='planetary'){
+                    html += `<div style="display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;">`;
+                    html += `<div><label style="font-size:0.7rem;">Sun Teeth</label><input class="step-input" data-step="${i}" data-field="sun" value="${20+i*2}" min="8" style="width:60px;padding:5px;"></div>`;
+                    html += `<div><label style="font-size:0.7rem;">Planet Teeth</label><input class="step-input" data-step="${i}" data-field="planet" value="${16+i}" min="8" style="width:60px;"></div>`;
+                    html += `<div><label style="font-size:0.7rem;">Ring Teeth</label><input class="step-input" data-step="${i}" data-field="ring" value="${52+i*4}" min="8" style="width:60px;"></div>`;
+                    html += `<div><label style="font-size:0.7rem;"># Planets</label><input class="step-input" data-step="${i}" data-field="numPlanets" value="3" min="2" max="6" style="width:50px;"></div>`;
+                    html += `</div>`;
+                } else if(type==='worm'){
+                    html += `<div style="display:flex;gap:6px;margin-top:4px;">`;
+                    html += `<div><label style="font-size:0.7rem;">Worm Starts</label><input class="step-input" data-step="${i}" data-field="wormStarts" value="1" min="1" max="6" style="width:60px;"></div>`;
+                    html += `<div><label style="font-size:0.7rem;">Wheel Teeth</label><input class="step-input" data-step="${i}" data-field="wheelTeeth" value="40" min="8" style="width:70px;"></div>`;
+                    html += `</div>`;
+                } else if(type==='rack_pinion'){
+                    html += `<div style="margin-top:4px;"><label style="font-size:0.7rem;">Pinion Teeth</label><input class="step-input" data-step="${i}" data-field="pinionTeeth" value="20" min="8" style="width:70px;"></div>`;
+                }
+                html += `</div>`;
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getStepLabel(type,i){
+            const labels = { helical:'Helical Step', spur:'Spur Step', bevel:'Bevel Pair', herringbone:'Herringbone Step', planetary:'Planetary Set', worm:'Worm Set', rack_pinion:'Rack & Pinion' };
+            return labels[type] || 'Step';
+        }
+
+        function getStepInputs(){
+            const type = document.getElementById('gearTypeSelect').value;
+            const numSteps = (type==='worm'||type==='rack_pinion') ? 1 : (parseInt(document.getElementById('numSteps').value)||1);
+            const inputs = document.querySelectorAll('.step-input');
+            const stepData = [];
+            for(let i=1; i<=numSteps; i++){
+                const data = { step:i, type:type };
+                inputs.forEach(inp => { if(parseInt(inp.dataset.step)===i) data[inp.dataset.field] = parseInt(inp.value)||8; });
+                stepData.push(data);
+            }
+            return stepData;
+        }
+
+        function addStage(){
+            if(gearboxStages.length >= MAX_STAGES){ alert('Maximum 15 stages!'); return; }
+            const stepData = getStepInputs();
+            if(gearboxStages.length + stepData.length > MAX_STAGES){ alert('Exceeds 15 stages limit.'); return; }
+            stepData.forEach(sd => { gearboxStages.push(createStageObject(sd)); });
+            renderStageList(); updateStageCount();
+        }
+
+        function createStageObject(sd){
+            const type = sd.type;
+            const moduleVal = parseFloat(document.getElementById('inputModule').value)||3;
+            let stageObj = { type:type, params:sd, stageRatio:1, gears:[] };
+            if(type==='helical'||type==='spur'||type==='herringbone'||type==='bevel'){
+                const pinion = sd.pinion||18, gear = sd.gear||36;
+                stageObj.stageRatio = gear/pinion;
+                stageObj.gears = [
+                    { name:'Pinion', teeth:pinion, diameter: Math.round(moduleVal*pinion*10)/10 },
+                    { name:'Gear', teeth:gear, diameter: Math.round(moduleVal*gear*10)/10 }
+                ];
+            } else if(type==='planetary'){
+                const sun = sd.sun||20, planet = sd.planet||16, ring = sd.ring||52, np = sd.numPlanets||3;
+                stageObj.stageRatio = 1 + (ring/sun);
+                stageObj.gears = [
+                    { name:'Sun', teeth:sun, diameter: Math.round(moduleVal*sun*10)/10 },
+                    { name:'Planet (x'+np+')', teeth:planet, diameter: Math.round(moduleVal*planet*10)/10 },
+                    { name:'Ring', teeth:ring, diameter: Math.round(moduleVal*ring*10)/10 }
+                ];
+                stageObj.sunTeeth=sun; stageObj.planetTeeth=planet; stageObj.ringTeeth=ring; stageObj.numPlanets=np;
+            } else if(type==='worm'){
+                const starts = sd.wormStarts||1, wheel = sd.wheelTeeth||40;
+                stageObj.stageRatio = wheel/starts;
+                stageObj.gears = [
+                    { name:'Worm', teeth:starts+' start(s)', diameter: Math.round(moduleVal*2*10)/10 },
+                    { name:'Worm Wheel', teeth:wheel, diameter: Math.round(moduleVal*wheel*10)/10 }
+                ];
+            } else if(type==='rack_pinion'){
+                const pinion = sd.pinionTeeth||20;
+                stageObj.stageRatio = 1;
+                stageObj.gears = [
+                    { name:'Pinion', teeth:pinion, diameter: Math.round(moduleVal*pinion*10)/10 },
+                    { name:'Rack', teeth:'N/A', diameter:'N/A' }
+                ];
+                stageObj.pinionTeeth=pinion;
+            }
+            return stageObj;
+        }
+
+        function renderStageList(){
+            const container = document.getElementById('stageListContainer');
+            if(!gearboxStages.length){ container.innerHTML='<span style="color:#555;">No stages added yet.</span>'; return; }
+            container.innerHTML = gearboxStages.map((s,i) => {
+                const summary = s.gears.map(g=>g.name+'('+g.teeth+'t)').join(' → ');
+                return `<span class="stage-chip"><strong>#${i+1}</strong> ${s.type.toUpperCase()}: ${summary} | Ratio: ${s.stageRatio.toFixed(2)} <span class="remove-chip" onclick="removeStage(${i})" title="Remove">×</span></span>`;
+            }).join('');
+        }
+
+        function removeStage(i){ gearboxStages.splice(i,1); renderStageList(); updateStageCount(); document.getElementById('resultsCard').style.display='none'; }
+        function clearAllStages(){ if(confirm('Clear all stages?')){ gearboxStages=[]; renderStageList(); updateStageCount(); document.getElementById('resultsCard').style.display='none'; }}
+        function updateStageCount(){ document.getElementById('stageCount').textContent = gearboxStages.length; }
+
+        function calculateAndDisplay(){
+            if(!gearboxStages.length){ alert('Add at least one stage.'); return; }
+            const inputRPM = parseFloat(document.getElementById('inputRPM').value);
+            const inputTorque = parseFloat(document.getElementById('inputTorque').value);
+            const moduleVal = parseFloat(document.getElementById('inputModule').value)||3;
+            const wheelDia = parseFloat(document.getElementById('inputWheelDia').value)||null;
+            if(!inputRPM||!inputTorque||inputRPM<=0||inputTorque<=0){ alert('Enter valid RPM and Torque.'); return; }
+            gearboxStages.forEach(s => { const rec = createStageObject(s.params); s.stageRatio=rec.stageRatio; s.gears=rec.gears; if(rec.numPlanets)s.numPlanets=rec.numPlanets; });
+            let overallRatio = 1;
+            gearboxStages.forEach(s => overallRatio *= s.stageRatio);
+            const outputRPM = inputRPM/overallRatio;
+            const outputTorqueIdeal = inputTorque*overallRatio;
+            const outputTorque = outputTorqueIdeal*0.92;
+            let linearSpeedMS=null, linearSpeedKMH=null, linearSpeedMPH=null;
+            if(wheelDia && wheelDia>0){
+                const circ = (Math.PI*wheelDia)/1000;
+                linearSpeedMS = (outputRPM/60)*circ;
+                linearSpeedKMH = linearSpeedMS*3.6;
+                linearSpeedMPH = linearSpeedKMH/1.60934;
+            }
+            document.getElementById('outputGrid').innerHTML = `
+                <div class="output-card"><div class="label-text">Overall Ratio</div><div class="value">${overallRatio.toFixed(3)}</div><div class="unit">:1</div></div>
+                <div class="output-card"><div class="label-text">Output RPM</div><div class="value">${outputRPM.toFixed(1)}</div><div class="unit">RPM</div></div>
+                <div class="output-card"><div class="label-text">Output Torque (ideal)</div><div class="value">${outputTorqueIdeal.toFixed(1)}</div><div class="unit">Nm</div></div>
+                <div class="output-card"><div class="label-text">Output Torque (~92%)</div><div class="value">${outputTorque.toFixed(1)}</div><div class="unit">Nm</div></div>
+                ${linearSpeedMS!==null ? `
+                <div class="output-card"><div class="label-text">Linear Speed</div><div class="value">${linearSpeedMS.toFixed(2)}</div><div class="unit">m/s</div></div>
+                <div class="output-card"><div class="label-text">Linear Speed</div><div class="value">${linearSpeedKMH.toFixed(2)}</div><div class="unit">km/h</div></div>
+                <div class="output-card"><div class="label-text">Linear Speed</div><div class="value">${linearSpeedMPH.toFixed(2)}</div><div class="unit">mph</div></div>` : ''}`;
+            let tableHTML = '';
+            gearboxStages.forEach((s,i) => { s.gears.forEach((g,gi) => { tableHTML += `<tr><td>${i+1}</td><td>${s.type}</td><td>${g.name}</td><td>${g.teeth}</td><td>${g.diameter}</td><td>${gi===0?s.stageRatio.toFixed(3):''}</td></tr>`; }); });
+            document.getElementById('gearTableBody').innerHTML = tableHTML;
+            let calcHTML = '══════════════════════════════════════════\n  UR INDUSTRIES - UR OTTO GEARBOX DESIGN\n  HAND CALCULATIONS\n══════════════════════════════════════════\n\n';
+            calcHTML += `INPUT: RPM=${inputRPM} Torque=${inputTorque} Nm Module=${moduleVal} mm WheelDia=${wheelDia||'N/A'} mm\n`;
+            calcHTML += `Stages: ${gearboxStages.length}\n\n`;
+            let running = 1;
+            gearboxStages.forEach((s,i)=>{
+                calcHTML += `Stage ${i+1}: ${s.type.toUpperCase()}\n`;
+                if(s.type==='planetary') calcHTML += `Sun=${s.sunTeeth} Planet=${s.planetTeeth} Ring=${s.ringTeeth} Planets=${s.numPlanets}\nRatio=1+Ring/Sun=${s.stageRatio.toFixed(4)}\n`;
+                else if(s.type==='worm') calcHTML += `Starts=${s.params.wormStarts} Wheel=${s.params.wheelTeeth} Ratio=${s.stageRatio.toFixed(4)}\n`;
+                else if(s.type==='rack_pinion') calcHTML += `Pinion=${s.pinionTeeth} Ratio=1:1\n`;
+                else calcHTML += `Pinion=${s.params.pinion} Gear=${s.params.gear} Ratio=${s.stageRatio.toFixed(4)}\n`;
+                s.gears.forEach(g=>calcHTML += `→ ${g.name}: ${g.teeth} teeth, Ø${g.diameter} mm\n`);
+                running *= s.stageRatio;
+                calcHTML += `Running ratio: ${running.toFixed(4)}\n\n`;
+            });
+            calcHTML += `Overall Ratio: ${overallRatio.toFixed(4)}\nOutput RPM: ${outputRPM.toFixed(2)}\nOutput Torque: ${outputTorque.toFixed(2)} Nm\n`;
+            if(linearSpeedMS) calcHTML += `Linear Speed: ${linearSpeedMS.toFixed(2)} m/s, ${linearSpeedKMH.toFixed(2)} km/h, ${linearSpeedMPH.toFixed(2)} mph\n`;
+            calcHTML += '══════════════════════════════════════════\n';
+            document.getElementById('calcBlock').innerHTML = calcHTML;
+            document.getElementById('resultsCard').style.display = 'block';
+            drawGearboxDiagram('gearCanvas', gearboxStages, inputRPM, outputRPM);
+            document.getElementById('resultsCard').scrollIntoView({behavior:'smooth'});
+        }
+
+        function drawGearboxDiagram(canvasId, stages, inputRPM, outputRPM){
+            const canvas = document.getElementById(canvasId);
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const stageW = 150, stageH = 220, padX=30, padY=25;
+            const totalW = Math.max(stages.length*stageW+padX*2, 500);
+            const totalH = stageH+padY*2;
+            canvas.width = totalW; canvas.height = totalH;
+            ctx.fillStyle='#0d1117'; ctx.fillRect(0,0,totalW,totalH);
+            ctx.fillStyle='#f39c12'; ctx.font='bold 12px "Segoe UI"'; ctx.textAlign='center';
+            ctx.fillText(`Input ${inputRPM.toFixed(0)} RPM → Output ${outputRPM.toFixed(1)} RPM`, totalW/2, 18);
+            const centerY = totalH/2;
+            // draw stages
+            for(let i=0; i<stages.length; i++){
+                const sx = padX + i*stageW + 30;
+                drawStageOnCanvas(ctx, stages[i], sx, centerY, i);
+            }
+            // arrows
+            ctx.strokeStyle='#2ecc71'; ctx.lineWidth=2; ctx.setLineDash([6,3]);
+            ctx.beginPath(); ctx.moveTo(10,centerY); ctx.lineTo(padX+10,centerY); ctx.stroke();
+            drawArrowhead(ctx, padX+10, centerY, 'right', '#2ecc71');
+            ctx.fillStyle='#2ecc71'; ctx.font='bold 10px "Segoe UI"'; ctx.fillText('INPUT', padX-20, centerY-14);
+            const lastX = padX + (stages.length-1)*stageW + 30;
+            ctx.strokeStyle='#e74c3c'; ctx.beginPath(); ctx.moveTo(lastX+50,centerY); ctx.lineTo(totalW-10,centerY); ctx.stroke();
+            drawArrowhead(ctx,totalW-10,centerY,'right','#e74c3c');
+            ctx.fillStyle='#e74c3c'; ctx.fillText('OUTPUT', lastX+80, centerY-14);
+            // connections between stages
+            for(let i=0;i<stages.length-1;i++){
+                const x1 = padX+i*stageW+30+45, x2 = padX+(i+1)*stageW+30-45;
+                ctx.strokeStyle='#f39c12'; ctx.lineWidth=1.5; ctx.setLineDash([3,3]);
+                ctx.beginPath(); ctx.moveTo(x1,centerY); ctx.lineTo(x2,centerY); ctx.stroke();
+                drawArrowhead(ctx,x2,centerY,'right','#f39c12');
+            }
+        }
+
+        function drawStageOnCanvas(ctx, stage, sx, sy, index){
+            if(stage.type==='planetary') drawPlanetary(ctx,stage,sx,sy);
+            else if(stage.type==='rack_pinion') drawRackPinion(ctx,stage,sx,sy);
+            else if(stage.type==='worm') drawWorm(ctx,stage,sx,sy);
+            else if(stage.type==='bevel') drawBevel(ctx,stage,sx,sy);
+            else drawSpurHelical(ctx,stage,sx,sy);
+            ctx.fillStyle='#f39c12'; ctx.font='bold 10px "Segoe UI"'; ctx.textAlign='center';
+            ctx.fillText(`Stage ${index+1}`, sx, sy+100);
+            ctx.fillStyle='#888'; ctx.font='8px "Segoe UI"';
+            ctx.fillText(`Ratio ${stage.stageRatio.toFixed(2)}:1`, sx, sy+114);
+        }
+
+        function drawSpurHelical(ctx, stage, sx, sy){
+            const pinR=22, gearR=32;
+            drawGear(ctx, sx-28, sy, pinR, stage.gears[0].teeth, '#5dade2');
+            drawGear(ctx, sx+28, sy, gearR, stage.gears[1].teeth, '#f39c12');
+            ctx.fillStyle='#fff'; ctx.font='8px "Segoe UI"'; ctx.textAlign='center';
+            ctx.fillText(stage.gears[0].name, sx-28, sy-pinR-6);
+            ctx.fillText(stage.gears[1].name, sx+28, sy-gearR-6);
+        }
+        function drawPlanetary(ctx,stage,sx,sy){
+            const sunR=16, planetR=12, ringR=40, np=stage.numPlanets||3;
+            drawRing(ctx,sx,sy,ringR,stage.ringTeeth);
+            drawGear(ctx,sx,sy,sunR,stage.sunTeeth,'#f1c40f');
+            for(let i=0;i<np;i++){
+                const ang = (2*Math.PI*i)/np - Math.PI/2;
+                drawGear(ctx, sx+(sunR+planetR-3)*Math.cos(ang), sy+(sunR+planetR-3)*Math.sin(ang), planetR, stage.planetTeeth,'#5dade2');
+            }
+        }
+        function drawWorm(ctx,stage,sx,sy){
+            const wheelR=30;
+            drawGear(ctx,sx,sy,wheelR,stage.gears[1].teeth,'#f39c12');
+            ctx.fillStyle='#5dade2'; ctx.strokeStyle='#3498db';
+            ctx.beginPath(); ctx.roundRect(sx-14, sy-wheelR-14, 28, 12, 5); ctx.fill(); ctx.stroke();
+            ctx.fillStyle='#fff'; ctx.font='8px "Segoe UI"'; ctx.textAlign='center';
+            ctx.fillText('Worm', sx, sy-wheelR-20);
+        }
+        function drawRackPinion(ctx,stage,sx,sy){
+            const pinR=20;
+            drawGear(ctx,sx,sy-15,pinR,stage.pinionTeeth,'#5dade2');
+            ctx.fillStyle='#95a5a6'; ctx.strokeStyle='#7f8c8d';
+            ctx.beginPath(); ctx.roundRect(sx-40, sy+pinR+2, 80, 10, 3); ctx.fill(); ctx.stroke();
+            ctx.fillStyle='#fff'; ctx.fillText('Rack', sx, sy+pinR+24);
+        }
+        function drawBevel(ctx,stage,sx,sy){
+            drawGear(ctx, sx-18, sy-18, 20, stage.gears[0].teeth, '#5dade2');
+            drawGear(ctx, sx+18, sy+12, 24, stage.gears[1].teeth, '#f39c12');
+        }
+
+        function drawGear(ctx,cx,cy,r,teeth,color){
+            ctx.fillStyle=color; ctx.strokeStyle='#2c3e50'; ctx.lineWidth=2;
+            ctx.beginPath();
+            const n = Math.max(8,Math.min(60,parseInt(teeth)||18));
+            const th = r*0.12;
+            for(let i=0;i<n;i++){
+                const a = (2*Math.PI*i)/n, a2 = (2*Math.PI*(i+0.5))/n;
+                if(i===0) ctx.moveTo(cx+(r+th)*Math.cos(a), cy+(r+th)*Math.sin(a));
+                ctx.lineTo(cx+(r+th)*Math.cos(a+0.08), cy+(r+th)*Math.sin(a+0.08));
+                ctx.lineTo(cx+(r-th)*Math.cos(a2), cy+(r-th)*Math.sin(a2));
+            }
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+            ctx.fillStyle='#0d1117'; ctx.beginPath(); ctx.arc(cx,cy,r*0.25,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(cx,cy,2,0,Math.PI*2); ctx.fill();
+        }
+        function drawRing(ctx,cx,cy,r,teeth){
+            ctx.strokeStyle='#95a5a6'; ctx.lineWidth=4; ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+        }
+        function drawArrowhead(ctx,x,y,dir,color){
+            ctx.fillStyle=color; ctx.beginPath();
+            if(dir==='right'){ ctx.moveTo(x,y); ctx.lineTo(x-8,y-5); ctx.lineTo(x-8,y+5); }
+            else { ctx.moveTo(x,y); ctx.lineTo(x+8,y-5); ctx.lineTo(x+8,y+5); }
+            ctx.closePath(); ctx.fill();
+        }
+
+        function printResults(){ document.getElementById('resultsCard').style.display='block'; window.print(); }
+        function printAutoResults(){ document.getElementById('autoResultsCard').style.display='block'; window.print(); }
+
+        function autoDesign(){
+            const vehicle = document.getElementById('autoVehicle').value;
+            const desiredTorque = parseFloat(document.getElementById('autoTorque').value);
+            const desiredRPM = parseFloat(document.getElementById('autoRPM').value);
+            if(!desiredTorque||!desiredRPM) return alert('Enter valid desired torque and RPM.');
+            const specs = { car:{rpm:4000,torque:180,wd:650,mod:2.5}, truck:{rpm:2500,torque:600,wd:1000,mod:4}, bus:{rpm:2200,torque:500,wd:950,mod:3.5}, bike:{rpm:8000,torque:30,wd:450,mod:2} };
+            const s = specs[vehicle];
+            const targetRatio = Math.max(desiredTorque/s.torque, s.rpm/desiredRPM);
+            const stagesCount = targetRatio>12?3:targetRatio>5?2:1;
+            const stageR = Math.pow(targetRatio,1/stagesCount);
+            const autoStages = [];
+            let rem = targetRatio;
+            for(let i=0;i<stagesCount;i++){
+                const sr = i===stagesCount-1 ? rem : Math.min(Math.max(stageR,1.5),5);
+                const pinion = 16+i*3, gear = Math.round(pinion*sr);
+                const actual = gear/pinion;
+                autoStages.push({ type:'helical', params:{pinion,gear}, stageRatio:actual, gears:[
+                    {name:'Pinion H'+(i+1), teeth:pinion, diameter:Math.round(s.mod*pinion*10)/10},
+                    {name:'Gear H'+(i+1), teeth:gear, diameter:Math.round(s.mod*gear*10)/10}
+                ]});
+                rem = i===stagesCount-2 ? 1 : targetRatio/autoStages.reduce((a,st)=>a*st.stageRatio,1);
+            }
+            const overall = autoStages.reduce((a,st)=>a*st.stageRatio,1);
+            const outRPM = s.rpm/overall, outTorque = s.torque*overall*0.92;
+            const circ = (Math.PI*s.wd)/1000, spdMS = (outRPM/60)*circ, spdKMH = spdMS*3.6, spdMPH = spdKMH/1.609;
+            document.getElementById('autoOutputGrid').innerHTML = `
+                <div class="output-card"><div class="label-text">Vehicle</div><div class="value">${vehicle.toUpperCase()}</div></div>
+                <div class="output-card"><div class="label-text">Overall Ratio</div><div class="value">${overall.toFixed(3)}</div><div class="unit">:1</div></div>
+                <div class="output-card"><div class="label-text">Output RPM</div><div class="value">${outRPM.toFixed(1)}</div></div>
+                <div class="output-card"><div class="label-text">Output Torque</div><div class="value">${outTorque.toFixed(1)}</div><div class="unit">Nm</div></div>
+                <div class="output-card"><div class="label-text">Speed</div><div class="value">${spdKMH.toFixed(2)}</div><div class="unit">km/h</div></div>`;
+            let tableHTML = '';
+            autoStages.forEach((st,i)=> st.gears.forEach((g,gi)=> tableHTML += `<tr><td>${i+1}</td><td>HELICAL</td><td>${g.name}</td><td>${g.teeth}</td><td>${g.diameter}</td><td>${gi===0?st.stageRatio.toFixed(3):''}</td></tr>`));
+            document.getElementById('autoGearTableBody').innerHTML = tableHTML;
+            let calc = 'Auto Design '+vehicle.toUpperCase()+'\nEngine: '+s.rpm+' RPM, '+s.torque+' Nm\nTarget Ratio: '+targetRatio.toFixed(2)+'\nStages: '+stagesCount+'\n';
+            autoStages.forEach((st,i)=> calc += `Stage${i+1}: Pinion=${st.params.pinion} Gear=${st.params.gear} Ratio=${st.stageRatio.toFixed(3)}\n`);
+            calc += `Overall: ${overall.toFixed(3)}\nOutput RPM: ${outRPM.toFixed(1)}\nTorque: ${outTorque.toFixed(1)} Nm\nSpeed: ${spdKMH.toFixed(2)} km/h`;
+            document.getElementById('autoCalcBlock').innerHTML = calc;
+            drawGearboxDiagram('autoGearCanvas', autoStages, s.rpm, outRPM);
+            document.getElementById('autoResultsCard').style.display='block';
+            document.getElementById('autoResultsCard').scrollIntoView({behavior:'smooth'});
+        }
+
+        document.addEventListener('DOMContentLoaded', ()=>{
+            onGearTypeChange();
+            document.getElementById('numSteps').addEventListener('input', ()=>{
+                const type = document.getElementById('gearTypeSelect').value;
+                if(type!=='worm'&&type!=='rack_pinion') renderStepDetails(type, Math.min(parseInt(document.getElementById('numSteps').value)||1,15));
+            });
+            updateStageCount();
+        });
+        CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
+            if(typeof r==='number') r={tl:r,tr:r,br:r,bl:r};
+            this.beginPath(); this.moveTo(x+r.tl,y); this.lineTo(x+w-r.tr,y); this.quadraticCurveTo(x+w,y,x+w,y+r.tr);
+            this.lineTo(x+w,y+h-r.br); this.quadraticCurveTo(x+w,y+h,x+w-r.br,y+h); this.lineTo(x+r.bl,y+h);
+            this.quadraticCurveTo(x,y+h,x,y+h-r.bl); this.lineTo(x,y+r.tl); this.quadraticCurveTo(x,y,x+r.tl,y); this.closePath();
+            return this;
+        };
+    </script>
+</body>
+</html>
