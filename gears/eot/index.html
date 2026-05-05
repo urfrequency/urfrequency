@@ -455,10 +455,12 @@
                     <label>INCLUDE IN REPORT (Tick to add Crane Hook data to printed report)</label>
                 </div>
                 <div class="output-box" style="margin-top: 8px; padding:14px 18px;">
-                    <strong>HOOK LINEAR VELOCITY (output):</strong> 
-                    <span id="hookVelocity" class="highlight" style="font-size:1.2rem;">--</span> <span style="font-weight:600;">m/s</span>
-                    <div style="font-size:0.65rem; margin-top:8px; color:#2c5a2e;">Formula: Vhook = (π x Drum_dia x Drum_RPM) / (Number_of_sling_segments)</div>
-                </div>
+    <strong>HOOK LINEAR VELOCITY:</strong>
+    <div id="hookVelocity" style="margin-top: 8px;">--</div>
+    <div style="font-size:0.65rem; margin-top:8px; color:#2c5a2e;">
+        Formula: Vhook = (π × Drum_dia_m × Drum_RPM) / (Number_of_segments × 60) for m/s
+    </div>
+</div>
                 <!-- Removed Long and Short Runway Speed inputs entirely as requested -->
             </div>
         </div>
@@ -628,12 +630,10 @@
         return { hookVelocity, usedRPM: effectiveDrumRPM };
     }
     
-    function updateHookDisplay() {
-        const result = computeHookVelocity();
-        if(result && isFinite(result.hookVelocity)) hookVelocitySpan.innerText = result.hookVelocity.toFixed(4);
-        else hookVelocitySpan.innerText = "-- (invalid inputs)";
-        updateOutputsAndDiagram();
-    }
+   function updateHookDisplay() {
+    calculateHookSpeed();  // Calls your table display function
+}
+    function refreshAll() { updateOutputsAndDiagram(); updateHookDisplay(); }
     
     function updateOutputsAndDiagram() {
         let calc = computeGearTrain();
@@ -856,7 +856,56 @@
         printWindow.document.close();
         printWindow.print();
     }
+    function calculateHookSpeed() {
+    // Get input values
+    let drumDiameterMM = parseFloat(document.getElementById('drumDiameter').value);
+let drumRPM;
+if (craneUseGearOutput.checked) {
+    let gearResult = computeGearTrain();
+    drumRPM = gearResult.outputRPM;
+} else {
+    drumRPM = parseFloat(manualDrumRPM.value);
+}
+if (isNaN(drumRPM)) drumRPM = 0;
+    let segments = parseFloat(document.getElementById('slingSegments').value);
     
+    // Convert mm to meters
+    let drumDiameterM = drumDiameterMM / 1000;
+    
+    // Calculate hook speed in m/min (BASE)
+    let hookSpeed_m_min = (Math.PI * drumDiameterM * drumRPM) / segments;
+    
+    // Convert to all units
+    let hookSpeed_m_s = hookSpeed_m_min / 60;
+    let hookSpeed_mm_min = hookSpeed_m_min * 1000;
+    let hookSpeed_mm_s = hookSpeed_m_min * (1000 / 60);
+    let hookSpeed_ft_min = hookSpeed_m_min * 3.28084;
+    let hookSpeed_ft_s = hookSpeed_m_min * 0.05468;
+    
+    // Display result
+    document.getElementById('hookVelocity').innerHTML = `
+        <table style="width:100%; font-size:0.8rem; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #ccc;">
+                <td style="padding:4px;"><strong>m/s</strong></td>
+                <td style="padding:4px;">${hookSpeed_m_s.toFixed(3)}</td>
+                <td style="padding:4px;"><strong>mm/s</strong></td>
+                <td style="padding:4px;">${hookSpeed_mm_s.toFixed(1)}</td>
+            </tr>
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:4px;"><strong>m/min</strong></td>
+                <td style="padding:4px;">${hookSpeed_m_min.toFixed(2)}</td>
+                <td style="padding:4px;"><strong>mm/min</strong></td>
+                <td style="padding:4px;">${hookSpeed_mm_min.toFixed(0)}</td>
+            </tr>
+            <tr>
+                <td style="padding:4px;"><strong>ft/s</strong></td>
+                <td style="padding:4px;">${hookSpeed_ft_s.toFixed(3)}</td>
+                <td style="padding:4px;"><strong>ft/min</strong></td>
+                <td style="padding:4px;">${hookSpeed_ft_min.toFixed(2)}</td>
+            </tr>
+        </table>
+    `;
+}
     function refreshAll() { updateOutputsAndDiagram(); updateHookDisplay(); }
     stepsInput.addEventListener('change', () => rebuildTeethTable());
     recalcBtn.addEventListener('click', refreshAll);
@@ -865,5 +914,84 @@
     [inputTorqueEl, motorRPMEl, wheelDiaEl, inputDiaEl, drumDiameterEl, wireDiameterEl, slingSegmentsEl, craneUseGearOutput, manualDrumRPM].forEach(el => el.addEventListener('input', refreshAll));
     craneUseGearOutput.addEventListener('change', refreshAll);
     rebuildTeethTable();
+    function updatePerformanceOutputs() {
+    let calc = computeGearTrain();
+    
+    // Output RPM - already have, just convert
+    let outputRPM = calc.outputRPM;
+    let outputRPS = outputRPM / 60;  // Revolutions per second
+    let outputRad_s = outputRPM * (2 * Math.PI) / 60;  // Radians per second
+    
+    // Output Torque (Nm to other units)
+    let outputTorque_Nm = calc.outputTorque;
+    let outputTorque_kNm = outputTorque_Nm / 1000;
+    let outputTorque_lb_ft = outputTorque_Nm * 0.737562;  // Nm to lb-ft
+    let outputTorque_kg_m = outputTorque_Nm / 9.80665;     // Nm to kgf·m
+    
+    // Linear Speed (already in m/s from computeGearTrain)
+    let linearSpeed_m_s = calc.linearSpeed;
+    let linearSpeed_km_h = linearSpeed_m_s ? linearSpeed_m_s * 3.6 : null;
+    let linearSpeed_ft_s = linearSpeed_m_s ? linearSpeed_m_s * 3.28084 : null;
+    let linearSpeed_ft_min = linearSpeed_m_s ? linearSpeed_m_s * 196.85 : null;
+    
+    // Build the enhanced output HTML
+    let outputHtml = `
+        <div style="margin-bottom: 15px;">
+            <h4 style="color: #002147; margin-bottom: 8px;">⚙️ OUTPUT RPM</h4>
+            <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                <tr style="background:#eef3fc;"><td style="padding:6px;"><strong>Revolutions per minute</strong></td><td style="padding:6px;">${outputRPM.toFixed(2)}</td><td style="padding:6px;">rpm</td></tr>
+                <tr><td style="padding:6px;"><strong>Revolutions per second</strong></td><td style="padding:6px;">${outputRPS.toFixed(3)}</td><td style="padding:6px;">rps</td></tr>
+                <tr style="background:#f8fafd;"><td style="padding:6px;"><strong>Angular velocity</strong></td><td style="padding:6px;">${outputRad_s.toFixed(3)}</td><td style="padding:6px;">rad/s</td></tr>
+            </table>
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <h4 style="color: #002147; margin-bottom: 8px;">🔧 OUTPUT TORQUE</h4>
+            <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                <tr style="background:#eef3fc;"><td style="padding:6px;"><strong>Newton meter</strong></td><td style="padding:6px;">${outputTorque_Nm.toFixed(2)}</td><td style="padding:6px;">Nm</td></tr>
+                <tr><td style="padding:6px;"><strong>Kilonewton meter</strong></td><td style="padding:6px;">${outputTorque_kNm.toFixed(4)}</td><td style="padding:6px;">kNm</td></tr>
+                <tr style="background:#f8fafd;"><td style="padding:6px;"><strong>Pound-force foot</strong></td><td style="padding:6px;">${outputTorque_lb_ft.toFixed(2)}</td><td style="padding:6px;">lb·ft</td></tr>
+                <tr><td style="padding:6px;"><strong>Kilogram-force meter</strong></td><td style="padding:6px;">${outputTorque_kg_m.toFixed(2)}</td><td style="padding:6px;">kgf·m</td></tr>
+            </table>
+        </div>`;
+    
+    // Add linear speed section only if wheel diameter is provided
+    if (linearSpeed_m_s !== null && !isNaN(linearSpeed_m_s) && isFinite(linearSpeed_m_s)) {
+        outputHtml += `
+        <div style="margin-bottom: 15px;">
+            <h4 style="color: #002147; margin-bottom: 8px;">📏 LINEAR SPEED (Wheel)</h4>
+            <table style="width:100%; font-size:0.75rem; border-collapse:collapse;">
+                <tr style="background:#eef3fc;"><td style="padding:6px;"><strong>Meters per second</strong></td><td style="padding:6px;">${linearSpeed_m_s.toFixed(3)}</td><td style="padding:6px;">m/s</td></tr>
+                <tr><td style="padding:6px;"><strong>Kilometers per hour</strong></td><td style="padding:6px;">${linearSpeed_km_h.toFixed(2)}</td><td style="padding:6px;">km/h</td></tr>
+                <tr style="background:#f8fafd;"><td style="padding:6px;"><strong>Feet per second</strong></td><td style="padding:6px;">${linearSpeed_ft_s.toFixed(3)}</td><td style="padding:6px;">ft/s</td></tr>
+                <tr><td style="padding:6px;"><strong>Feet per minute</strong></td><td style="padding:6px;">${linearSpeed_ft_min.toFixed(1)}</td><td style="padding:6px;">ft/min</td></tr>
+            </table>
+        </div>`;
+    } else {
+        outputHtml += `<div style="color:#c97e00; padding:10px; background:#fff3e0; border-radius:8px;">⚠️ Enter Output Wheel Diameter to calculate linear speed.</div>`;
+    }
+    
+    // Update the output box with enhanced content
+    document.querySelector('.output-box').innerHTML = `
+        <p style="margin-bottom:8px;"><strong>Total Gear Ratio:</strong> <span class="highlight">${calc.totalRatio.toFixed(5)}</span> &nbsp;| <strong>Velocity Ratio:</strong> 1 : ${calc.totalRatio.toFixed(5)}</p>
+        ${outputHtml}
+    `;
+    
+    // Also update the original span elements for compatibility
+    document.getElementById('totalRatio').innerText = calc.totalRatio.toFixed(5);
+    document.getElementById('velRatio').innerText = `1 : ${calc.totalRatio.toFixed(5)}`;
+    document.getElementById('outputRPM').innerText = calc.outputRPM.toFixed(2);
+    document.getElementById('outputTorque').innerText = calc.outputTorque.toFixed(2);
+    if (linearSpeed_m_s !== null && !isNaN(linearSpeed_m_s)) {
+        document.getElementById('linearSpeed').innerText = linearSpeed_m_s.toFixed(3) + " m/s";
+    } else {
+        document.getElementById('linearSpeed').innerText = "-- (wheel dia required)";
+    }
+}
+function refreshAll() { 
+    updateOutputsAndDiagram(); 
+    updateHookDisplay();
+    updatePerformanceOutputs();  // Add this line
+}
 </script>
 </body>
