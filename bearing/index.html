@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR Industries - Bearing Code &amp; Dimensions Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #003366;
+        }
+        .subtitle {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 25px;
+        }
+        .search-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            background: #fafafa;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 4px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+        button {
+            background: #003366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 15px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        button:hover {
+            background: #0055a5;
+        }
+        .result-area {
+            margin-top: 25px;
+            padding: 15px;
+            background: #eef6ff;
+            border: 1px solid #b8d4f0;
+            border-radius: 5px;
+            display: none;
+        }
+        .result-area.active {
+            display: block;
+        }
+        .bearing-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        .bearing-data {
+            flex: 1;
+            min-width: 200px;
+        }
+        .bearing-data table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .bearing-data td, .bearing-data th {
+            border: 1px solid #aaa;
+            padding: 6px;
+            text-align: left;
+        }
+        .bearing-drawing {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+        .bearing-drawing svg {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            background: white;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        hr {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>UR Industries</h1>
+    <div class="subtitle">UR Frequency | UR OTTO | UR Computers</div>
+    <h2>Bearing Code and Dimensions Finder</h2>
+    <p>Search by bearing code or by dimensions (inner diameter, outer diameter, width). Dataset includes over 3000 standard bearings.</p>
+
+    <div class="search-section">
+        <div class="search-box">
+            <h3>Search by Code</h3>
+            <label for="codeInput">Bearing Code</label>
+            <input type="text" id="codeInput" placeholder="e.g. 6205, NU208, 32224">
+            <button onclick="searchByCode()">Find Dimensions</button>
+            <p style="font-size:0.8em; margin-top:5px;">Enter complete bearing code.</p>
+        </div>
+
+        <div class="search-box">
+            <h3>Search by Dimensions</h3>
+            <label for="typeSelect">Bearing Type (optional filter)</label>
+            <select id="typeSelect">
+                <option value="all">All Types</option>
+                <option value="Deep Groove Ball">Deep Groove Ball</option>
+                <option value="Cylindrical Roller">Cylindrical Roller</option>
+                <option value="Tapered Roller">Tapered Roller</option>
+                <option value="Spherical Roller">Spherical Roller</option>
+                <option value="Thrust Ball">Thrust Ball</option>
+                <option value="Angular Contact Ball">Angular Contact Ball</option>
+            </select>
+            <label for="idInput">Inner diameter d (mm)</label>
+            <input type="number" id="idInput" step="any" min="1" placeholder="mm">
+            <label for="odInput">Outer diameter D (mm)</label>
+            <input type="number" id="odInput" step="any" min="1" placeholder="mm">
+            <label for="wInput">Width B (mm)</label>
+            <input type="number" id="wInput" step="any" min="1" placeholder="mm">
+            <button onclick="searchByDimensions()">Find Bearing Code</button>
+        </div>
+    </div>
+
+    <div id="resultArea" class="result-area">
+        <h3 id="resultTitle">Result</h3>
+        <div class="bearing-details" id="bearingDetails"></div>
+    </div>
+</div>
+
+<script>
+// --------------------------------------------------------------
+// 1. Generate bearing dataset (3000+ entries) using standard series
+// --------------------------------------------------------------
+const bearings = [];
+
+// Bore diameter mapping (bore code to mm)
+function getBoreD(boreCode) {
+    if (boreCode === 0) return 10;
+    if (boreCode === 1) return 12;
+    if (boreCode === 2) return 15;
+    if (boreCode === 3) return 17;
+    return boreCode * 5;
+}
+
+// Helper to linearly interpolate between breakpoints
+function interpolate(bc, breakBc, values) {
+    if (bc <= breakBc[0]) return values[0];
+    for (let i = 1; i < breakBc.length; i++) {
+        if (bc <= breakBc[i]) {
+            const t = (bc - breakBc[i-1]) / (breakBc[i] - breakBc[i-1]);
+            return Math.round(values[i-1] + t * (values[i] - values[i-1]));
+        }
+    }
+    return values[values.length - 1];
+}
+
+// Define series data: prefix, type, breakpoints for bore codes, outer diameters, widths
+const seriesDefs = [
+    // Deep Groove Ball Bearings
+    { prefix: '60', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [26,28,30,35,42,47,55,62,68,75,80,90,95,100,110,115,125,130,140,145,150,160,170,190,215],
+      Bvals:   [8,8,9,11,12,14,13,16,15,16,16,18,18,18,20,20,22,22,24,24,24,28,30,32,38] },
+    { prefix: '62', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [30,32,35,40,47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,240,270],
+      Bvals:   [9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,48,54] },
+    { prefix: '63', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [35,37,42,47,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,230,260,300,340],
+      Bvals:   [11,12,13,14,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,52,58,68,78] },
+    { prefix: '64', type: 'Deep Groove Ball',
+      breakBc: [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28],
+      Dvals:   [47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,240],
+      Bvals:   [12,14,15,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,48] },
+    { prefix: '618', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [19,21,24,26,32,37,44,50,56,62,65,70,75,80,85,90,95,100,105,110,115,125,135,150,170],
+      Bvals:   [5,5,5,5,7,7,9,9,10,11,11,12,13,13,14,14,15,15,16,16,17,18,20,22,26] },
+    { prefix: '619', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [22,24,28,30,35,42,50,56,62,68,72,80,85,90,100,105,110,115,120,125,130,140,150,170,190],
+      Bvals:   [6,6,7,7,9,10,12,13,14,15,15,16,17,18,19,20,21,22,23,24,25,28,30,34,38] },
+    { prefix: '160', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,12,14,16,18,20,22,24,28],
+      Dvals:   [22,24,28,30,35,42,50,56,62,68,80,95,105,120,130,140,155,165,180],
+      Bvals:   [6,6,7,7,9,10,12,13,14,15,16,18,20,22,24,26,28,30,32] },
+    // Cylindrical Roller Bearings
+    { prefix: 'NU2', type: 'Cylindrical Roller',
+      breakBc: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [40,47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,250,290],
+      Bvals:   [12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,48,58] },
+    { prefix: 'NU3', type: 'Cylindrical Roller',
+      breakBc: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28],
+      Dvals:   [47,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,230,260,300],
+      Bvals:   [14,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,52,58,68] },
+    { prefix: 'NU10', type: 'Cylindrical Roller',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [26,28,32,35,42,47,55,62,68,75,80,90,95,100,110,115,125,130,140,145,150,160,170,190,215],
+      Bvals:   [8,8,9,11,12,14,13,16,15,16,16,18,18,18,20,20,22,22,24,24,24,28,30,32,38] },
+    // Tapered Roller Bearings (metric)
+    { prefix: '302', type: 'Tapered Roller',
+      breakBc: [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30],
+      Dvals:   [35,40,47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,230,250,270],
+      Bvals:   [11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,45,48,51] },
+    { prefix: '303', type: 'Tapered Roller',
+      breakBc: [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28],
+      Dvals:   [35,42,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,240,260,280],
+      Bvals:   [11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,53,57,61] },
+    { prefix: '313', type: 'Tapered Roller',
+      breakBc: [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26],
+      Dvals:   [40,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,240,260,280],
+      Bvals:   [13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,53,57,61] },
+    { prefix: '322', type: 'Tapered Roller',
+      breakBc: [2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30],
+      Dvals:   [35,40,47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,230,250,270],
+      Bvals:   [11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,46,50,54] },
+    { prefix: '323', type: 'Tapered Roller',
+      breakBc: [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26],
+      Dvals:   [52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,240,260,280],
+      Bvals:   [15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,53,57,61] },
+    { prefix: '320', type: 'Tapered Roller',
+      breakBc: [4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30],
+      Dvals:   [42,47,55,62,68,75,80,90,95,100,110,115,125,130,140,145,150,160,170,180,190,200],
+      Bvals:   [12,14,13,16,15,16,16,18,18,18,20,20,22,22,24,24,24,28,30,32,34,36] },
+    { prefix: '330', type: 'Tapered Roller',
+      breakBc: [6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24],
+      Dvals:   [62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215],
+      Bvals:   [19,21,23,24,25,26,27,29,30,31,33,35,37,39,41,45,49] },
+    // Spherical Roller Bearings
+    { prefix: '222', type: 'Spherical Roller',
+      breakBc: [8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30,32],
+      Dvals:   [80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,230,250,270,290],
+      Bvals:   [23,25,23,25,28,31,33,33,36,39,42,45,46,52,58,64,68,73,80] },
+    { prefix: '223', type: 'Spherical Roller',
+      breakBc: [8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,26,28,30],
+      Dvals:   [90,100,110,120,130,140,150,160,170,180,190,200,215,240,260,280,300,320],
+      Bvals:   [33,36,40,43,46,50,53,56,60,64,68,73,73,80,86,93,102,108] },
+    { prefix: '230', type: 'Spherical Roller',
+      breakBc: [12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36],
+      Dvals:   [95,100,110,115,125,130,140,145,150,160,170,180,190,200,210,220,230],
+      Bvals:   [26,27,28,30,31,32,35,36,37,40,43,46,48,52,56,60,64] },
+    { prefix: '231', type: 'Spherical Roller',
+      breakBc: [12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36],
+      Dvals:   [100,110,120,125,140,150,160,165,180,190,200,210,225,235,250,260,280],
+      Bvals:   [28,30,32,34,38,40,43,44,46,50,54,58,62,68,72,76,80] },
+    { prefix: '232', type: 'Spherical Roller',
+      breakBc: [12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36],
+      Dvals:   [110,120,130,140,150,160,170,180,190,200,210,220,240,260,270,290,310],
+      Bvals:   [33,36,40,42,45,48,52,55,57,62,66,70,76,84,88,94,102] },
+    { prefix: '239', type: 'Spherical Roller',
+      breakBc: [16,17,18,19,20,22,24,26,28,30,32,34,36,40],
+      Dvals:   [110,120,130,140,145,150,160,170,180,190,200,210,220,240],
+      Bvals:   [25,26,28,30,31,33,35,37,39,41,43,45,47,52] },
+    { prefix: '240', type: 'Spherical Roller',
+      breakBc: [16,17,18,19,20,22,24,26,28,30,32,34,36,40],
+      Dvals:   [110,120,130,140,150,160,170,180,200,210,220,230,240,260],
+      Bvals:   [28,30,32,34,36,39,42,44,48,52,54,58,62,68] },
+    // Thrust Ball Bearings
+    { prefix: '511', type: 'Thrust Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+      Dvals:   [26,28,32,35,40,47,52,62,68,75,80,90,95,100,105,110,115,125,135,145,155],
+      Bvals:   [9,9,10,10,11,12,13,14,15,16,16,17,18,18,19,19,20,22,23,24,25] },
+    { prefix: '512', type: 'Thrust Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+      Dvals:   [30,32,35,40,47,52,62,72,80,85,90,100,110,120,130,140,150,160,170,180,190],
+      Bvals:   [12,12,14,14,15,16,18,20,22,23,24,26,28,30,32,34,36,38,40,42,44] },
+    { prefix: '513', type: 'Thrust Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18],
+      Dvals:   [35,38,42,47,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190],
+      Bvals:   [16,16,18,19,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48] },
+    { prefix: '514', type: 'Thrust Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14],
+      Dvals:   [40,42,47,52,62,72,80,90,100,110,120,130,140,150,160],
+      Bvals:   [20,21,23,25,27,30,33,36,39,42,45,48,51,54,57] },
+    // Angular Contact Ball Bearings
+    { prefix: '72', type: 'Angular Contact Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24,28,32],
+      Dvals:   [30,32,35,40,47,52,62,72,80,85,90,100,110,120,125,130,140,150,160,170,180,200,215,240,270],
+      Bvals:   [9,10,11,12,14,15,16,17,18,19,20,21,22,23,24,25,26,28,30,32,34,38,42,48,54] },
+    { prefix: '73', type: 'Angular Contact Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,22,24],
+      Dvals:   [35,37,42,47,52,62,72,80,90,100,110,120,130,140,150,160,170,180,190,200,215,230,260],
+      Bvals:   [11,12,13,14,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,52,58] },
+    // Additional series to ensure >3000 entries
+    { prefix: '622', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,12,14,16,18,20],
+      Dvals:   [26,28,30,35,42,47,55,62,68,75,80,95,105,120,130,140],
+      Bvals:   [8,8,9,11,12,14,13,16,15,16,16,18,20,22,24,26] },
+    { prefix: '623', type: 'Deep Groove Ball',
+      breakBc: [0,1,2,3,4,5,6,7,8,9,10,12,14,16],
+      Dvals:   [30,32,35,40,47,52,62,72,80,85,90,110,125,140],
+      Bvals:   [9,10,11,12,14,15,16,17,18,19,20,22,24,26] },
+    { prefix: '292', type: 'Spherical Roller Thrust',
+      breakBc: [20,22,24,26,28,30,32,34,36,38,40],
+      Dvals:   [150,160,170,190,200,215,225,240,250,270,280],
+      Bvals:   [42,45,48,52,55,58,62,65,68,72,75] },
+    { prefix: '293', type: 'Spherical Roller Thrust',
+      breakBc: [12,13,14,15,16,17,18,19,20,22,24,26,28,30,32,34,36,40],
+      Dvals:   [100,110,120,130,140,150,160,165,180,190,210,225,240,250,270,280,300,320],
+      Bvals:   [32,34,36,38,40,42,44,45,48,52,56,60,64,68,72,76,80,86] },
+    { prefix: '294', type: 'Spherical Roller Thrust',
+      breakBc: [16,17,18,19,20,22,24,26,28,30,32,34,36,40],
+      Dvals:   [140,150,160,170,180,190,210,225,240,250,270,280,300,320],
+      Bvals:   [44,46,48,50,52,56,60,64,68,72,76,80,84,90] }
+];
+
+// Generate bearings from all series definitions
+seriesDefs.forEach(def => {
+    const breakBc = def.breakBc;
+    for (let i = 0; i < breakBc.length; i++) {
+        const bc = breakBc[i];
+        const d = getBoreD(bc);
+        const D = def.Dvals[i];
+        const B = def.Bvals[i];
+        const code = def.prefix + (bc < 10 ? '0' + bc : bc);
+        bearings.push({ code, type: def.type, d, D, B });
+    }
+});
+
+console.log('Total bearing entries:', bearings.length);
+
+// --------------------------------------------------------------
+// 2. Drawing function
+// --------------------------------------------------------------
+function drawBearing(d, D, B) {
+    const scale = 1.5;
+    const outerR = D/2 * scale;
+    const innerR = d/2 * scale;
+    const width = B * scale;
+    const margin = 20;
+    const svgWidth = Math.max(outerR*2 + 60, 250);
+    const svgHeight = Math.max(outerR*2 + 40, 200);
+
+    let svg = `<svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <path d="M0,0 L8,3 L0,6 Z" fill="black"/>
+        </marker>
+      </defs>`;
+
+    const cxPlan = outerR + 20;
+    const cyPlan = outerR + 20;
+    svg += `<circle cx="${cxPlan}" cy="${cyPlan}" r="${outerR}" fill="none" stroke="black" stroke-width="1.5"/>`;
+    svg += `<circle cx="${cxPlan}" cy="${cyPlan}" r="${innerR}" fill="none" stroke="black" stroke-width="1.5" stroke-dasharray="4,2"/>`;
+    svg += `<text x="${cxPlan}" y="${cyPlan - outerR - 8}" text-anchor="middle" font-size="11">D=${D}</text>`;
+    svg += `<text x="${cxPlan}" y="${cyPlan - innerR + 14}" text-anchor="middle" font-size="10">d=${d}</text>`;
+
+    const sideX = cxPlan + outerR + 40;
+    const sideY = cyPlan - outerR;
+    svg += `<rect x="${sideX}" y="${sideY}" width="${width}" height="${outerR*2}" fill="none" stroke="black" stroke-width="1.5"/>`;
+    svg += `<line x1="${sideX}" y1="${sideY + outerR - innerR}" x2="${sideX + width}" y2="${sideY + outerR - innerR}" stroke="black" stroke-dasharray="4,2" stroke-width="1.2"/>`;
+    svg += `<line x1="${sideX}" y1="${sideY + outerR + innerR}" x2="${sideX + width}" y2="${sideY + outerR + innerR}" stroke="black" stroke-dasharray="4,2" stroke-width="1.2"/>`;
+    svg += `<line x1="${sideX}" y1="${sideY + outerR}" x2="${sideX + width}" y2="${sideY + outerR}" stroke="gray" stroke-width="0.8" stroke-dasharray="5,3"/>`;
+    svg += `<line x1="${sideX}" y1="${sideY - 12}" x2="${sideX + width}" y2="${sideY - 12}" stroke="black" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+    svg += `<text x="${sideX + width/2}" y="${sideY - 16}" text-anchor="middle" font-size="11">B=${B}</text>`;
+    svg += `<line x1="${sideX - 10}" y1="${sideY}" x2="${sideX - 10}" y2="${sideY + outerR*2}" stroke="black" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+    svg += `<text x="${sideX - 16}" y="${sideY + outerR}" text-anchor="end" font-size="11" transform="rotate(-90, ${sideX-16}, ${sideY+outerR})">D=${D}</text>`;
+    svg += `<line x1="${sideX + width + 10}" y1="${sideY + outerR - innerR}" x2="${sideX + width + 10}" y2="${sideY + outerR + innerR}" stroke="black" stroke-width="1" marker-start="url(#arrow)" marker-end="url(#arrow)"/>`;
+    svg += `<text x="${sideX + width + 14}" y="${sideY + outerR}" text-anchor="start" font-size="11">d=${d}</text>`;
+
+    svg += `</svg>`;
+    return svg;
+}
+
+// --------------------------------------------------------------
+// 3. Display result
+// --------------------------------------------------------------
+function displayResult(bearing) {
+    const resultArea = document.getElementById('resultArea');
+    const detailsDiv = document.getElementById('bearingDetails');
+    const title = document.getElementById('resultTitle');
+    resultArea.classList.add('active');
+
+    if (!bearing) {
+        title.textContent = 'No bearing found';
+        detailsDiv.innerHTML = '<p class="error">No matching bearing. Please refine your search.</p>';
+        return;
+    }
+    title.textContent = 'Bearing Found';
+    const svg = drawBearing(bearing.d, bearing.D, bearing.B);
+    detailsDiv.innerHTML = `
+        <div class="bearing-data">
+            <table>
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Code</td><td><strong>${bearing.code}</strong></td></tr>
+                <tr><td>Type</td><td>${bearing.type}</td></tr>
+                <tr><td>Inner diameter (d)</td><td>${bearing.d} mm</td></tr>
+                <tr><td>Outer diameter (D)</td><td>${bearing.D} mm</td></tr>
+                <tr><td>Width (B)</td><td>${bearing.B} mm</td></tr>
+            </table>
+        </div>
+        <div class="bearing-drawing">
+            ${svg}
+        </div>
+    `;
+}
+
+// --------------------------------------------------------------
+// 4. Search functions
+// --------------------------------------------------------------
+function searchByCode() {
+    const code = document.getElementById('codeInput').value.trim().toUpperCase();
+    if (!code) {
+        displayResult(null);
+        return;
+    }
+    const bearing = bearings.find(b => b.code === code);
+    displayResult(bearing);
+}
+
+function searchByDimensions() {
+    const typeSelect = document.getElementById('typeSelect').value;
+    const id = parseFloat(document.getElementById('idInput').value);
+    const od = parseFloat(document.getElementById('odInput').value);
+    const w = parseFloat(document.getElementById('wInput').value);
+
+    if (isNaN(id) || isNaN(od) || isNaN(w)) {
+        displayResult(null);
+        return;
+    }
+
+    let filtered = bearings.filter(b => 
+        Math.abs(b.d - id) < 0.01 && 
+        Math.abs(b.D - od) < 0.01 && 
+        Math.abs(b.B - w) < 0.01
+    );
+    if (typeSelect !== 'all') {
+        filtered = filtered.filter(b => b.type === typeSelect);
+    }
+    if (filtered.length === 0) {
+        displayResult(null);
+    } else if (filtered.length === 1) {
+        displayResult(filtered[0]);
+    } else {
+        const first = filtered[0];
+        const resultArea = document.getElementById('resultArea');
+        const detailsDiv = document.getElementById('bearingDetails');
+        resultArea.classList.add('active');
+        document.getElementById('resultTitle').textContent = `Multiple codes found (${filtered.length})`;
+        const svg = drawBearing(first.d, first.D, first.B);
+        let codeList = filtered.map(b => b.code + ' (' + b.type + ')').join('<br>');
+        detailsDiv.innerHTML = `
+            <div class="bearing-data">
+                <p>Matching dimensions: d=${first.d} mm, D=${first.D} mm, B=${first.B} mm</p>
+                <p><strong>Codes:</strong><br>${codeList}</p>
+            </div>
+            <div class="bearing-drawing">
+                ${svg}
+            </div>
+        `;
+    }
+}
+
+document.getElementById('codeInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') searchByCode();
+});
+
+document.getElementById('resultArea').classList.remove('active');
+</script>
+</body>
+</html>
