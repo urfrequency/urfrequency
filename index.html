@@ -16,9 +16,9 @@
         color: #222;
     }
 
-    /* Header */
+    /* Header - updated to green theme */
     header {
-        background: #0b3d91;
+        background: #2e7d32;  /* Official green */
         color: white;
         padding: 15px 30px;
         display: flex;
@@ -47,6 +47,7 @@
         background: #e6ecf5;
         padding: 60px 20px;
         text-align: center;
+        position: relative;
     }
 
     .hero h1 {
@@ -92,19 +93,20 @@
         font-weight: bold;
     }
 
-    /* Video Button */
+    /* Video Button - updated to green */
     .video-btn {
-        background: #0b3d91;
+        background: #2e7d32;  /* Green base */
         color: white;
         border: none;
         padding: 12px 20px;
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
+        transition: background 0.2s ease;
     }
 
     .video-btn:hover {
-        background: #08306b;
+        background: #1b5e20;  /* Darker green on hover */
     }
 
     /* Video Modal */
@@ -142,41 +144,46 @@
         color: #333;
     }
 
-    /* Footer */
+    /* Footer - updated to match green theme */
     footer {
-        background: #0b3d91;
+        background: #2e7d32;  /* Unified green */
         color: white;
         text-align: center;
         padding: 20px;
         margin-top: 40px;
     }
- #hero-time {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    text-align: right;
-    font-size: 11px;
-    color: #0b3d91;
-    line-height: 1.3;
-}
-#astronomy .card.iframe-card {
-    position: relative;
-    height: 300px; /* Adjust height as needed */
-    padding: 0;    /* Remove internal padding so iframe fills card */
-}
-#astronomy .card.iframe-card iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 6px;
-}
-/* Make hero relative so positioning works */
-.hero {
-    position: relative;
-}
+    
+    #hero-time {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        text-align: right;
+        font-size: 11px;
+        color: #0b3d91;
+        line-height: 1.3;
+    }
+    
+    #astronomy .card.iframe-card {
+        position: relative;
+        height: 300px;
+        padding: 0;
+    }
+    
+    #astronomy .card.iframe-card iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 6px;
+    }
+    
+    /* Additional green accent for consistency */
+    .card a:hover {
+        color: #2e7d32;
+        transition: 0.2s;
+    }
 </style>
 </head>
 
@@ -201,22 +208,22 @@
     <h1>UR Frequency Official Portal</h1>
     <p>Astronomical Research & Data Services</p>
     <div id="hero-time">
-  <div id="small-time"></div>
-  <div id="small-date"></div>
-  <div id="small-century"></div>
-  <div id="cosmic-date"></div>
+        <div id="small-time"></div>
+        <div id="small-date"></div>
+        <div id="small-century"></div>
+        <div id="cosmic-date"></div>
+    </div>
 </div>
-</div>
-
 
 <!-- Services -->
 <section id="services">
     <h2>Services</h2>
     <div class="grid">
-        
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/bearing">World Bearings DATA</a></div>
-        
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/gears">Gear train</a></div>
+        
+         <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
+        
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tnnel</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023 to 2050</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Celestial Data</a></div>
@@ -227,7 +234,7 @@
         <div class="card"><a href="#">Articles</a></div>
         <div class="card"><a href="#">News</a></div>
 
-        <!-- Video Card -->
+        <!-- Video Button Card (green-styled) -->
         <div class="card">
             <button onclick="openVideo()" class="video-btn">▶ Watch Video</button>
         </div>
@@ -324,7 +331,6 @@
 </section>
 
 <!-- Scripts -->
-
 <script>
 function updateCelestialClock() {
     const now = luxon.DateTime.local();
@@ -443,7 +449,7 @@ const tempChart = new Chart(tempCtx, {
 </script>
 
 <footer>
-    <p>© 2026 UR Frequency | Official Government Style Portal</p>
+    <p>© 2026 UR Frequency | Official </p>
 </footer>
 
 </body>
