@@ -4,109 +4,137 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <title>UR Frequency - Official Portal</title>
 
 <style>
     body {
         margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f5f7fa;
-        color: #222;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #eaf7ea;
+        color: #1e3a1e;
     }
 
-    /* Header - updated to green theme */
+    /* Header - Deep Forest Green */
     header {
-        background: #2e7d32;  /* Official green */
+        background: #0f3b1a;
         color: white;
         padding: 15px 30px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .logo {
-        font-size: 22px;
+        font-size: 24px;
         font-weight: bold;
+        letter-spacing: 1px;
     }
 
     nav a {
-        color: white;
+        color: #e0f0da;
         text-decoration: none;
-        margin-left: 20px;
-        font-size: 14px;
+        margin-left: 24px;
+        font-size: 15px;
+        font-weight: 500;
+        transition: 0.2s;
     }
 
     nav a:hover {
         text-decoration: underline;
+        color: #b8e0a8;
     }
 
-    /* Hero */
+    /* Hero with user-provided image */
     .hero {
-        background: #e6ecf5;
-        padding: 60px 20px;
-        text-align: center;
         position: relative;
+        background: linear-gradient(rgba(0, 40, 0, 0.5), rgba(0, 30, 0, 0.6)), 
+                    url('https://scontent.flhe4-1.fna.fbcdn.net/v/t39.30808-6/475357746_944391694534983_7812688787132028347_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=Y9u415YsR_IQ7kNvwFLudFR&_nc_oc=AdoK5eiJvCZOH_pVJK5HtAjhcXEqaKDTST1OuBdUP18eMhfFLYMH4JUuSS_G8p7lx7E&_nc_zt=23&_nc_ht=scontent.flhe4-1.fna&_nc_gid=BJy7YWPmIYcSNq73JWC3uw&_nc_ss=7a289&oh=00_Af69D2pMh4H5DpHs6xXLrzjL-wyUyEqomzHjxpgTkJ_7Xw&oe=6A1931D5');
+        background-size: cover;
+        background-position: center 30%;
+        padding: 80px 20px;
+        text-align: center;
+        border-bottom: 5px solid #2e7d32;
     }
 
     .hero h1 {
         margin-bottom: 10px;
-        color: #0b3d91;
+        color: white;
+        font-weight: 700;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        font-size: 2.8rem;
+    }
+
+    .hero p {
+        font-size: 1.3rem;
+        color: #f0fce8;
+        text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
     }
 
     /* Sections */
     section {
         padding: 50px 20px;
-        max-width: 1100px;
+        max-width: 1200px;
         margin: auto;
     }
 
     h2 {
-        color: #0b3d91;
-        margin-bottom: 25px;
+        color: #1a5c2a;
+        border-left: 6px solid #2e7d32;
+        padding-left: 18px;
+        margin-bottom: 28px;
+        font-weight: 600;
     }
 
-    /* Grid */
+    /* Grid & Cards */
     .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 24px;
     }
 
     .card {
         background: white;
         padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        text-align: center;
-        transition: 0.3s;
+        border-radius: 16px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+        transition: 0.25s ease;
+        border: 1px solid #bdd9ae;
     }
 
     .card:hover {
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+        box-shadow: 0 14px 28px rgba(0,0,0,0.08);
     }
 
     .card a {
         text-decoration: none;
-        color: #0b3d91;
-        font-weight: bold;
+        color: #1f6b2c;
+        font-weight: 600;
     }
 
-    /* Video Button - updated to green */
+    .card a:hover {
+        color: #0b4a1a;
+    }
+
+    /* Green video button */
     .video-btn {
-        background: #2e7d32;  /* Green base */
+        background: #2a7530;
         color: white;
         border: none;
         padding: 12px 20px;
-        border-radius: 5px;
+        border-radius: 40px;
         cursor: pointer;
         font-size: 16px;
-        transition: background 0.2s ease;
+        font-weight: bold;
+        transition: 0.2s;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
 
     .video-btn:hover {
-        background: #1b5e20;  /* Darker green on hover */
+        background: #1d5a22;
+        transform: scale(1.02);
     }
 
     /* Video Modal */
@@ -118,82 +146,83 @@
         top: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0,0,0,0.8);
+        background: rgba(0,0,0,0.85);
     }
 
     .video-content {
         margin: 5% auto;
         width: 80%;
-        max-width: 700px;
-        background: #000;
-        padding: 10px;
-        border-radius: 8px;
+        max-width: 800px;
+        background: #111;
+        padding: 12px;
+        border-radius: 12px;
     }
 
     .close-btn {
         float: right;
-        font-size: 30px;
+        font-size: 32px;
         color: white;
         cursor: pointer;
+        margin-right: 8px;
     }
 
-    /* Earth Data */
-    .data-box {
-        font-size: 22px;
-        margin-top: 10px;
-        color: #333;
+    /* Earth & Astronomy */
+    .data-badge {
+        font-size: 20px;
+        font-weight: bold;
+        background: #e0f0da;
+        border-radius: 28px;
+        padding: 8px 16px;
+        display: inline-block;
     }
 
-    /* Footer - updated to match green theme */
-    footer {
-        background: #2e7d32;  /* Unified green */
-        color: white;
-        text-align: center;
-        padding: 20px;
-        margin-top: 40px;
-    }
-    
     #hero-time {
         position: absolute;
-        top: 10px;
-        right: 15px;
+        top: 12px;
+        right: 20px;
         text-align: right;
         font-size: 11px;
-        color: #0b3d91;
-        line-height: 1.3;
+        font-weight: 500;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(4px);
+        padding: 6px 12px;
+        border-radius: 20px;
+        color: #e0f0da;
     }
-    
-    #astronomy .card.iframe-card {
+
+    .iframe-card {
         position: relative;
         height: 300px;
-        padding: 0;
+        padding: 0 !important;
+        overflow: hidden;
     }
-    
-    #astronomy .card.iframe-card iframe {
+
+    .iframe-card iframe {
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
         border: none;
-        border-radius: 6px;
     }
-    
-    /* Additional green accent for consistency */
-    .card a:hover {
-        color: #2e7d32;
-        transition: 0.2s;
+
+    footer {
+        background: #0f3b1a;
+        color: #d8f0ce;
+        text-align: center;
+        padding: 22px;
+        margin-top: 30px;
+        font-size: 14px;
     }
 </style>
 </head>
-
 <body>
 
 <header>
-    <div style="display:flex; align-items:center; gap:8px; font-size:24px; font-weight:bold;">
+    <div style="display:flex; align-items:center; gap:10px;">
         <img src="https://i.ibb.co/nMMKcSWC/ur-logo.png" alt="UR Frequency Logo" 
-             style="width:40px; height:40px; object-fit:contain; border-radius:8px;">
-        UR Frequency
+             style="width:42px; height:42px; object-fit:contain; border-radius:10px;">
+        <span style="font-size:26px; font-weight:800;">UR Frequency</span>
     </div>
     <nav>
         <a href="#home">Home</a>
@@ -203,7 +232,7 @@
     </nav>
 </header>
 
-<!-- Hero -->
+<!-- Hero with custom image -->
 <div class="hero" id="home">
     <h1>UR Frequency Official Portal</h1>
     <p>Astronomical Research & Data Services</p>
@@ -217,15 +246,13 @@
 
 <!-- Services -->
 <section id="services">
-    <h2>Services</h2>
+    <h2>Research Services</h2>
     <div class="grid">
+         <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/bearing">World Bearings DATA</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/gears">Gear train</a></div>
-        
-         <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
-        
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tnnel</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023 to 2050</a></div>
+        <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tunnel</a></div>
+        <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023–2050</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Celestial Data</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Moon & Sun Data</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/games.html">Free games</a></div>
@@ -233,11 +260,7 @@
         <div class="card"><a href="#">Courses</a></div>
         <div class="card"><a href="#">Articles</a></div>
         <div class="card"><a href="#">News</a></div>
-
-        <!-- Video Button Card (green-styled) -->
-        <div class="card">
-            <button onclick="openVideo()" class="video-btn">▶ Watch Video</button>
-        </div>
+        <div class="card"><button onclick="openVideo()" class="video-btn">Watch Video</button></div>
     </div>
 </section>
 
@@ -245,212 +268,106 @@
 <div id="videoModal" class="video-modal">
     <div class="video-content">
         <span class="close-btn" onclick="closeVideo()">&times;</span>
-        <iframe id="videoFrame" width="100%" height="400"
-            src="https://www.youtube.com/embed/gva-7aL6m90"
-            frameborder="0"
-            allow="autoplay; encrypted-media"
-            allowfullscreen>
-        </iframe>
-        <p style="color:white; text-align:center;">ISIS Live</p>
+        <iframe id="videoFrame" width="100%" height="400" src="https://www.youtube.com/embed/gva-7aL6m90" frameborder="0" allowfullscreen></iframe>
+        <p style="color:white; text-align:center;">UR Frequency Live Stream</p>
     </div>
 </div>
 
-<!-- Earth Data -->
+<!-- Earth Weather Widget -->
 <section id="earth">
-    <a class="weatherwidget-io" href="https://forecast7.com/en/30d0571d82/jahanian/" data-label_1="OUR Location" data-label_2="WEATHER" data-font="Arial Black" data-theme="dark">
-        OUR location WEATHER
-    </a>
-    <script>
-    !function(d,s,id){
-        var js,fjs=d.getElementsByTagName(s)[0];
-        if(!d.getElementById(id)){
-            js=d.createElement(s);
-            js.id=id;
-            js.src='https://weatherwidget.io/js/widget.min.js';
-            fjs.parentNode.insertBefore(js,fjs);
-        }
-    }(document,'script','weatherwidget-io-js');
-    </script>
+    <a class="weatherwidget-io" href="https://forecast7.com/en/30d0571d82/jahanian/" data-label_1="Multan Region" data-label_2="WEATHER" data-font="Arial Black" data-theme="dark">Multan Region WEATHER</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
 </section>
 
+<!-- Astronomy Data -->
 <section id="astronomy">
-    <h2>Real-Time Sun & Moon Times — OUR Location</h2>
+    <h2>Real-Time Sun & Moon — Our Location (Multan)</h2>
     <div class="grid">
-        <div class="card"><p>Sunrise</p><div id="sunriseTime">Loading...</div></div>
-        <div class="card"><p>Sunset</p><div id="sunsetTime">Loading...</div></div>
-        <div class="card"><p>Moonrise</p><div id="moonriseTime">Loading...</div></div>
-        <div class="card"><p>Moonset</p><div id="moonsetTime">Loading...</div></div>
+        <div class="card"><p>Sunrise</p><div id="sunriseTime" class="data-badge">Loading...</div></div>
+        <div class="card"><p>Sunset</p><div id="sunsetTime" class="data-badge">Loading...</div></div>
+        <div class="card"><p>Moonrise</p><div id="moonriseTime" class="data-badge">Loading...</div></div>
+        <div class="card"><p>Moonset</p><div id="moonsetTime" class="data-badge">Loading...</div></div>
+        
         <div class="card">
-            <!-- Current Moon Phase HTML -->
-            <table cellpadding="0" cellspacing="0" border="0" width="130">
+            <p>Moon Phase</p>
+            <table cellpadding="0" cellspacing="0" border="0" width="130" style="margin:0 auto;">
                 <tr>
-                    <td align="center"><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" /></td>
+                    <td align="center"><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196"></td>
                     <td background="https://www.moonmodule.com/cs/dm/vn.gif" valign="bottom" align="center">
-                        <a href="https://www.moonconnection.com" target="mc_moon_ph">
-                            <img src="https://www.moonmodule.com/cs/dm/s.gif" width="128" height="150" border="0" alt="" />
-                        </a>
+                        <a href="https://www.moonconnection.com" target="mc_moon_ph"><img src="https://www.moonmodule.com/cs/dm/s.gif" width="128" height="150" border="0" alt="" /></a>
                         <table cellpadding="0" cellspacing="0" border="0" width="120" height="20">
-                            <tr>
-                                <td align="center" bgcolor="#000000">
-                                    <a href="https://www.moonconnection.com/moon_phases.phtml" target="mc_moon_ph">
-                                        <span style="color:#7F7F7F;font-family:arial,helvetica,sans-serif;font-size:10px;">moon phase info</span>
-                                    </a>
-                                </td>
-                            </tr>
+                            <tr><td align="center" bgcolor="#000000"><a href="https://www.moonconnection.com/moon_phases.phtml" target="mc_moon_ph"><span style="color:#7F7F7F;font-family:arial;font-size:10px;">moon phase info</span></a></td></tr>
                         </table>
-                        <img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="4" border="0" alt="" />
                     </td>
-                    <td><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196" border="0" alt="" /></td>
+                    <td><img src="https://www.moonmodule.com/cs/dm/s.gif" width="1" height="196"></td>
                 </tr>
             </table>
         </div>
-        <div class="card"><h4>Sunlight (00:00 → now)</h4>
-    <canvas id="sunChart"></canvas></div>
-    
-        <div class="card">  <h4>Temperature Trend (simulated)</h4>
-    <canvas id="tempChart"></canvas></div>
-      <div class="card iframe-card"><h4>Cloud Cover (Windy)</h4>
-    <iframe 
-      src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=5&overlay=clouds&level=surface&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=default&metricTemp=default"></iframe>
-</div>
 
-<div class="card iframe-card"><h4>Wind Map (Windy)</h4>
-    <iframe 
-      src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=5&overlay=wind&level=surface&menu=&message=&marker=&calendar=now&type=map&location=coordinates&metricWind=m%2Fs&metricTemp=default"></iframe>
-</div>
+        <div class="card iframe-card">
+            <h4 style="margin:8px;">Cloud Cover (Windy)</h4>
+            <iframe src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=6&overlay=clouds&level=surface&menu=&message=&marker=&calendar=now&type=map"></iframe>
+        </div>
+
+        <div class="card iframe-card">
+            <h4 style="margin:8px;">Wind Map (Windy)</h4>
+            <iframe src="https://embed.windy.com/embed2.html?lat=30.0487&lon=71.8156&zoom=6&overlay=wind&level=surface&menu=&message=&marker=&calendar=now&type=map"></iframe>
+        </div>
     </div>
 </section>
 
 <!-- About -->
 <section id="about">
-    <h2>About Us</h2>
-    <p>
-        UR Frequency provides astronomical research, data services, and educational resources.
-        Our mission is to make space science accessible and reliable for everyone.
-    </p>
+    <h2>About UR Frequency</h2>
+    <p>UR Frequency delivers astronomical intelligence, climate analytics, and educational resources. Our Multan station provides real-time celestial data (sunrise/sunset, moon phases) and high-resolution weather mapping via Windy. All services are designed for researchers and enthusiasts.</p>
 </section>
 
-<!-- Scripts -->
+<footer>
+    <p>© 2026 UR Frequency | Green Innovation | Multan Real-Time Data</p>
+</footer>
+
 <script>
+// Live Clock
 function updateCelestialClock() {
     const now = luxon.DateTime.local();
-
-    const hours = now.toFormat("HH");
-    const minutes = now.toFormat("mm");
-    const seconds = now.toFormat("ss");
-    const millis = now.millisecond.toString().padStart(3, "0");
-
-    const day = now.toFormat("dd");
-    const month = now.toFormat("MM");
-    const year = parseInt(now.toFormat("yyyy"));
-
-    // Century calculation
-    const century = Math.floor((year - 1) / 100) + 1;
-
-    // Julian Date (Cosmic Date)
+    document.getElementById("small-time").innerText = now.toFormat("HH:mm:ss.SSS");
+    document.getElementById("small-date").innerText = now.toFormat("dd:MM:yyyy");
+    const century = Math.floor((parseInt(now.toFormat("yyyy")) - 1) / 100) + 1;
+    document.getElementById("small-century").innerText = `Century: ${century}`;
     const jd = 2440587.5 + now.toSeconds() / 86400;
-
-    // Output
-    document.getElementById("small-time").innerText =
-        `${hours}:${minutes}:${seconds}.${millis}`;
-
-    document.getElementById("small-date").innerText =
-        `${day}:${month}:${year}`;
-
-    document.getElementById("small-century").innerText =
-        `Century: ${century}`;
-
-    document.getElementById("cosmic-date").innerText =
-        `Cosmic: ${jd.toFixed(5)}`;
+    document.getElementById("cosmic-date").innerText = `Cosmic: ${jd.toFixed(5)}`;
 }
-
-// Smooth update (milliseconds visible)
 setInterval(updateCelestialClock, 50);
 updateCelestialClock();
 
-function openVideo() {
-    document.getElementById("videoModal").style.display = "block";
-}
-
-function closeVideo() {
+function openVideo() { document.getElementById("videoModal").style.display = "block"; }
+function closeVideo() { 
     document.getElementById("videoModal").style.display = "none";
-    // Stop video playback
     let iframe = document.getElementById("videoFrame");
     iframe.src = iframe.src;
 }
 
-// Load real-time astronomy data
 async function loadAstronomyData() {
-    const lat = 30.0487;
-    const lon = 71.8156;
-    const apiKey = "4baaeb64a9a645cfbe6f52908d32f807"; // Your API Key
+    const lat = 30.0487, lon = 71.8156;
+    const apiKey = "4baaeb64a9a645cfbe6f52908d32f807";
     const url = `https://api.ipgeolocation.io/astronomy?apiKey=${apiKey}&lat=${lat}&long=${lon}`;
-
     try {
-        const response = await fetch(url);
-        const data = await response.json();
-
-        document.getElementById("sunriseTime").textContent = data.sunrise;
-        document.getElementById("sunsetTime").textContent = data.sunset;
-        document.getElementById("moonriseTime").textContent = data.moonrise;
-        document.getElementById("moonsetTime").textContent = data.moonset;
-
-    } catch (err) {
-        console.error("Astronomy API Error:", err);
-        alert("Failed to load astronomy data. Check your API key or network.");
+        const res = await fetch(url);
+        const data = await res.json();
+        document.getElementById("sunriseTime").innerHTML = data.sunrise || "N/A";
+        document.getElementById("sunsetTime").innerHTML = data.sunset || "N/A";
+        document.getElementById("moonriseTime").innerHTML = data.moonrise || "N/A";
+        document.getElementById("moonsetTime").innerHTML = data.moonset || "N/A";
+    } catch(err) {
+        console.error("Astronomy API error:", err);
+        document.getElementById("sunriseTime").innerHTML = "Unavailable";
+        document.getElementById("sunsetTime").innerHTML = "Unavailable";
+        document.getElementById("moonriseTime").innerHTML = "Unavailable";
+        document.getElementById("moonsetTime").innerHTML = "Unavailable";
     }
 }
-
 loadAstronomyData();
-
-// Sunlight Graph (simulated example)
-const sunCtx = document.getElementById('sunChart').getContext('2d');
-const sunChart = new Chart(sunCtx, {
-    type: 'line',
-    data: {
-        labels: Array.from({length: 24}, (_, i) => `${i}:00`), // 0-23 hours
-        datasets: [{
-            label: 'Sunlight Intensity',
-            data: Array.from({length: 24}, () => Math.random() * 100), // Simulated data
-            borderColor: 'orange',
-            backgroundColor: 'rgba(255,165,0,0.3)',
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        scales: {
-            y: { beginAtZero: true, max: 100 }
-        }
-    }
-});
-
-// Temperature Graph (simulated example)
-const tempCtx = document.getElementById('tempChart').getContext('2d');
-const tempChart = new Chart(tempCtx, {
-    type: 'line',
-    data: {
-        labels: Array.from({length: 24}, (_, i) => `${i}:00`),
-        datasets: [{
-            label: 'Temperature (°C)',
-            data: Array.from({length: 24}, () => 15 + Math.random() * 10), // Simulated
-            borderColor: 'red',
-            backgroundColor: 'rgba(255,0,0,0.2)',
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        scales: {
-            y: { beginAtZero: false }
-        }
-    }
-});
+setInterval(loadAstronomyData, 60 * 60 * 1000);
 </script>
-
-<footer>
-    <p>© 2026 UR Frequency | Official </p>
-</footer>
-
 </body>
 </html>
