@@ -1,0 +1,1746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR Industries (UR Frequency) - Time Directorate</title>
+    <style>
+        :root {
+            --gov-green: #0a3d1a;
+            --gov-green-light: #0f5c28;
+            --gov-cream: #f5f0e8;
+            --gov-border: #1a5c2e;
+            --gov-dark: #1a1a1a;
+            --gov-paper: #fafaf7;
+            --gold: #8b7355;
+            --text-dark: #1a1a1a;
+            --text-muted: #444;
+            --box-bg: #fdfcf8;
+            --box-border: #c8c0b0;
+            --mars-red: #c1440e;
+            --mars-bg: #fef9f5;
+            --mars-border: #d4a08a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', 'Courier New', serif;
+            background: #e8e4db;
+            color: var(--text-dark);
+            min-height: 100vh;
+            letter-spacing: 0.02em;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .gov-header {
+            background: var(--gov-green);
+            color: #e8e4db;
+            padding: 14px 30px;
+            text-align: center;
+            border-bottom: 3px solid #1a7a35;
+            letter-spacing: 0.06em;
+            font-size: 1.15rem;
+            font-weight: normal;
+            text-transform: uppercase;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .gov-header .subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            opacity: 0.85;
+            margin-top: 2px;
+        }
+        .gov-header .emblem {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #e8e4db;
+            border-radius: 50%;
+            margin: 0 8px;
+            vertical-align: middle;
+            position: relative;
+            background: var(--gov-green);
+        }
+        .gov-header .emblem::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #e8e4db;
+            border-radius: 50%;
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .time-hero {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 28px;
+        }
+        .time-box-main {
+            background: var(--box-bg);
+            border: 2px solid var(--box-border);
+            padding: 20px 28px;
+            text-align: center;
+            min-width: 280px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+            border-radius: 2px;
+        }
+        .time-box-main.mars-time-box {
+            background: #fff6f2;
+            border-color: #d4a08a;
+        }
+        .time-box-main .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: #555;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+        .time-box-main.mars-time-box .label {
+            color: #8b3a1a;
+        }
+        .time-box-main .digital-time {
+            font-size: 2.8rem;
+            font-family: 'Courier New', 'Consolas', 'monospace';
+            letter-spacing: 0.04em;
+            color: #1a1a1a;
+            font-weight: bold;
+            line-height: 1;
+        }
+        .time-box-main.mars-time-box .digital-time {
+            color: #b0461a;
+        }
+        .time-box-main .date-display {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 4px;
+            letter-spacing: 0.05em;
+        }
+        .time-box-main canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        .pst-badge {
+            display: inline-block;
+            background: var(--gov-green);
+            color: #e8e4db;
+            padding: 3px 10px;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            margin-top: 6px;
+            border-radius: 1px;
+        }
+        .mars-badge {
+            display: inline-block;
+            background: #c1440e;
+            color: #fef9f5;
+            padding: 3px 10px;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            margin-top: 6px;
+            border-radius: 1px;
+        }
+
+        .door-section {
+            text-align: center;
+            margin: 24px 0 32px;
+            position: relative;
+        }
+        .secret-door {
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+        .secret-door:hover {
+            transform: scale(1.03);
+        }
+        .secret-door:hover .door-frame {
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35), 0 0 0 4px var(--gov-green-light);
+        }
+        .door-frame {
+            width: 200px;
+            height: 280px;
+            background: #3d2b1a;
+            border: 6px solid #5a3d20;
+            border-radius: 8px 8px 2px 2px;
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s;
+            overflow: hidden;
+        }
+        .door-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 38px,
+                    rgba(255, 255, 255, 0.02) 38px,
+                    rgba(255, 255, 255, 0.02) 40px);
+            pointer-events: none;
+            z-index: 2;
+        }
+        .door-knob {
+            position: absolute;
+            right: 22px;
+            top: 50%;
+            width: 22px;
+            height: 22px;
+            background: #c9a84c;
+            border-radius: 50%;
+            border: 2px solid #8b6914;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 3;
+        }
+        .door-knob::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: #3d2b1a;
+            border-radius: 50%;
+        }
+        .mini-clock-on-door {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #fafaf5;
+            border: 3px solid #8b7355;
+            position: relative;
+            z-index: 1;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.2);
+        }
+        .mini-clock-on-door .hand-hour {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 2px;
+            height: 14px;
+            background: #1a1a1a;
+            transform-origin: bottom center;
+            border-radius: 1px;
+        }
+        .mini-clock-on-door .hand-min {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            width: 1.5px;
+            height: 20px;
+            background: #333;
+            transform-origin: bottom center;
+            border-radius: 1px;
+        }
+        .mini-clock-on-door .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 4px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            z-index: 2;
+        }
+        .door-label {
+            position: absolute;
+            bottom: -32px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #3d2b1a;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+            background: #e8e4db;
+            padding: 2px 10px;
+        }
+        .door-arch {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 160px;
+            height: 30px;
+            background: #5a3d20;
+            border-radius: 80px 80px 0 0;
+            z-index: 0;
+            border: 4px solid #5a3d20;
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: #555;
+            margin: 28px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #c8c0b0;
+            text-align: center;
+        }
+        .section-title-mars {
+            color: #8b3a1a;
+            border-bottom-color: #d4a08a;
+        }
+
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .device-box {
+            background: var(--box-bg);
+            border: 1px solid var(--box-border);
+            padding: 8px 6px;
+            text-align: center;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            border-radius: 2px;
+            transition: box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .device-box:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+        }
+        .device-box .device-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #777;
+            margin-bottom: 3px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        .device-box canvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .device-box .device-text {
+            font-family: 'Courier New', 'Consolas', monospace;
+            font-size: 0.7rem;
+            color: #1a1a1a;
+            word-break: break-all;
+            line-height: 1.3;
+        }
+        .mars-box {
+            background: var(--mars-bg);
+            border: 1px solid var(--mars-border);
+        }
+        .mars-box .device-label {
+            color: #8b3a1a;
+        }
+
+        .css-pendulum {
+            width: 4px;
+            height: 50px;
+            background: #555;
+            margin: 0 auto;
+            transform-origin: top center;
+            animation: swing 2s ease-in-out infinite;
+            border-radius: 2px;
+            position: relative;
+        }
+        .css-pendulum::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: #8b7355;
+            border-radius: 50%;
+            border: 2px solid #5a3d20;
+        }
+        @keyframes swing {
+            0%,
+            100% {
+                transform: rotate(-18deg);
+            }
+            50% {
+                transform: rotate(18deg);
+            }
+        }
+        .css-metronome-arm {
+            width: 3px;
+            height: 40px;
+            background: #444;
+            margin: 0 auto;
+            transform-origin: bottom center;
+            animation: metronome 1s ease-in-out infinite;
+            border-radius: 2px;
+            position: relative;
+        }
+        .css-metronome-arm::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background: #666;
+            border-radius: 2px;
+        }
+        @keyframes metronome {
+            0%,
+            100% {
+                transform: rotate(-22deg);
+            }
+            50% {
+                transform: rotate(22deg);
+            }
+        }
+        .css-balance-wheel {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #555;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: balanceOsc 0.6s ease-in-out infinite;
+            position: relative;
+        }
+        .css-balance-wheel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -6px;
+            width: 8px;
+            height: 2px;
+            background: #555;
+        }
+        @keyframes balanceOsc {
+            0%,
+            100% {
+                transform: rotate(-30deg);
+            }
+            50% {
+                transform: rotate(30deg);
+            }
+        }
+        .css-gear {
+            width: 36px;
+            height: 36px;
+            border: 4px dotted #555;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: gearSpin 3s linear infinite;
+        }
+        @keyframes gearSpin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .css-pulse {
+            width: 20px;
+            height: 20px;
+            background: #c1440e;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(2.2);
+                opacity: 0.3;
+            }
+        }
+        .css-wave {
+            width: 60px;
+            height: 20px;
+            margin: 0 auto;
+            background: repeating-linear-gradient(90deg,
+                    #4a90c4,
+                    #4a90c4 3px,
+                    transparent 3px,
+                    transparent 6px);
+            animation: waveMove 1.5s linear infinite;
+            border-radius: 10px;
+        }
+        @keyframes waveMove {
+            from {
+                background-position: 0 0;
+            }
+            to {
+                background-position: -30px 0;
+            }
+        }
+        .css-fountain {
+            width: 6px;
+            height: 30px;
+            background: #4a90c4;
+            margin: 0 auto;
+            border-radius: 3px;
+            animation: fountainUp 0.8s ease-out infinite;
+            position: relative;
+        }
+        @keyframes fountainUp {
+            0% {
+                height: 6px;
+                opacity: 1;
+            }
+            100% {
+                height: 40px;
+                opacity: 0.2;
+            }
+        }
+        .css-flame {
+            width: 12px;
+            height: 22px;
+            background: #e89030;
+            margin: 0 auto;
+            border-radius: 50% 50% 20% 20%;
+            animation: flicker 0.3s ease-in-out infinite alternate;
+            position: relative;
+        }
+        @keyframes flicker {
+            0% {
+                transform: scaleY(1) scaleX(1);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scaleY(1.3) scaleX(0.8);
+                opacity: 0.6;
+            }
+        }
+        .css-spring {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #555;
+            border-radius: 50%;
+            border-top-color: transparent;
+            margin: 0 auto;
+            animation: springCoil 2s linear infinite;
+        }
+        @keyframes springCoil {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .css-weight-descend {
+            width: 16px;
+            height: 16px;
+            background: #555;
+            margin: 0 auto;
+            border-radius: 2px;
+            animation: weightDrop 6s ease-in-out infinite;
+            position: relative;
+        }
+        @keyframes weightDrop {
+            0%,
+            100% {
+                transform: translateY(-16px);
+            }
+            50% {
+                transform: translateY(16px);
+            }
+        }
+        .css-photon {
+            width: 6px;
+            height: 6px;
+            background: #ffcc00;
+            border-radius: 50%;
+            margin: 0 auto;
+            animation: photonBounce 0.5s ease-in-out infinite;
+            box-shadow: 0 0 8px #ffcc00;
+        }
+        @keyframes photonBounce {
+            0%,
+            100% {
+                transform: translateY(-20px);
+            }
+            50% {
+                transform: translateY(20px);
+            }
+        }
+        .css-tick {
+            width: 2px;
+            height: 14px;
+            background: #333;
+            margin: 0 auto;
+            animation: tickTock 1s steps(2) infinite;
+        }
+        @keyframes tickTock {
+            0% {
+                transform: rotate(-25deg);
+            }
+            100% {
+                transform: rotate(25deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .devices-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 4px;
+            }
+            .device-box {
+                min-height: 110px;
+                padding: 4px 3px;
+            }
+            .device-box .device-label {
+                font-size: 0.45rem;
+            }
+            .device-box canvas {
+                width: 70px;
+                height: 70px;
+            }
+            .time-box-main {
+                min-width: 200px;
+                padding: 14px 16px;
+            }
+            .time-box-main .digital-time {
+                font-size: 2rem;
+            }
+            .door-frame {
+                width: 150px;
+                height: 210px;
+            }
+            .mini-clock-on-door {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="gov-header">
+        <span class="emblem"></span> UR INDUSTRIES (UR FREQUENCY) <span class="emblem"></span>
+        <div class="subtitle">Time Directorate — Present Time Monitoring Station</div>
+    </header>
+
+    <div class="main-container">
+
+        <!-- THREE MAIN TIME BOXES -->
+        <div class="time-hero">
+            <div class="time-box-main" id="digitalBox">
+                <div class="label">Pakistan Standard Time (PST) — Digital</div>
+                <div class="digital-time" id="pstDigital">00:00:00</div>
+                <div class="date-display" id="pstDate"></div>
+                <span class="pst-badge">UTC+5:00</span>
+            </div>
+            <div class="time-box-main" id="analogBox">
+                <div class="label">Pakistan Standard Time (PST) — Analog</div>
+                <canvas id="pstAnalogCanvas" width="220" height="220"></canvas>
+                <span class="pst-badge">UTC+5:00</span>
+            </div>
+            <div class="time-box-main mars-time-box" id="marsDigitalBox">
+                <div class="label">Mars Sol Time (MTC) — Digital</div>
+                <div class="digital-time" id="marsDigitalTime">00:00:00</div>
+                <div class="date-display" id="marsSolInfo"></div>
+                <span class="mars-badge">Mars Coordinated Time</span>
+            </div>
+        </div>
+
+        <!-- SECRET DOOR -->
+        <div class="door-section">
+            <div class="door-arch"></div>
+            <a href="https://www.timeanddate.com/worldclock/pakistan" target="_blank" class="secret-door" title="Enter the Secret of Time">
+                <div class="door-frame" id="doorFrame">
+                    <div class="mini-clock-on-door" id="doorClock1"><div class="hand-hour" id="dh1h"></div><div class="hand-min" id="dh1m"></div><div class="center-dot"></div></div>
+                    <div class="mini-clock-on-door" id="doorClock2"><div class="hand-hour" id="dh2h"></div><div class="hand-min" id="dh2m"></div><div class="center-dot"></div></div>
+                    <div class="mini-clock-on-door" id="doorClock3"><div class="hand-hour" id="dh3h"></div><div class="hand-min" id="dh3m"></div><div class="center-dot"></div></div>
+                    <div class="mini-clock-on-door" id="doorClock4"><div class="hand-hour" id="dh4h"></div><div class="hand-min" id="dh4m"></div><div class="center-dot"></div></div>
+                    <div class="door-knob"></div>
+                </div>
+                <div class="door-label">SECRET OF TIME — ENTER</div>
+            </a>
+        </div>
+
+        <!-- 50 TIME DEVICES -->
+        <div class="section-title">50 Time-Measuring Devices — Synced to Local PST</div>
+        <div class="devices-grid" id="devices50Grid"></div>
+
+        <!-- 10 MARS TIME DEVICES -->
+        <div class="section-title section-title-mars">10 Mars Time Devices — Martian Chronometry</div>
+        <div class="devices-grid" id="marsDevicesGrid"></div>
+
+    </div>
+
+    <script>
+        (function() {
+            // --- PST helper ---
+            function getPST() {
+                const now = new Date();
+                const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+                return new Date(utcMs + 5 * 3600000); // UTC+5
+            }
+
+            // --- Mars Time ---
+            function getMarsTime(pstDate) {
+                const utcMs = pstDate.getTime() - 5 * 3600000;
+                const jd = utcMs / 86400000 + 2440587.5;
+                const msd = (jd - 2451549.5) / 1.0274912517 + 44796.0;
+                const mtcHours = (msd - Math.floor(msd)) * 24;
+                const marsHours = Math.floor(mtcHours);
+                const marsMinutes = Math.floor((mtcHours - marsHours) * 60);
+                const marsSeconds = Math.floor(((mtcHours - marsHours) * 60 - marsMinutes) * 60);
+                const solProgress = mtcHours / 24;
+                const ls = ((msd - 44796.0) * 0.5240384 + 250.0) % 360;
+                const marsYearProgress = ((msd - 44796.0) % 668.6) / 668.6;
+                return {
+                    msd,
+                    mtcHours,
+                    marsHours,
+                    marsMinutes,
+                    marsSeconds,
+                    solProgress,
+                    ls,
+                    marsYearProgress,
+                    solNumber: Math.floor(msd)
+                };
+            }
+
+            // --- DOM refs ---
+            const pstDigitalEl = document.getElementById('pstDigital');
+            const pstDateEl = document.getElementById('pstDate');
+            const analogCanvas = document.getElementById('pstAnalogCanvas');
+            const analogCtx = analogCanvas.getContext('2d');
+            const marsDigitalTimeEl = document.getElementById('marsDigitalTime');
+            const marsSolInfoEl = document.getElementById('marsSolInfo');
+            const doorClocks = [
+                { h: document.getElementById('dh1h'), m: document.getElementById('dh1m') },
+                { h: document.getElementById('dh2h'), m: document.getElementById('dh2m') },
+                { h: document.getElementById('dh3h'), m: document.getElementById('dh3m') },
+                { h: document.getElementById('dh4h'), m: document.getElementById('dh4m') },
+            ];
+
+            // --- Build 50 devices ---
+            const devices50Grid = document.getElementById('devices50Grid');
+            const device50Configs = [];
+            const device50Canvases = [];
+            const device50TextEls = [];
+            const device50ExtraEls = [];
+
+            const fiftyDeviceDefs = [
+                { name: 'Sundial', type: 'canvas', draw: 'sundial' },
+                { name: 'Hourglass', type: 'canvas', draw: 'hourglass' },
+                { name: 'Water Clock', type: 'canvas', draw: 'waterclock' },
+                { name: 'Candle Clock', type: 'canvas', draw: 'candle' },
+                { name: 'Pendulum', type: 'css', cssClass: 'css-pendulum' },
+                { name: 'Stopwatch', type: 'text', fmt: 'stopwatch' },
+                { name: 'Countdown 24h', type: 'text', fmt: 'countdown' },
+                { name: 'Metronome', type: 'css', cssClass: 'css-metronome-arm' },
+                { name: 'Atomic Pulse', type: 'css', cssClass: 'css-pulse' },
+                { name: 'Flip Clock', type: 'text', fmt: 'flipstyle' },
+                { name: 'Binary Clock', type: 'text', fmt: 'binary' },
+                { name: 'Unix Timestamp', type: 'text', fmt: 'unix' },
+                { name: 'Swatch .beat', type: 'text', fmt: 'beat' },
+                { name: 'Decimal Time', type: 'text', fmt: 'decimal' },
+                { name: 'ISO 8601', type: 'text', fmt: 'iso' },
+                { name: 'Moon Phase', type: 'canvas', draw: 'moon' },
+                { name: 'Tide Clock', type: 'css', cssClass: 'css-wave' },
+                { name: 'Astrolabe', type: 'canvas', draw: 'astrolabe' },
+                { name: 'Quartz Crystal', type: 'canvas', draw: 'quartz' },
+                { name: 'Marine Chronometer', type: 'canvas', draw: 'chronometer' },
+                { name: 'Tower Clock', type: 'canvas', draw: 'towerclock' },
+                { name: 'Cuckoo Clock', type: 'canvas', draw: 'cuckoo' },
+                { name: 'Grandfather Clock', type: 'canvas', draw: 'grandfather' },
+                { name: 'Incense Clock', type: 'canvas', draw: 'incense' },
+                { name: 'Oil Lamp Clock', type: 'canvas', draw: 'oillamp' },
+                { name: 'Gnomon Shadow', type: 'canvas', draw: 'gnomon' },
+                { name: 'Obelisk Clock', type: 'canvas', draw: 'obelisk' },
+                { name: 'Merkhet (Egyptian)', type: 'canvas', draw: 'merkhet' },
+                { name: 'Mercury Clock', type: 'canvas', draw: 'mercury' },
+                { name: 'Electric Motor', type: 'canvas', draw: 'motor' },
+                { name: 'Tuning Fork', type: 'canvas', draw: 'tuningfork' },
+                { name: 'Radio Clock', type: 'canvas', draw: 'radio' },
+                { name: 'GPS Time', type: 'text', fmt: 'gps' },
+                { name: 'NTP Sync', type: 'css', cssClass: 'css-pulse' },
+                { name: 'Pulsar Clock', type: 'canvas', draw: 'pulsar' },
+                { name: 'Light Clock', type: 'css', cssClass: 'css-photon' },
+                { name: 'Cesium Fountain', type: 'css', cssClass: 'css-fountain' },
+                { name: 'Optical Lattice', type: 'canvas', draw: 'lattice' },
+                { name: 'Quantum Clock', type: 'canvas', draw: 'quantum' },
+                { name: 'Cosmic Background', type: 'canvas', draw: 'cosmic' },
+                { name: 'Orrery', type: 'canvas', draw: 'orrery' },
+                { name: 'Solar Position', type: 'canvas', draw: 'solarpos' },
+                { name: 'Sidereal Time', type: 'text', fmt: 'sidereal' },
+                { name: 'Ephemeris Time', type: 'text', fmt: 'ephemeris' },
+                { name: 'Spring Mechanism', type: 'css', cssClass: 'css-spring' },
+                { name: 'Weight Drive', type: 'css', cssClass: 'css-weight-descend' },
+                { name: 'Escapement', type: 'canvas', draw: 'escapement' },
+                { name: 'Gear Train', type: 'css', cssClass: 'css-gear' },
+                { name: 'Balance Wheel', type: 'css', cssClass: 'css-balance-wheel' },
+                { name: 'Mainspring', type: 'canvas', draw: 'mainspring' },
+            ];
+
+            fiftyDeviceDefs.forEach((def, i) => {
+                const box = document.createElement('div');
+                box.className = 'device-box';
+                box.innerHTML = `<div class="device-label">${i+1}. ${def.name}</div>`;
+                if (def.type === 'canvas') {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    canvas.style.width = '90px';
+                    canvas.style.height = '90px';
+                    box.appendChild(canvas);
+                    device50Canvases.push({ canvas, draw: def.draw, index: i });
+                    device50TextEls.push(null);
+                    device50ExtraEls.push(null);
+                } else if (def.type === 'css') {
+                    const div = document.createElement('div');
+                    div.className = def.cssClass;
+                    div.style.margin = '10px auto';
+                    box.appendChild(div);
+                    device50Canvases.push(null);
+                    device50TextEls.push(null);
+                    device50ExtraEls.push({ el: div, type: 'css', cssClass: def.cssClass });
+                } else if (def.type === 'text') {
+                    const div = document.createElement('div');
+                    div.className = 'device-text';
+                    div.textContent = '--';
+                    box.appendChild(div);
+                    device50Canvases.push(null);
+                    device50TextEls.push({ el: div, fmt: def.fmt, index: i });
+                    device50ExtraEls.push(null);
+                }
+                device50Configs.push(def);
+                devices50Grid.appendChild(box);
+            });
+
+            // --- Build 10 Mars devices ---
+            const marsDevicesGrid = document.getElementById('marsDevicesGrid');
+            const marsCanvases = [];
+            const marsTextEls = [];
+            const marsDefs = [
+                { name: 'Mars Digital Clock', type: 'text', fmt: 'marsDigital' },
+                { name: 'Mars Analog Clock', type: 'canvas', draw: 'marsAnalog' },
+                { name: 'Sol Progress', type: 'canvas', draw: 'solProgress' },
+                { name: 'Mars Solar Longitude (Ls)', type: 'text', fmt: 'marsLs' },
+                { name: 'Mars Daylight Est.', type: 'canvas', draw: 'marsDaylight' },
+                { name: 'Mission Sol Counter', type: 'text', fmt: 'missionSol' },
+                { name: 'Earth-Mars Time', type: 'canvas', draw: 'earthMarsComp' },
+                { name: 'Mars Decimal Time', type: 'text', fmt: 'marsDecimal' },
+                { name: 'Mars Sidereal Time', type: 'text', fmt: 'marsSidereal' },
+                { name: 'Mars Year Progress', type: 'canvas', draw: 'marsYearProg' },
+            ];
+
+            marsDefs.forEach((def, i) => {
+                const box = document.createElement('div');
+                box.className = 'device-box mars-box';
+                box.innerHTML = `<div class="device-label">M${i+1}. ${def.name}</div>`;
+                if (def.type === 'canvas') {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 100;
+                    canvas.height = 100;
+                    canvas.style.width = '90px';
+                    canvas.style.height = '90px';
+                    box.appendChild(canvas);
+                    marsCanvases.push({ canvas, draw: def.draw, index: i });
+                    marsTextEls.push(null);
+                } else {
+                    const div = document.createElement('div');
+                    div.className = 'device-text';
+                    div.textContent = '--';
+                    box.appendChild(div);
+                    marsCanvases.push(null);
+                    marsTextEls.push({ el: div, fmt: def.fmt, index: i });
+                }
+                marsDevicesGrid.appendChild(box);
+            });
+
+            // --- Draw analog clock ---
+            function drawAnalogClock(ctx, cx, cy, radius, hours, minutes, seconds, isMars = false) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                // face
+                ctx.fillStyle = '#fdfcf8';
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#5a4a3a';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                // ticks
+                for (let i = 0; i < 60; i++) {
+                    const angle = (i * 6 - 90) * Math.PI / 180;
+                    const inner = i % 5 === 0 ? radius - 14 : radius - 7;
+                    const outer = radius - 2;
+                    ctx.beginPath();
+                    ctx.moveTo(cx + Math.cos(angle) * inner, cy + Math.sin(angle) * inner);
+                    ctx.lineTo(cx + Math.cos(angle) * outer, cy + Math.sin(angle) * outer);
+                    ctx.strokeStyle = i % 5 === 0 ? '#3a2a1a' : '#aaa';
+                    ctx.lineWidth = i % 5 === 0 ? 2.5 : 1;
+                    ctx.stroke();
+                }
+                // numbers
+                ctx.fillStyle = '#3a2a1a';
+                ctx.font = 'bold 12px Georgia';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                for (let i = 1; i <= 12; i++) {
+                    const angle = (i * 30 - 90) * Math.PI / 180;
+                    const nx = cx + Math.cos(angle) * (radius - 22);
+                    const ny = cy + Math.sin(angle) * (radius - 22);
+                    ctx.fillText(i, nx, ny);
+                }
+                // hands
+                const hAngle = ((hours % 12) + minutes / 60) * 30 - 90;
+                const mAngle = (minutes + seconds / 60) * 6 - 90;
+                const sAngle = seconds * 6 - 90;
+                const hRad = hAngle * Math.PI / 180;
+                const mRad = mAngle * Math.PI / 180;
+                const sRad = sAngle * Math.PI / 180;
+                // hour hand
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + Math.cos(hRad) * radius * 0.5, cy + Math.sin(hRad) * radius * 0.5);
+                ctx.strokeStyle = '#1a1a1a';
+                ctx.lineWidth = 4;
+                ctx.lineCap = 'round';
+                ctx.stroke();
+                // minute hand
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + Math.cos(mRad) * radius * 0.72, cy + Math.sin(mRad) * radius * 0.72);
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+                // second hand
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.lineTo(cx + Math.cos(sRad) * radius * 0.82, cy + Math.sin(sRad) * radius * 0.82);
+                ctx.strokeStyle = '#c0392b';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+                // center dot
+                ctx.fillStyle = '#1a1a1a';
+                ctx.beginPath();
+                ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // --- Draw small device canvases ---
+            function drawDeviceCanvas(canvas, drawType, pst, marsData, frameCount) {
+                const ctx = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                const cx = w / 2;
+                const cy = h / 2;
+                ctx.clearRect(0, 0, w, h);
+                const sec = pst.getSeconds();
+                const min = pst.getMinutes();
+                const hr = pst.getHours();
+                const ms = pst.getMilliseconds();
+                const totalSec = hr * 3600 + min * 60 + sec + ms / 1000;
+                const fracSec = sec + ms / 1000;
+                const fracMin = min + fracSec / 60;
+                const fracHr = hr + fracMin / 60;
+
+                switch (drawType) {
+                    case 'sundial':
+                        const sunAngle = ((hr % 12) + fracMin / 60) / 12 * 180 - 90;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy + 10, 35, 0, Math.PI);
+                        ctx.stroke();
+                        ctx.fillStyle = '#c8a84c';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy + 8, 28, Math.PI, 0);
+                        ctx.fill();
+                        ctx.strokeStyle = '#3a2a1a';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 5);
+                        const sx = cx + Math.cos(sunAngle * Math.PI / 180) * 30;
+                        const sy = cy - 5 + Math.sin(sunAngle * Math.PI / 180) * 30;
+                        ctx.lineTo(sx, Math.max(sy, cy - 5));
+                        ctx.stroke();
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 22, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'hourglass':
+                        const sandProgress = (fracSec / 60);
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - 25, cy - 30);
+                        ctx.lineTo(cx + 25, cy - 30);
+                        ctx.lineTo(cx, cy);
+                        ctx.lineTo(cx - 25, cy + 30);
+                        ctx.lineTo(cx + 25, cy + 30);
+                        ctx.lineTo(cx, cy);
+                        ctx.closePath();
+                        ctx.stroke();
+                        ctx.fillStyle = '#c8a84c';
+                        const sandTop = cy - 30 + sandProgress * 30;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - 22, cy - 28);
+                        ctx.lineTo(cx + 22, cy - 28);
+                        ctx.lineTo(cx, cy - 2);
+                        ctx.closePath();
+                        ctx.save();
+                        ctx.clip();
+                        ctx.fillRect(cx - 25, sandTop, 50, cy - sandTop);
+                        ctx.restore();
+                        const sandBot = cy + sandProgress * 28;
+                        ctx.fillRect(cx - 20, cy + 2, 40, sandBot - cy - 2);
+                        break;
+                    case 'waterclock':
+                        const waterLevel = cy + 25 - (fracSec / 60) * 50;
+                        ctx.fillStyle = '#e8e0d0';
+                        ctx.fillRect(cx - 22, cy - 28, 44, 56);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(cx - 22, cy - 28, 44, 56);
+                        ctx.fillStyle = 'rgba(70,130,180,0.7)';
+                        ctx.fillRect(cx - 20, waterLevel, 40, cy + 28 - waterLevel);
+                        ctx.fillStyle = 'rgba(70,130,180,0.5)';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 20, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'candle':
+                        const candleBurn = (fracSec / 60) * 50;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#f5e6c8';
+                        ctx.fillRect(cx - 10, cy - 25 + candleBurn, 20, 50 - candleBurn);
+                        ctx.strokeStyle = '#c8a84c';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(cx - 10, cy - 25, 20, 50);
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        const flameY = cy - 25 + candleBurn - 8;
+                        ctx.ellipse(cx, flameY, 6, 10 + Math.sin(frameCount * 0.3) * 3, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#ffdd44';
+                        ctx.beginPath();
+                        ctx.arc(cx, flameY - 3, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'moon':
+                        const moonAge = (totalSec / 86400 * 29.53) % 29.53;
+                        const phase = moonAge / 29.53;
+                        ctx.fillStyle = '#1a1a2e';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#e8e4d0';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+                        ctx.fill();
+                        const shadowX = phase < 0.5 ? cx - (0.5 - phase) * 60 : cx + (phase - 0.5) * 60;
+                        ctx.fillStyle = '#1a1a2e';
+                        ctx.beginPath();
+                        ctx.arc(shadowX, cy, 30, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'astrolabe':
+                        const astroRot = (fracSec / 60) * Math.PI * 2;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(astroRot);
+                        ctx.strokeStyle = '#c8a84c';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 25, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(-20, 0);
+                        ctx.lineTo(20, 0);
+                        ctx.moveTo(0, -20);
+                        ctx.lineTo(0, 20);
+                        ctx.stroke();
+                        ctx.restore();
+                        break;
+                    case 'quartz':
+                        const qAmp = 15 * Math.sin(frameCount * 0.2);
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#4a90c4';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - 30, cy);
+                        for (let x = -30; x <= 30; x++) {
+                            const y = cy + Math.sin((x + frameCount * 0.5) * 0.5) * 8;
+                            ctx.lineTo(cx + x, y);
+                        }
+                        ctx.stroke();
+                        ctx.fillStyle = '#4a90c4';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'chronometer':
+                        drawAnalogClock(ctx, cx, cy, 38, hr, min, sec);
+                        ctx.font = '6px Georgia';
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('CHRONOMETER', cx, cy + 44);
+                        break;
+                    case 'towerclock':
+                        drawAnalogClock(ctx, cx, cy, 35, hr, min, sec);
+                        ctx.fillStyle = '#5a4a3a';
+                        ctx.fillRect(cx - 8, cy - 42, 16, 10);
+                        ctx.fillRect(cx - 3, cy - 48, 6, 8);
+                        break;
+                    case 'cuckoo':
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#8b5a3a';
+                        ctx.fillRect(cx - 20, cy - 20, 40, 40);
+                        ctx.fillStyle = '#6b3a1a';
+                        ctx.fillRect(cx - 16, cy - 16, 32, 32);
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 22, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#3a2a1a';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        const cuckooOpen = Math.abs(Math.sin(frameCount * 0.1)) < 0.3;
+                        ctx.fillStyle = '#3a2a1a';
+                        ctx.fillRect(cx - 5, cy - 12, 10, cuckooOpen ? 8 : 4);
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 18, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'grandfather':
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#5a3d20';
+                        ctx.fillRect(cx - 16, cy - 35, 32, 50);
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 16, 16, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.strokeStyle = '#3a2a1a';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        const ghAngle = ((hr % 12) + fracMin / 60) * 30 - 90;
+                        const gmAngle = fracMin * 6 - 90;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 16);
+                        ctx.lineTo(cx + Math.cos(ghAngle * Math.PI / 180) * 8, cy - 16 + Math.sin(ghAngle * Math
+                            .PI / 180) * 8);
+                        ctx.strokeStyle = '#1a1a1a';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 16);
+                        ctx.lineTo(cx + Math.cos(gmAngle * Math.PI / 180) * 12, cy - 16 + Math.sin(gmAngle * Math
+                            .PI / 180) * 12);
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                        ctx.fillStyle = '#8b7355';
+                        ctx.fillRect(cx - 14, cy + 15, 28, 4);
+                        break;
+                    case 'incense':
+                        const incenseBurn = (fracSec / 60) * 40;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#8b7355';
+                        ctx.fillRect(cx - 2, cy - 15, 4, 40);
+                        ctx.fillStyle = '#e89030';
+                        const glowY = cy - 15 + incenseBurn;
+                        ctx.beginPath();
+                        ctx.arc(cx, glowY, 3, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(232,144,48,0.3)';
+                        ctx.beginPath();
+                        ctx.arc(cx, glowY, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        for (let p = 0; p < 5; p++) {
+                            ctx.fillStyle = 'rgba(200,200,200,0.4)';
+                            ctx.beginPath();
+                            ctx.arc(cx + (Math.sin(frameCount * 0.5 + p) * 10), glowY - 5 - p * 6, 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        break;
+                    case 'oillamp':
+                        const oilLevel = cy + 10 - (fracSec / 60) * 28;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 20, Math.PI * 0.3, Math.PI * 0.7);
+                        ctx.closePath();
+                        ctx.stroke();
+                        ctx.fillStyle = 'rgba(200,160,60,0.6)';
+                        ctx.fillRect(cx - 16, oilLevel, 32, cy + 10 - oilLevel);
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        ctx.ellipse(cx, cy - 8, 5, 8 + Math.sin(frameCount * 0.4) * 2, 0, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'gnomon':
+                        const gnomonShadow = ((hr % 12) + fracMin / 60) / 12 * 140 - 70;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#8b7355';
+                        ctx.fillRect(cx - 3, cy - 25, 6, 30);
+                        ctx.fillStyle = 'rgba(0,0,0,0.25)';
+                        ctx.fillRect(cx, cy + 5, gnomonShadow, 4);
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy - 30, 6, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'obelisk':
+                        const obShadow = ((hr % 12) + fracMin / 60) / 12 * 100 - 50;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#c8b898';
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 35);
+                        ctx.lineTo(cx - 10, cy + 10);
+                        ctx.lineTo(cx - 6, cy + 14);
+                        ctx.lineTo(cx + 6, cy + 14);
+                        ctx.lineTo(cx + 10, cy + 10);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.stroke();
+                        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+                        ctx.fillRect(cx, cy + 14, obShadow, 3);
+                        break;
+                    case 'merkhet':
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 30);
+                        ctx.lineTo(cx, cy + 20);
+                        ctx.stroke();
+                        ctx.fillStyle = '#c8a84c';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy + 22, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        const merkhetAngle = ((hr % 12) + fracMin / 60) / 12 * 160 - 80;
+                        ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy + 20);
+                        ctx.lineTo(cx + Math.cos(merkhetAngle * Math.PI / 180) * 35, cy + 20 + Math.sin(merkhetAngle *
+                            Math.PI / 180) * 25);
+                        ctx.stroke();
+                        break;
+                    case 'mercury':
+                        const mercY = cy + 15 - (fracSec / 60) * 35;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx - 8, cy - 20);
+                        ctx.lineTo(cx - 8, cy + 20);
+                        ctx.lineTo(cx + 8, cy + 20);
+                        ctx.lineTo(cx + 8, cy - 15);
+                        ctx.stroke();
+                        ctx.fillStyle = '#888';
+                        ctx.beginPath();
+                        ctx.arc(cx, mercY, 7, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'motor':
+                        const motorAngle = (fracSec / 60) * Math.PI * 2;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#555';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(motorAngle);
+                        ctx.fillStyle = '#c0392b';
+                        ctx.fillRect(-1, -18, 3, 16);
+                        ctx.restore();
+                        ctx.fillStyle = '#555';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'tuningfork':
+                        const tfVib = Math.sin(frameCount * 0.6) * 3;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#888';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy - 20);
+                        ctx.lineTo(cx - 8 + tfVib, cy + 15);
+                        ctx.moveTo(cx, cy - 20);
+                        ctx.lineTo(cx + 8 - tfVib, cy + 15);
+                        ctx.stroke();
+                        ctx.fillStyle = '#888';
+                        ctx.fillRect(cx - 3, cy - 22, 6, 8);
+                        break;
+                    case 'radio':
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#4a4a4a';
+                        ctx.fillRect(cx - 20, cy - 10, 40, 25);
+                        ctx.fillStyle = '#1a5c2e';
+                        ctx.fillRect(cx - 16, cy - 6, 32, 17);
+                        ctx.fillStyle = '#0f0';
+                        ctx.font = '8px monospace';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('SIGNAL', cx, cy + 6);
+                        for (let s = 0; s < 5; s++) {
+                            const sigH = 3 + Math.sin(frameCount * 0.3 + s) * 4;
+                            ctx.fillRect(cx - 14 + s * 7, cy - 6 - sigH, 4, sigH);
+                        }
+                        break;
+                    case 'pulsar':
+                        const pulsarBeam = (frameCount * 3) % 360;
+                        ctx.fillStyle = '#0a0a1a';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#ffffff';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 14, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(100,150,255,0.7)';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(pulsarBeam * Math.PI / 180);
+                        ctx.fillStyle = 'rgba(200,220,255,0.8)';
+                        ctx.fillRect(-2, -30, 4, 60);
+                        ctx.restore();
+                        break;
+                    case 'lattice':
+                        ctx.fillStyle = '#0a0a1a';
+                        ctx.fillRect(0, 0, w, h);
+                        for (let lx = -30; lx <= 30; lx += 6) {
+                            const ly = Math.sin((lx + frameCount * 0.3) * 0.4) * 20;
+                            ctx.fillStyle = 'rgba(255,100,100,0.7)';
+                            ctx.beginPath();
+                            ctx.arc(cx + lx, cy + ly, 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        break;
+                    case 'quantum':
+                        ctx.fillStyle = '#0a0a1a';
+                        ctx.fillRect(0, 0, w, h);
+                        for (let q = 0; q < 20; q++) {
+                            const qx = cx + (Math.sin(frameCount * 0.1 + q * 0.7) * 30);
+                            const qy = cy + (Math.cos(frameCount * 0.13 + q * 0.6) * 30);
+                            const qAlpha = Math.abs(Math.sin(frameCount * 0.2 + q));
+                            ctx.fillStyle = `rgba(100,200,255,${qAlpha})`;
+                            ctx.beginPath();
+                            ctx.arc(qx, qy, 2 + qAlpha * 4, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        break;
+                    case 'cosmic':
+                        ctx.fillStyle = '#0a0a1a';
+                        ctx.fillRect(0, 0, w, h);
+                        const seed = 42;
+                        for (let c = 0; c < 40; c++) {
+                            const cx2 = ((c * 37 + seed) % 100);
+                            const cy2 = ((c * 53 + seed * 2) % 100);
+                            const twinkle = Math.abs(Math.sin(frameCount * 0.05 + c * 1.7));
+                            ctx.fillStyle = `rgba(255,255,240,${twinkle})`;
+                            ctx.beginPath();
+                            ctx.arc(cx2, cy2, twinkle * 2, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+                        break;
+                    case 'orrery':
+                        ctx.fillStyle = '#0a0a1a';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#ffcc00';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+                        ctx.fill();
+                        const orbitAngle = (fracSec / 60) * Math.PI * 2;
+                        const planetX = cx + Math.cos(orbitAngle) * 28;
+                        const planetY = cy + Math.sin(orbitAngle) * 28;
+                        ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.fillStyle = '#4a90c4';
+                        ctx.beginPath();
+                        ctx.arc(planetX, planetY, 4, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'solarpos':
+                        const solarArc = ((hr % 12) + fracMin / 60) / 12;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#8b7355';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy + 20, 38, Math.PI, 0);
+                        ctx.stroke();
+                        const solarX = cx - 38 + solarArc * 76;
+                        const solarY = cy + 20 - Math.sin(solarArc * Math.PI) * 35;
+                        ctx.fillStyle = '#e89030';
+                        ctx.beginPath();
+                        ctx.arc(solarX, solarY, 7, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = 'rgba(232,144,48,0.3)';
+                        ctx.beginPath();
+                        ctx.arc(solarX, solarY, 14, 0, Math.PI * 2);
+                        ctx.fill();
+                        break;
+                    case 'escapement':
+                        const escAngle = (frameCount * 12) % 30 - 15;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#555';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+                        ctx.stroke();
+                        for (let t = 0; t < 12; t++) {
+                            const ta = (t * 30) * Math.PI / 180;
+                            ctx.fillStyle = '#8b7355';
+                            ctx.fillRect(cx + Math.cos(ta) * 18 - 1, cy + Math.sin(ta) * 18 - 1, 2, 6);
+                        }
+                        ctx.fillStyle = '#c0392b';
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(escAngle * Math.PI / 180);
+                        ctx.fillRect(-2, -16, 4, 10);
+                        ctx.restore();
+                        break;
+                    case 'mainspring':
+                        const spiralAngle = (fracSec / 60) * Math.PI * 4;
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#555';
+                        ctx.lineWidth = 2;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+                        ctx.stroke();
+                        ctx.save();
+                        ctx.translate(cx, cy);
+                        ctx.rotate(spiralAngle);
+                        ctx.strokeStyle = '#888';
+                        ctx.lineWidth = 1.5;
+                        ctx.beginPath();
+                        for (let r = 0; r < 22; r += 0.5) {
+                            const a = r * 0.4;
+                            const sx2 = Math.cos(a) * r;
+                            const sy2 = Math.sin(a) * r;
+                            if (r === 0) ctx.moveTo(sx2, sy2);
+                            else ctx.lineTo(sx2, sy2);
+                        }
+                        ctx.stroke();
+                        ctx.restore();
+                        break;
+                    case 'marsAnalog':
+                        const marsTotalSec = marsData.marsHours * 3600 + marsData.marsMinutes * 60 + marsData
+                            .marsSeconds;
+                        const marsFracDay = marsTotalSec / 88775.244;
+                        const marsHrAngle = marsFracDay * 24;
+                        const marsDisplayHr = Math.floor(marsHrAngle) % 24;
+                        const marsDisplayMin = Math.floor((marsHrAngle - Math.floor(marsHrAngle)) * 60);
+                        const marsDisplaySec = Math.floor(((marsHrAngle - Math.floor(marsHrAngle)) * 60 - marsDisplayMin) *
+                            60);
+                        drawAnalogClock(ctx, cx, cy, 35, marsDisplayHr, marsDisplayMin, marsDisplaySec, true);
+                        ctx.fillStyle = '#c1440e';
+                        ctx.font = '7px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('MARS SOL', cx, cy + 44);
+                        break;
+                    case 'solProgress':
+                        const solPct = marsData.solProgress;
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#c1440e';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 30, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2);
+                        ctx.stroke();
+                        ctx.fillStyle = '#c1440e';
+                        ctx.beginPath();
+                        ctx.moveTo(cx, cy);
+                        ctx.arc(cx, cy, 28, -Math.PI / 2, -Math.PI / 2 + solPct * Math.PI * 2);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#3a1a0a';
+                        ctx.font = '9px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(Math.round(solPct * 100) + '%', cx, cy + 3);
+                        break;
+                    case 'marsDaylight':
+                        const dayPct = Math.abs(Math.sin((marsData.ls - 90) * Math.PI / 180));
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#e8c8b0';
+                        ctx.fillRect(cx - 30, cy - 25, 60, 50);
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.fillRect(cx - 28, cy - 23, 56, 46);
+                        ctx.fillStyle = 'rgba(255,180,100,0.5)';
+                        const dayHeight = dayPct * 40;
+                        ctx.fillRect(cx - 26, cy + 21 - dayHeight, 52, dayHeight);
+                        ctx.fillStyle = '#c1440e';
+                        ctx.font = '8px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('DAY ' + Math.round(dayPct * 100) + '%', cx, cy);
+                        break;
+                    case 'earthMarsComp':
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#4a90c4';
+                        ctx.beginPath();
+                        ctx.arc(cx - 15, cy, 12, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#c1440e';
+                        ctx.beginPath();
+                        ctx.arc(cx + 15, cy, 9, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.font = '7px monospace';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('EARTH', cx - 15, cy + 22);
+                        ctx.fillText('MARS', cx + 15, cy + 22);
+                        const earthSec = totalSec % 86400;
+                        const marsSec = marsData.solProgress * 88775.244;
+                        const diffSec = marsSec - earthSec;
+                        ctx.fillText((diffSec > 0 ? '+' : '') + Math.round(diffSec) + 's', cx, cy - 20);
+                        break;
+                    case 'marsYearProg':
+                        const myp = marsData.marsYearProgress;
+                        ctx.fillStyle = '#fef9f5';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.strokeStyle = '#c1440e';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(cx - 30, cy - 8, 60, 16);
+                        ctx.fillStyle = '#c1440e';
+                        ctx.fillRect(cx - 28, cy - 6, myp * 56, 12);
+                        ctx.fillStyle = '#3a1a0a';
+                        ctx.font = '7px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('YR ' + Math.round(myp * 100) + '%', cx, cy + 20);
+                        break;
+                    default:
+                        ctx.fillStyle = '#fdf8e8';
+                        ctx.fillRect(0, 0, w, h);
+                        ctx.fillStyle = '#555';
+                        ctx.font = '10px Georgia';
+                        ctx.textAlign = 'center';
+                        ctx.fillText('DEVICE', cx, cy);
+                }
+            }
+
+            // --- Format text devices ---
+            function formatTextDevice(fmt, pst, marsData) {
+                const sec = pst.getSeconds();
+                const min = pst.getMinutes();
+                const hr = pst.getHours();
+                const totalSec = hr * 3600 + min * 60 + sec;
+                switch (fmt) {
+                    case 'stopwatch':
+                        return `${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}.${String(pst.getMilliseconds()).padStart(3,'0')}`;
+                    case 'countdown':
+                        const remaining = 86400 - totalSec;
+                        const rh = Math.floor(remaining / 3600);
+                        const rm = Math.floor((remaining % 3600) / 60);
+                        const rs = remaining % 60;
+                        return `-${String(rh).padStart(2,'0')}:${String(rm).padStart(2,'0')}:${String(rs).padStart(2,'0')}`;
+                    case 'flipstyle':
+                        return `${String(hr).padStart(2,'0')}:${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+                    case 'binary':
+                        return `${hr.toString(2).padStart(6,'0')}:${min.toString(2).padStart(6,'0')}:${sec.toString(2).padStart(6,'0')}`;
+                    case 'unix':
+                        return Math.floor(pst.getTime() / 1000).toString();
+                    case 'beat':
+                        const utcHr = (hr - 5 + 24) % 24;
+                        const beatVal = Math.floor(((utcHr + 1) * 3600 + min * 60 + sec) / 86.4);
+                        return '@' + beatVal;
+                    case 'decimal':
+                        const decDay = totalSec / 86400;
+                        const decHr = Math.floor(decDay * 10);
+                        const decMin = Math.floor((decDay * 1000) % 100);
+                        const decSec = Math.floor((decDay * 100000) % 100);
+                        return `${decHr}:${String(decMin).padStart(2,'0')}:${String(decSec).padStart(2,'0')}`;
+                    case 'iso':
+                        return pst.toISOString().replace('Z', '+05:00');
+                    case 'gps':
+                        const gpsWeek = Math.floor((pst.getTime() / 1000 - 315964800) / 604800);
+                        const gpsTow = Math.floor((pst.getTime() / 1000 - 315964800) % 604800);
+                        return `W${gpsWeek} TOW${gpsTow}`;
+                    case 'sidereal':
+                        const jd = pst.getTime() / 86400000 + 2440587.5 - 5 / 24;
+                        const T = (jd - 2451545.0) / 36525;
+                        let gmst = 280.46061837 + 360.98564736629 * (jd - 2451545.0) + 0.000387933 * T * T - T * T * T /
+                            38710000;
+                        gmst = ((gmst % 360) + 360) % 360;
+                        const gmstH = Math.floor(gmst / 15);
+                        const gmstM = Math.floor((gmst % 15) * 4);
+                        const gmstS = Math.floor(((gmst % 15) * 4 - gmstM) * 60);
+                        return `${String(gmstH).padStart(2,'0')}:${String(gmstM).padStart(2,'0')}:${String(gmstS).padStart(2,'0')} LST`;
+                    case 'ephemeris':
+                        const etOffset = 66 + Math.sin((pst.getTime() / 31557600000) * Math.PI * 2) * 3;
+                        const etDate = new Date(pst.getTime() + etOffset * 1000);
+                        return etDate.toISOString().slice(11, 19) + ' ET';
+                    case 'marsDigital':
+                        return `${String(marsData.marsHours).padStart(2,'0')}:${String(marsData.marsMinutes).padStart(2,'0')}:${String(marsData.marsSeconds).padStart(2,'0')} MTC`;
+                    case 'marsLs':
+                        return `Ls ${marsData.ls.toFixed(1)}°`;
+                    case 'missionSol':
+                        const landingMSD = 52304;
+                        const missionSol = Math.floor(marsData.msd - landingMSD);
+                        return `SOL ${missionSol}`;
+                    case 'marsDecimal':
+                        const marsDecDay = marsData.solProgress;
+                        const mdH = Math.floor(marsDecDay * 10);
+                        const mdM = Math.floor((marsDecDay * 1000) % 100);
+                        return `${mdH}:${String(mdM).padStart(2,'0')} MARS DEC`;
+                    case 'marsSidereal':
+                        const marsSid = (marsData.ls * 24 / 360 + marsData.solProgress * 24) % 24;
+                        const msH = Math.floor(marsSid);
+                        const msM = Math.floor((marsSid - msH) * 60);
+                        const msS = Math.floor(((marsSid - msH) * 60 - msM) * 60);
+                        return `${String(msH).padStart(2,'0')}:${String(msM).padStart(2,'0')}:${String(msS).padStart(2,'0')} MST`;
+                    default:
+                        return '--';
+                }
+            }
+
+            // --- Main update loop ---
+            let frameCount = 0;
+
+            function updateAll() {
+                const pst = getPST();
+                const marsData = getMarsTime(pst);
+                frameCount++;
+
+                // Digital PST
+                const h = String(pst.getHours()).padStart(2, '0');
+                const m = String(pst.getMinutes()).padStart(2, '0');
+                const s = String(pst.getSeconds()).padStart(2, '0');
+                pstDigitalEl.textContent = `${h}:${m}:${s}`;
+                pstDateEl.textContent = pst.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long',
+                    day: 'numeric' });
+
+                // New Mars Digital Clock
+                const mh = String(marsData.marsHours).padStart(2, '0');
+                const mm = String(marsData.marsMinutes).padStart(2, '0');
+                const ms2 = String(marsData.marsSeconds).padStart(2, '0');
+                marsDigitalTimeEl.textContent = `${mh}:${mm}:${ms2}`;
+                marsSolInfoEl.textContent = `Sol ${marsData.solNumber} · Ls ${marsData.ls.toFixed(1)}°`;
+
+                // Analog PST
+                drawAnalogClock(analogCtx, 110, 110, 90, pst.getHours(), pst.getMinutes(), pst.getSeconds());
+
+                // Door mini clocks
+                doorClocks.forEach((dc, i) => {
+                    const offsetMin = i * 15;
+                    const dm = (pst.getMinutes() + offsetMin) % 60;
+                    const dh = (pst.getHours() + Math.floor((pst.getMinutes() + offsetMin) / 60)) % 12;
+                    const hDeg = ((dh % 12) + dm / 60) * 30 - 90;
+                    const mDeg = (dm + pst.getSeconds() / 60) * 6 - 90;
+                    dc.h.style.transform = `rotate(${hDeg}deg)`;
+                    dc.m.style.transform = `rotate(${mDeg}deg)`;
+                });
+
+                // Update 50 device canvases
+                device50Canvases.forEach(d => {
+                    if (d && d.canvas) {
+                        drawDeviceCanvas(d.canvas, d.draw, pst, marsData, frameCount);
+                    }
+                });
+
+                // Update 50 device text
+                device50TextEls.forEach(d => {
+                    if (d && d.el && d.fmt) {
+                        d.el.textContent = formatTextDevice(d.fmt, pst, marsData);
+                    }
+                });
+
+                // Update Mars canvases
+                marsCanvases.forEach(d => {
+                    if (d && d.canvas) {
+                        drawDeviceCanvas(d.canvas, d.draw, pst, marsData, frameCount);
+                    }
+                });
+
+                // Update Mars text
+                marsTextEls.forEach(d => {
+                    if (d && d.el && d.fmt) {
+                        d.el.textContent = formatTextDevice(d.fmt, pst, marsData);
+                    }
+                });
+
+                requestAnimationFrame(updateAll);
+            }
+
+            // --- Start ---
+            updateAll();
+        })();
+    </script>
+</body>
+</html>
