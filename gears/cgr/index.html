@@ -87,17 +87,6 @@
             margin-top: 6px;
         }
 
-        .gov-badge {
-            background: #eef2f7;
-            padding: 8px 20px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #002147;
-            border-left: 3px solid #6c8fae;
-            text-transform: uppercase;
-        }
-
         .logo-section {
             display: flex;
             align-items: center;
@@ -142,13 +131,11 @@
         .section-title {
             font-size: 1.2rem;
             font-weight: 700;
-            padding-left: 0px;
             margin-bottom: 20px;
             color: #0a2942;
             display: flex;
             align-items: center;
             gap: 10px;
-            border-left: none;
         }
 
         .form-row {
@@ -188,33 +175,49 @@
             box-shadow: 0 0 0 2px rgba(44,110,158,0.2);
         }
 
+        /* Improved gear table styling */
         .gear-table {
             overflow-x: auto;
             margin: 20px 0 12px;
             border-radius: 10px;
+            border: 1px solid #e2edf5;
+            background: #fff;
         }
-        table {
+        .gear-table table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
+            min-width: 480px;
         }
-        th {
+        .gear-table th {
             background: #eef3fc;
             font-weight: 700;
             color: #002147;
             padding: 12px 8px;
             border: 1px solid #d4dfea;
-        }
-        td {
-            border: 1px solid #e2edf5;
-            padding: 10px 6px;
             text-align: center;
         }
-        td input {
+        .gear-table td {
+            border: 1px solid #e2edf5;
+            padding: 8px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .gear-table td input {
             width: 90px;
             text-align: center;
             border-radius: 6px;
             padding: 6px;
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        .stage-ratio-cell {
+            font-weight: 800;
+            background: #f9f3e0;
+            color: #1a4f3a;
+            font-size: 0.85rem;
         }
 
         .btn {
@@ -344,20 +347,28 @@
             border: none;
             border-bottom: 1px solid #e2e8f0;
         }
+        .inline-note {
+            font-size: 0.7rem;
+            color: #2c6e9e;
+            background: #eef3fc;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 <div class="gov-official-banner">
-    UR Industries Present Gearbox Analyzer | Precision Gear Trains | ISO/UR 2026-01
+    UR Industries | Gearbox Precision Suite | Official Gear Train Analyzer | ISO/UR 2026-01
 </div>
-<div class="gov-container" id="appContainer">
+<div class="gov-container">
     <div class="gov-header">
         <div class="header-row">
             <div class="emblem-section">
                 <div class="official-emblem-icon">UR</div>
                 <div class="title-text">
                     <h1>GEAR TRAIN ANALYZER | OFFICIAL GEARBOX SUITE</h1>
-                    <p>Bureau of Mechanical Standards | High-precision Ratio & Torque Analysis | Real-time Multivariate Outputs</p>
+                    <p>Bureau of Mechanical Standards | Multi-stage Gear Ratio & Torque Analysis</p>
                 </div>
             </div>
             <div class="logo-section">
@@ -371,7 +382,7 @@
         <div class="agency-signature">
             <span>Authorized by UR Industrial Development Authority</span>
             <span>|</span>
-            <span>Real-time Ratio Verification & Multi-unit Torque Analysis</span>
+            <span>Real-time Ratio Verification & Multi-unit Analysis</span>
         </div>
     </div>
 
@@ -379,27 +390,26 @@
         <!-- LEFT PANEL: Gearbox parameters -->
         <div>
             <div class="section-card">
-                <div class="section-title"><span>⚙️ DRIVE PARAMETERS</span> <span style="font-size:0.6rem; background:#eef2f7; padding:2px 8px; border-radius: 20px;">Standard Gearbox Inputs</span></div>
+                <div class="section-title"><span>⚙️ DRIVE PARAMETERS</span> <span class="inline-note">Standard Gearbox Inputs</span></div>
                 <div class="form-row">
                     <div class="form-field"><label>Gear Type</label><select id="gearType"><option>Spur Gear (Precision)</option><option>Helical Gear</option></select></div>
                     <div class="form-field"><label>Stages (1-5)</label><input type="number" id="stepsCount" min="1" max="5" value="2" step="1"></div>
                     <div class="form-field"><label>Input Torque (Nm)</label><input type="number" id="inputTorque" value="12.5" step="0.1"></div>
                     <div class="form-field"><label>Motor Speed (RPM)</label><input type="number" id="motorRPM" value="1450" step="10"></div>
                 </div>
-                <div class="form-row">
-                    <div class="form-field"><label>Pinion Pitch Dia (mm) [opt]</label><input type="number" id="inputDia" placeholder="Reference only (not used in ratio)"></div>
-                </div>
                 
+                <!-- GEAR TABLE - FIXED LAYOUT -->
                 <div class="gear-table" id="dynamicTeethTable"></div>
+                
                 <div class="flex-btns">
                     <button class="btn" id="recalcBtn">⟳ UPDATE & REFRESH</button>
                 </div>
                 
-                <!-- Enhanced Performance Output with multi-unit conversion (No linear speed / wheels) -->
+                <!-- Performance outputs (multi-unit, no crane/wheel) -->
                 <div class="section-card" style="margin-top: 12px;">
                     <div class="section-title"><span>📊 PERFORMANCE OUTPUTS (multi-unit)</span></div>
                     <div class="output-box" id="performanceOutputContainer">
-                        <!-- dynamic gearbox results only -->
+                        <!-- dynamic gearbox results -->
                     </div>
                 </div>
             </div>
@@ -419,13 +429,13 @@
             </div>
         </div>
 
-        <!-- RIGHT PANEL: Visuals + Analytical steps -->
+        <!-- RIGHT PANEL: Visual + Steps -->
         <div>
             <div class="section-card">
-                <div class="section-title" style="margin-top:0;">🎨 GEAR TRAIN VISUALIZATION</div>
+                <div class="section-title">🎨 GEAR TRAIN VISUALIZATION</div>
                 <canvas id="gearboxCanvas" width="550" height="240" style="width:100%; height:auto; background:#ffffff; border-radius:12px; border:1px solid #dfe8f0;"></canvas>
                 <div class="official-watermark">
-                    <span>UR-GEAR-ANALYSIS v.2.1 | Trace ID: UR-INDUSTRIES</span>
+                    <span>UR-GEAR-ANALYSIS v.2.2 | Trace ID: UR-INDUSTRIES</span>
                     <span>BIS Equivalent Standard</span>
                 </div>
             </div>
@@ -441,13 +451,13 @@
         </div>
     </div>
     <footer>
-        <span>UR Industries | Heavy Machinery Directorate | Purely gearbox calculations – no crane/wheel data</span>
-        <span>Document ID: UR/GT/2026/PURE-ANALYSIS</span>
+        <span>UR Industries | Heavy Machinery Directorate | Pure gearbox calculations – no external load or crane data</span>
+        <span>Document ID: UR/GT/2026/GEARBOX-FIX</span>
     </footer>
 </div>
 
 <script>
-    // DOM Elements (PURE GEARBOX MODE - No crane, No wheel speed)
+    // DOM Elements
     const stepsInput = document.getElementById('stepsCount');
     const teethContainer = document.getElementById('dynamicTeethTable');
     const recalcBtn = document.getElementById('recalcBtn');
@@ -458,7 +468,6 @@
     const advMsg = document.getElementById('advMsg');
     const inputTorqueEl = document.getElementById('inputTorque');
     const motorRPMEl = document.getElementById('motorRPM');
-    const inputDiaEl = document.getElementById('inputDia'); // kept for completeness but not used in calculations
     const canvas = document.getElementById('gearboxCanvas');
     const calcDetailsDiv = document.getElementById('calcDetails');
     const performanceContainer = document.getElementById('performanceOutputContainer');
@@ -467,77 +476,112 @@
     let pinionTeethArr = [];
     let gearTeethArr = [];
 
+    // Helper: refresh table UI with current arrays
     function rebuildTeethTable() {
         let steps = parseInt(stepsInput.value);
-        if(isNaN(steps) || steps<1) steps = 1;
-        if(steps > 5) steps = 5;
+        if (isNaN(steps) || steps < 1) steps = 1;
+        if (steps > 5) steps = 5;
         currentSteps = steps;
-        while(pinionTeethArr.length < steps) pinionTeethArr.push(20);
-        while(gearTeethArr.length < steps) gearTeethArr.push(42);
-        pinionTeethArr = pinionTeethArr.slice(0,steps);
-        gearTeethArr = gearTeethArr.slice(0,steps);
         
-        let html = `<thead><tr><th>STAGE</th><th>PINION (Teeth)</th><th>GEAR (Teeth)</th><th>STAGE RATIO</th></tr></thead><tbody>`;
-        for(let i=0; i<steps; i++) {
+        // Ensure arrays length matches
+        while (pinionTeethArr.length < steps) pinionTeethArr.push(20);
+        while (gearTeethArr.length < steps) gearTeethArr.push(42);
+        pinionTeethArr = pinionTeethArr.slice(0, steps);
+        gearTeethArr = gearTeethArr.slice(0, steps);
+        
+        // Build table HTML with explicit structure
+        let html = `<table class="gear-ratio-table">
+                        <thead>
+                            <tr>
+                                <th>STAGE</th>
+                                <th>PINION (Teeth)</th>
+                                <th>GEAR (Teeth)</th>
+                                <th>STAGE RATIO</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+        for (let i = 0; i < steps; i++) {
             let pinVal = pinionTeethArr[i] || 20;
             let gearVal = gearTeethArr[i] || 42;
             html += `<tr>
-                        <td style="font-weight:bold;">${i+1}</td>
-                        <td><input type="number" class="pinionTeethIn" data-stage="${i}" value="${pinVal}" min="6" max="200" step="1" style="width:85px;"></td>
-                        <td><input type="number" class="gearTeethIn" data-stage="${i}" value="${gearVal}" min="6" max="250" step="1" style="width:85px;"></td>
-                        <td id="stageRatio_${i}" style="font-weight:600; background:#f9f3e0;">--</td>
-                       </tr>`;
+                        <td style="font-weight:700; background:#f5f9ff;">${i+1}</td>
+                        <td><input type="number" class="pinionTeethIn" data-stage="${i}" value="${pinVal}" min="6" max="200" step="1" style="width:90px;"></td>
+                        <td><input type="number" class="gearTeethIn" data-stage="${i}" value="${gearVal}" min="6" max="250" step="1" style="width:90px;"></td>
+                        <td class="stage-ratio-cell" id="stageRatio_${i}">--</td>
+                    </tr>`;
         }
-        html += `</tbody>`;
+        html += `</tbody></table>`;
         teethContainer.innerHTML = html;
         
+        // Attach event listeners to each input after DOM update
         document.querySelectorAll('.pinionTeethIn').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                let stage = parseInt(inp.dataset.stage);
-                pinionTeethArr[stage] = Math.max(6, parseInt(inp.value) || 10);
-                updateAll();
-            });
+            inp.removeEventListener('change', handlePinionChange);
+            inp.addEventListener('change', handlePinionChange);
         });
         document.querySelectorAll('.gearTeethIn').forEach(inp => {
-            inp.addEventListener('change', (e) => {
-                let stage = parseInt(inp.dataset.stage);
-                gearTeethArr[stage] = Math.max(6, parseInt(inp.value) || 10);
-                updateAll();
-            });
+            inp.removeEventListener('change', handleGearChange);
+            inp.addEventListener('change', handleGearChange);
         });
+        
+        // Force initial calculation
         updateAll();
     }
-
+    
+    function handlePinionChange(e) {
+        let stage = parseInt(e.target.dataset.stage);
+        let val = Math.max(6, parseInt(e.target.value) || 10);
+        pinionTeethArr[stage] = val;
+        updateAll();
+    }
+    
+    function handleGearChange(e) {
+        let stage = parseInt(e.target.dataset.stage);
+        let val = Math.max(6, parseInt(e.target.value) || 10);
+        gearTeethArr[stage] = val;
+        updateAll();
+    }
+    
     function syncTeethFromTable() {
-        for(let i=0; i<currentSteps; i++) {
+        // sync from current input fields to arrays
+        for (let i = 0; i < currentSteps; i++) {
             let pinInput = document.querySelector(`.pinionTeethIn[data-stage='${i}']`);
             let gearInput = document.querySelector(`.gearTeethIn[data-stage='${i}']`);
-            if(pinInput) pinionTeethArr[i] = Math.max(6, parseInt(pinInput.value) || 10);
-            if(gearInput) gearTeethArr[i] = Math.max(6, parseInt(gearInput.value) || 10);
+            if (pinInput) pinionTeethArr[i] = Math.max(6, parseInt(pinInput.value) || 10);
+            if (gearInput) gearTeethArr[i] = Math.max(6, parseInt(gearInput.value) || 10);
         }
     }
-
-    // Core gearbox computation (no linear speed, no crane)
+    
+    // Core gearbox calculation
     function computeGearTrain() {
         syncTeethFromTable();
         let totalRatio = 1.0;
         let stageRatios = [];
-        for(let i=0; i<currentSteps; i++) {
+        for (let i = 0; i < currentSteps; i++) {
             let pin = pinionTeethArr[i] || 12;
             let gear = gearTeethArr[i] || 30;
             let ratio = gear / pin;
-            stageRatios.push({stage:i+1, pin, gear, ratio});
+            stageRatios.push({ stage: i+1, pin, gear, ratio });
             totalRatio *= ratio;
         }
         let inputRPM = parseFloat(motorRPMEl.value) || 0;
-        let outputRPM = (inputRPM && totalRatio !==0) ? inputRPM / totalRatio : 0;
+        let outputRPM = (inputRPM && totalRatio !== 0) ? inputRPM / totalRatio : 0;
         let inputTorque = parseFloat(inputTorqueEl.value) || 0;
         let outputTorque = inputTorque * totalRatio;
         
         return { totalRatio, outputRPM, outputTorque, stageRatios, inputRPM, inputTorque };
     }
-
-    // Multi-unit torque display, no linear speed references
+    
+    // Update stage ratio cells in table
+    function updateStageRatioCells(calc) {
+        for (let i = 0; i < calc.stageRatios.length; i++) {
+            let ratioCell = document.getElementById(`stageRatio_${i}`);
+            if (ratioCell) {
+                ratioCell.innerText = calc.stageRatios[i].ratio.toFixed(5);
+            }
+        }
+    }
+    
+    // Multi-unit performance (no linear speed)
     function updatePerformanceOutputs(calc) {
         let outputRPM = calc.outputRPM;
         let outputRad_s = outputRPM * (2 * Math.PI) / 60;
@@ -548,8 +592,10 @@
         
         performanceContainer.innerHTML = `
             <p style="margin-bottom:12px;"><strong>Total Gear Ratio:</strong> <span class="highlight">${calc.totalRatio.toFixed(6)}</span> &nbsp;| <strong>Velocity Ratio:</strong> 1 : ${calc.totalRatio.toFixed(5)}</p>
-            <div style="margin-bottom: 10px;"><strong>🔄 OUTPUT RPM</strong>
-                <table class="perf-subtable"><tr><td>rpm</td><td>${outputRPM.toFixed(2)}</td><td>rad/s</td><td>${outputRad_s.toFixed(3)}</td></tr></table>
+            <div style="margin-bottom: 10px;"><strong>🔄 OUTPUT SPEED</strong>
+                <table class="perf-subtable">
+                    <tr><td>RPM</td><td>${outputRPM.toFixed(2)}</td><td>rad/s</td><td>${outputRad_s.toFixed(3)}</td></tr>
+                </table>
             </div>
             <div><strong>⚙️ OUTPUT TORQUE (multi-unit)</strong>
                 <table class="perf-subtable">
@@ -559,134 +605,133 @@
             </div>
         `;
     }
-
-    // Analytical details + diagram (pure gearbox, no crane, no linear wheel)
+    
+    // Detailed analytical steps + diagram
     function updateAnalyticsAndDiagram(calc) {
-        for(let i=0; i<calc.stageRatios.length; i++) {
-            let ratioCell = document.getElementById(`stageRatio_${i}`);
-            if(ratioCell) ratioCell.innerText = calc.stageRatios[i].ratio.toFixed(5);
-        }
         let stepsDetail = calc.stageRatios.map(s => `Stage ${s.stage}: Ratio = ${s.gear}/${s.pin} = ${s.ratio.toFixed(5)}`).join('\n');
-        let calcsText = `COMPLETE GEAR TRAIN ANALYSIS (Ideal Efficiency)\n------------------------------------------------\nInput Speed : ${calc.inputRPM.toFixed(2)} RPM\nInput Torque: ${calc.inputTorque.toFixed(2)} Nm\n\n${stepsDetail}\n\nTotal Gear Ratio = ${calc.totalRatio.toFixed(6)}\nOutput RPM = ${calc.outputRPM.toFixed(2)}\nOutput Torque = ${calc.outputTorque.toFixed(2)} Nm\n\n* Values assume 100% mechanical efficiency. All calculations based on gear tooth counts.`;
+        let calcsText = `COMPLETE GEAR TRAIN ANALYSIS (Ideal Efficiency)\n------------------------------------------------\nInput Speed     : ${calc.inputRPM.toFixed(2)} RPM\nInput Torque    : ${calc.inputTorque.toFixed(2)} Nm\n\n${stepsDetail}\n\nTotal Gear Ratio = ${calc.totalRatio.toFixed(6)}\nOutput RPM       = ${calc.outputRPM.toFixed(2)}\nOutput Torque    = ${calc.outputTorque.toFixed(2)} Nm\n\n* Values assume 100% mechanical efficiency. All ratios derived from tooth counts.`;
         calcDetailsDiv.innerText = calcsText;
         
-        // draw gear train diagram
+        // Draw gear train visualization
         const ctx = canvas.getContext('2d');
         let w = canvas.clientWidth;
         canvas.width = w;
         canvas.height = 240;
-        ctx.clearRect(0,0,canvas.width,canvas.height);
-        if(calc.stageRatios.length === 0) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (calc.stageRatios.length === 0) return;
         let stepX = canvas.width / (calc.stageRatios.length + 1);
-        let yCenter = canvas.height/2;
+        let yCenter = canvas.height / 2;
         ctx.font = "bold 12px 'Segoe UI'";
-        for(let i=0; i<calc.stageRatios.length; i++) {
+        for (let i = 0; i < calc.stageRatios.length; i++) {
             let xPin = stepX * (i+1) - 22;
             let xGear = stepX * (i+1) + 22;
+            // pinion circle
             ctx.beginPath(); ctx.arc(xPin, yCenter, 18, 0, 2*Math.PI); ctx.fillStyle = '#e7edf6'; ctx.fill(); ctx.stroke();
             ctx.fillStyle = '#001f4e'; ctx.fillText(`P${i+1}`, xPin-8, yCenter+5);
+            // gear circle
             ctx.beginPath(); ctx.arc(xGear, yCenter, 26, 0, 2*Math.PI); ctx.fillStyle = '#f4e9d8'; ctx.fill(); ctx.stroke();
             ctx.fillStyle = '#6a3e0a'; ctx.fillText(`G${i+1}`, xGear-8, yCenter+5);
+            // connection line
             ctx.beginPath(); ctx.moveTo(xPin+14, yCenter); ctx.lineTo(xGear-22, yCenter); ctx.lineWidth = 1.8; ctx.stroke();
             ctx.fillStyle = '#2c6e9e'; ctx.font = "bold 10px monospace";
             ctx.fillText(`${calc.stageRatios[i].ratio.toFixed(2)}`, (xPin+xGear)/2-15, yCenter-18);
-            if(i>0){
+            // inter-stage shaft connection
+            if (i > 0) {
                 let prevGearX = stepX*(i) + 22;
                 let currPinX = stepX*(i+1) - 22;
                 ctx.beginPath(); ctx.moveTo(prevGearX, yCenter); ctx.lineTo(currPinX, yCenter); ctx.lineWidth = 2.2; ctx.stroke();
             }
         }
     }
-
+    
     function updateAll() {
         let calc = computeGearTrain();
+        updateStageRatioCells(calc);
         updatePerformanceOutputs(calc);
         updateAnalyticsAndDiagram(calc);
     }
-
-    // Auto-design gear train based on target RPM (no crane, only gearbox)
+    
+    // Auto-design based on desired input/output RPM
     function autoDesignFromSpeed() {
         let speedIn = parseFloat(advSpeedIn.value);
         let speedOut = parseFloat(advSpeedOut.value);
-        if(isNaN(speedIn) || isNaN(speedOut) || speedIn<=0 || speedOut<=0) {
+        if (isNaN(speedIn) || isNaN(speedOut) || speedIn <= 0 || speedOut <= 0) {
             advMsg.innerText = "⚠️ Provide valid positive Input and Output RPM values.";
             return;
         }
         let requiredRatio = speedIn / speedOut;
         let steps = 2;
-        if(requiredRatio > 12) steps = 3;
-        if(requiredRatio > 35) steps = 4;
-        if(requiredRatio > 80) steps = 5;
+        if (requiredRatio > 12) steps = 3;
+        if (requiredRatio > 35) steps = 4;
+        if (requiredRatio > 80) steps = 5;
         let ratioPerStage = Math.pow(requiredRatio, 1/steps);
         let newPinion = [], newGear = [];
-        for(let i=0; i<steps; i++) {
-            let pinBase = (i===0) ? 18 : 20;
+        for (let i = 0; i < steps; i++) {
+            let pinBase = (i === 0) ? 18 : 20;
             let gearTarget = Math.round(pinBase * ratioPerStage);
-            if(gearTarget < pinBase+2) gearTarget = pinBase+2;
-            if(gearTarget > 150) gearTarget = 150;
+            if (gearTarget < pinBase + 2) gearTarget = pinBase + 2;
+            if (gearTarget > 150) gearTarget = 150;
             newPinion.push(pinBase);
             newGear.push(gearTarget);
         }
         stepsInput.value = steps;
-        rebuildTeethTable();
+        // reset arrays
+        pinionTeethArr = [...newPinion];
+        gearTeethArr = [...newGear];
+        rebuildTeethTable();  // this will rebuild UI and trigger updateAll
         setTimeout(() => {
-            for(let i=0; i<steps && i<newPinion.length; i++) {
-                let pinInput = document.querySelector(`.pinionTeethIn[data-stage='${i}']`);
-                let gearInput = document.querySelector(`.gearTeethIn[data-stage='${i}']`);
-                if(pinInput) pinInput.value = newPinion[i];
-                if(gearInput) gearInput.value = newGear[i];
-                if(pinionTeethArr[i] !== undefined) pinionTeethArr[i] = newPinion[i];
-                if(gearTeethArr[i] !== undefined) gearTeethArr[i] = newGear[i];
-            }
-            updateAll();
+            // ensure final values are set and update message
             let finalCalc = computeGearTrain();
             advMsg.innerHTML = `✅ Auto-optimized: ${steps} stages | Achieved ratio = ${finalCalc.totalRatio.toFixed(4)} (Target ${requiredRatio.toFixed(3)}) | Output RPM: ${finalCalc.outputRPM.toFixed(2)}`;
-        }, 20);
+        }, 30);
     }
     
-    // Print official report (pure gearbox, no crane/wheel)
+    // Print official report (pure gearbox)
     function printDesign() {
         updateAll();
         let calc = computeGearTrain();
         let canvasData = canvas.toDataURL();
         let stageRows = calc.stageRatios.map(s => `<tr><td>${s.stage}</td><td>${s.pin}</td><td>${s.gear}</td><td>${s.ratio.toFixed(5)}</td></tr>`).join('');
-        let outputTorqueNm = calc.outputTorque;
-        let outputTorqueLbFt = outputTorqueNm * 0.737562;
-        let outputTorqueKgm = outputTorqueNm / 9.80665;
+        let outputTorqueLbFt = calc.outputTorque * 0.737562;
+        let outputTorqueKgm = calc.outputTorque / 9.80665;
         
         let printWindow = window.open('', '_blank');
-        printWindow.document.write(`<html><head><title>UR Industries - Official Gearbox Report</title><style>
-            body{font-family:'Times New Roman',serif;padding:30px;} 
-            table{border-collapse:collapse;width:100%;margin:10px 0} 
-            td,th{border:1px solid #aaa;padding:8px} 
-            th{background:#eef3fc} 
-            .section-title{background:#f0f4f8;padding:8px;margin-top:20px;font-weight:bold}
-            .multi-unit{font-size:0.8rem; background:#faf9f0;}
-        </style></head><body>
-        <div><h1>⚙️ Gear Train Official Report</h1><p>UR Industries | Precision Gearbox Analysis | No external load data</p></div>
+        printWindow.document.write(`<!DOCTYPE html>
+        <html>
+        <head><title>UR Industries - Gearbox Report</title>
+        <style>
+            body { font-family: 'Times New Roman', serif; padding: 30px; }
+            table { border-collapse: collapse; width: 100%; margin: 10px 0; }
+            td, th { border: 1px solid #aaa; padding: 8px; text-align: center; }
+            th { background: #eef3fc; }
+            .section-title { background: #f0f4f8; padding: 8px; margin-top: 20px; font-weight: bold; }
+            .multi-unit { font-size: 0.8rem; }
+            img { max-width: 100%; border: 1px solid #000; margin: 12px 0; }
+        </style>
+        </head>
+        <body>
+        <h1>⚙️ Gear Train Official Report</h1>
+        <p>UR Industries | Precision Gearbox Analysis | No external load data</p>
         <div class="section-title">📌 Input Parameters</div>
-        <table><tr><th>Parameter</th><th>Value</th></tr>
-        <tr><td>Gear Type</td><td>${document.getElementById('gearType').value}</td></tr>
-        <tr><td>Number of Stages</td><td>${currentSteps}</td></tr>
-        <tr><td>Input Torque (Nm)</td><td>${calc.inputTorque.toFixed(2)}</td></tr>
-        <tr><td>Motor Speed (RPM)</td><td>${calc.inputRPM.toFixed(2)}</td></tr>
+        <table>
+            <tr><th>Parameter</th><th>Value</th></tr>
+            <tr><td>Gear Type</td><td>${document.getElementById('gearType').value}</td></tr>
+            <tr><td>Number of Stages</td><td>${currentSteps}</td></tr>
+            <tr><td>Input Torque (Nm)</td><td>${calc.inputTorque.toFixed(2)}</td></tr>
+            <tr><td>Motor Speed (RPM)</td><td>${calc.inputRPM.toFixed(2)}</td></tr>
         </table>
-        
         <div class="section-title">🔧 Stage-wise Gear Ratios</div>
         <table><thead><tr><th>Stage</th><th>Pinion Teeth</th><th>Gear Teeth</th><th>Stage Ratio</th></tr></thead><tbody>${stageRows}</tbody></table>
-        
         <div class="section-title">📈 Gearbox Output Performance</div>
         <table>
             <tr><td>Total Gear Ratio</td><td colspan="2">${calc.totalRatio.toFixed(6)}</td></tr>
             <tr><td>Output RPM</td><td colspan="2">${calc.outputRPM.toFixed(2)} rpm</td></tr>
-            <tr><td rowspan="3">Output Torque</td><td>Nm</td><td>${outputTorqueNm.toFixed(2)}</td></tr>
+            <tr><td rowspan="3">Output Torque</td><td>Nm</td><td>${calc.outputTorque.toFixed(2)}</td></tr>
             <tr><td>lb·ft</td><td>${outputTorqueLbFt.toFixed(2)}</td></tr>
             <tr><td>kgf·m</td><td>${outputTorqueKgm.toFixed(2)}</td></tr>
         </table>
-        
         <div class="section-title">📐 Schematic View</div>
-        <img src="${canvasData}" style="max-width:100%; border:1px solid #000; margin:12px 0;">
-        
+        <img src="${canvasData}" alt="Gear Train Diagram">
         <div style="margin-top:30px; text-align:center; border-top:1px solid #aaa; padding-top:16px; font-size:0.7rem;">
             Generated: ${new Date().toLocaleString()}<br>
             UR Industries | Gearbox Analyzer | UR/GT/REPORT/PURE<br>
@@ -697,14 +742,24 @@
         printWindow.print();
     }
     
-    // Event bindings
-    stepsInput.addEventListener('change', () => rebuildTeethTable());
+    // Event listeners
+    stepsInput.addEventListener('change', () => {
+        let newSteps = parseInt(stepsInput.value);
+        if (isNaN(newSteps)) newSteps = 2;
+        currentSteps = newSteps;
+        // Trim or extend arrays
+        while (pinionTeethArr.length < currentSteps) pinionTeethArr.push(20);
+        while (gearTeethArr.length < currentSteps) gearTeethArr.push(42);
+        pinionTeethArr = pinionTeethArr.slice(0, currentSteps);
+        gearTeethArr = gearTeethArr.slice(0, currentSteps);
+        rebuildTeethTable();
+    });
     recalcBtn.addEventListener('click', updateAll);
     printBtn.addEventListener('click', printDesign);
     autoGearBtn.addEventListener('click', autoDesignFromSpeed);
     [inputTorqueEl, motorRPMEl].forEach(el => el.addEventListener('input', updateAll));
     
-    // Initial build
+    // Initialize
     rebuildTeethTable();
 </script>
 </body>
