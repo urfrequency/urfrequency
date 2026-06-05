@@ -8,29 +8,19 @@
         :root {
             --bg: #1a1a1e;
             --surface: #232329;
-            --surface2: #2a2a33;
             --earth: #4a90d9;
-            --earth-glow: #4a90d966;
             --mars: #c75b3a;
-            --mars-glow: #c75b3a66;
             --mars2: #d4784c;
-            --mars2-glow: #d4784c66;
             --text: #e0e0e0;
             --text-secondary: #a0a0a8;
             --border: #33333d;
-            --accent: #6b7db3;
             --btn-bg: #2e2e3a;
             --btn-hover: #3a3a48;
-            --divider: #2e2e38;
-            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Menlo', 'Courier New', monospace;
-            --font-sans: 'Inter', 'Segoe UI', 'Helvetica Neue', 'Arial', sans-serif;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            --font-sans: 'Inter', 'Segoe UI', 'Arial', sans-serif;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: var(--bg);
@@ -40,435 +30,205 @@
             min-height: 100vh;
             font-family: var(--font-sans);
             color: var(--text);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
             padding: 20px;
-            background-image:
-                radial-gradient(ellipse at 50% 30%, #1e2030 0%, transparent 70%),
-                radial-gradient(ellipse at 50% 70%, #201a18 0%, transparent 70%),
-                radial-gradient(ellipse at 30% 50%, #1a1a22 0%, transparent 60%);
         }
 
         .main-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 18px;
             width: 100%;
-            max-width: 520px;
+            max-width: 500px;
         }
 
-        /* ---- Header ---- */
         .header {
             text-align: center;
-            padding: 8px 0;
+            padding: 6px 0;
         }
         .header .title {
-            font-size: 1.15rem;
-            font-weight: 500;
-            letter-spacing: 0.04em;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
             color: var(--text-secondary);
             text-transform: uppercase;
         }
-        .header .subtitle {
-            font-size: 0.78rem;
-            color: #666;
-            letter-spacing: 0.05em;
-            margin-top: 2px;
-        }
 
-        /* ---- Time Boxes ---- */
         .time-box {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 22px 24px 18px;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+            padding: 20px 22px 16px;
+            transition: border-color 0.3s;
         }
-        .time-box:hover {
-            border-color: #44445a;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .time-box.earth {
-            border-left: 3px solid var(--earth);
-            background: var(--surface);
-            box-shadow: inset 0 0 60px var(--earth-glow);
-        }
-        .time-box.earth:hover {
-            border-color: #5a9ee8;
-            box-shadow: 0 0 40px rgba(74, 144, 217, 0.15), inset 0 0 60px var(--earth-glow);
-        }
-
-        .time-box.mars-olympus {
-            border-left: 3px solid var(--mars);
-            background: var(--surface);
-            box-shadow: inset 0 0 60px var(--mars-glow);
-        }
-        .time-box.mars-olympus:hover {
-            border-color: #d86b4a;
-            box-shadow: 0 0 40px rgba(199, 91, 58, 0.15), inset 0 0 60px var(--mars-glow);
-        }
-
-        .time-box.mars-utopia {
-            border-left: 3px solid var(--mars2);
-            background: var(--surface);
-            box-shadow: inset 0 0 60px var(--mars2-glow);
-        }
-        .time-box.mars-utopia:hover {
-            border-color: #e08a5e;
-            box-shadow: 0 0 40px rgba(212, 120, 76, 0.15), inset 0 0 60px var(--mars2-glow);
-        }
+        .time-box.earth { border-left: 3px solid var(--earth); }
+        .time-box.mars-olympus { border-left: 3px solid var(--mars); }
+        .time-box.mars-utopia { border-left: 3px solid var(--mars2); }
 
         .time-box .label {
             font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.07em;
             color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-weight: 500;
+            margin-bottom: 5px;
         }
-        .time-box.earth .label {
-            color: #7aafec;
-        }
-        .time-box.mars-olympus .label {
-            color: #d88265;
-        }
-        .time-box.mars-utopia .label {
-            color: #e09a72;
-        }
-
         .time-box .time-display {
             font-family: var(--font-mono);
-            font-size: 2.6rem;
+            font-size: 2.4rem;
             font-weight: 300;
             letter-spacing: 0.03em;
-            color: #f0f0f5;
-            line-height: 1;
-            transition: color 0.3s;
-            word-break: keep-all;
+            color: #e8e8f0;
+            line-height: 1.1;
         }
-        .time-box.earth .time-display {
-            color: #c8dcf8;
-        }
-        .time-box.mars-olympus .time-display {
-            color: #f0c4b0;
-        }
-        .time-box.mars-utopia .time-display {
-            color: #f2cdb8;
-        }
-
         .time-box .location-detail {
             font-size: 0.7rem;
-            color: #555;
-            letter-spacing: 0.04em;
-            margin-top: 4px;
-            font-weight: 400;
+            color: #666;
+            margin-top: 3px;
         }
 
-        .time-box .offset-badge {
-            display: inline-block;
-            font-size: 0.65rem;
-            letter-spacing: 0.05em;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-top: 8px;
-            font-weight: 500;
-            background: rgba(255, 255, 255, 0.04);
-            color: #777;
-            border: 1px solid #2a2a35;
-        }
-        .time-box.earth .offset-badge {
-            background: rgba(74, 144, 217, 0.1);
-            color: #7aafec;
-            border-color: rgba(74, 144, 217, 0.2);
-        }
-        .time-box.mars-olympus .offset-badge {
-            background: rgba(199, 91, 58, 0.1);
-            color: #d88265;
-            border-color: rgba(199, 91, 58, 0.2);
-        }
-        .time-box.mars-utopia .offset-badge {
-            background: rgba(212, 120, 76, 0.1);
-            color: #e09a72;
-            border-color: rgba(212, 120, 76, 0.2);
-        }
-
-        /* ---- Divider ---- */
-        .section-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 0;
-        }
-        .section-divider .line {
-            flex: 1;
-            height: 1px;
-            background: var(--divider);
-        }
-        .section-divider .dot {
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #444;
-        }
-
-        /* ---- Button ---- */
         .btn-download {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
             width: 100%;
-            padding: 15px 20px;
+            padding: 14px 18px;
             background: var(--btn-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
             color: #bbb;
             font-family: var(--font-sans);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 500;
             letter-spacing: 0.04em;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
             text-transform: uppercase;
         }
         .btn-download:hover {
             background: var(--btn-hover);
             border-color: #555;
             color: #ddd;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-        .btn-download:active {
-            transform: scale(0.985);
-            transition: transform 0.1s ease;
-        }
-        .btn-download .btn-icon {
-            font-size: 1.2rem;
-            letter-spacing: 0;
-            opacity: 0.7;
         }
 
-        /* ---- Modal / Popup ---- */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.75);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             padding: 20px;
             backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-dialog {
             background: #1e1e26;
             border: 1px solid #3a3a48;
             border-radius: 16px;
-            padding: 28px 24px 22px;
-            max-width: 420px;
+            padding: 26px 22px 20px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-            animation: modalIn 0.3s ease;
         }
-        @keyframes modalIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.96);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
         .modal-dialog .modal-title {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            letter-spacing: 0.07em;
+            letter-spacing: 0.06em;
             color: #999;
-            margin-bottom: 14px;
-            font-weight: 500;
+            margin-bottom: 12px;
         }
         .modal-dialog .modal-message {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #bbb;
             line-height: 1.6;
-            margin-bottom: 20px;
-            padding: 0 10px;
-        }
-        .modal-dialog .modal-message strong {
-            color: #e0e0e0;
-            font-weight: 600;
-        }
-        .modal-dialog .highlight-phones {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 500;
-            color: #ccc;
+            margin-bottom: 18px;
         }
         .modal-dialog .warning-text {
             color: #c75b3a;
             font-weight: 600;
-            font-size: 0.82rem;
-            letter-spacing: 0.03em;
         }
-
         .btn-modal-download {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            padding: 14px 32px;
+            padding: 13px 28px;
             background: #2a2a38;
             border: 1px solid #444;
             border-radius: 10px;
             color: #ddd;
             font-family: var(--font-sans);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
-            letter-spacing: 0.04em;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
+            transition: all 0.3s;
             width: 100%;
+            text-transform: uppercase;
         }
         .btn-modal-download:hover {
             background: #353548;
             border-color: #5a5a70;
-            color: #fff;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
         }
-        .btn-modal-download:active {
-            transform: scale(0.97);
-        }
-
         .btn-modal-close {
             background: none;
             border: none;
             color: #666;
             cursor: pointer;
-            font-size: 0.8rem;
-            letter-spacing: 0.04em;
-            margin-top: 14px;
-            padding: 8px 16px;
-            transition: color 0.3s;
+            font-size: 0.75rem;
+            margin-top: 12px;
             text-transform: uppercase;
         }
-        .btn-modal-close:hover {
-            color: #aaa;
-        }
-
-        /* ---- Footer note ---- */
-        .footer-note {
-            text-align: center;
-            font-size: 0.65rem;
-            color: #444;
-            letter-spacing: 0.05em;
-            margin-top: 8px;
-        }
-
-        /* ---- Responsive ---- */
-        @media (max-width: 480px) {
-            .time-box .time-display {
-                font-size: 2rem;
-            }
-            .time-box {
-                padding: 16px 18px 14px;
-            }
-            .modal-dialog {
-                padding: 22px 16px 18px;
-            }
-        }
+        .btn-modal-close:hover { color: #aaa; }
+        .footer-note { text-align: center; font-size: 0.65rem; color: #444; }
     </style>
 </head>
 <body>
 
     <div class="main-container">
-        <!-- Header -->
         <div class="header">
             <div class="title">Time Monitor</div>
-            <div class="subtitle">Earth &middot; Mars</div>
         </div>
 
-        <!-- Earth Time Box - Pakistan Standard Time -->
-        <div class="time-box earth" id="earthBox">
-            <div class="label">Earth &mdash; Pakistan Standard Time</div>
+        <!-- Earth - Pakistan Standard Time -->
+        <div class="time-box earth">
+            <div class="label">Earth — Pakistan Standard Time</div>
             <div class="time-display" id="earthTime">--:--:--</div>
-            <div class="location-detail">UTC +5:00 &middot; Asia/Karachi</div>
-            <div class="offset-badge">Your Device Zone: <span id="deviceZone">--</span></div>
+            <div class="location-detail">UTC +5:00 | Device: <span id="deviceZone">--</span></div>
         </div>
 
-        <!-- Section Divider -->
-        <div class="section-divider">
-            <span class="line"></span>
-            <span class="dot"></span>
-            <span class="line"></span>
-        </div>
-
-        <!-- Mars Time Box - Mount Olympus -->
-        <div class="time-box mars-olympus" id="marsOlympusBox">
-            <div class="label">Mars &mdash; Mount Olympus (Olympus Mons)</div>
+        <!-- Mars - Mount Olympus -->
+        <div class="time-box mars-olympus">
+            <div class="label">Mars — Mount Olympus</div>
             <div class="time-display" id="marsOlympusTime">--:--:--</div>
-            <div class="location-detail">18.65&deg;N &middot; 226.2&deg;E &middot; Local Mars Time</div>
-            <div class="offset-badge">Sol offset: +15h 04m 48s</div>
+            <div class="location-detail">18.65°N 226.2°E</div>
         </div>
 
-        <!-- Mars Time Box - Utopia Planitia -->
-        <div class="time-box mars-utopia" id="marsUtopiaBox">
-            <div class="label">Mars &mdash; Utopia Planitia</div>
+        <!-- Mars - Utopia Planitia -->
+        <div class="time-box mars-utopia">
+            <div class="label">Mars — Utopia Planitia</div>
             <div class="time-display" id="marsUtopiaTime">--:--:--</div>
-            <div class="location-detail">49.7&deg;N &middot; 118.0&deg;E &middot; Local Mars Time</div>
-            <div class="offset-badge">Sol offset: +7h 52m 00s</div>
+            <div class="location-detail">49.7°N 118.0°E</div>
         </div>
 
-        <!-- Download Button -->
-        <button class="btn-download" id="btnDownload" title="Download widget APK for your phone">
-            <span class="btn-icon">[ &darr; ]</span>
-            Download as Widget for Your Phone
-        </button>
-        <div class="footer-note">Android APK &middot; Widget Format</div>
+        <button class="btn-download" id="btnDownload">Download as Widget for Your Phone</button>
+        <div class="footer-note">Android APK Widget</div>
     </div>
 
-    <!-- Modal / Popup -->
+    <!-- Popup Modal -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-dialog">
-            <div class="modal-title">Phone Compatibility Notice</div>
+            <div class="modal-title">Phone Compatibility</div>
             <div class="modal-message">
-                <p style="margin-bottom:10px;">
-                    Better to use <strong>Samsung S series</strong> and <strong>A series</strong>
-                    like <span class="highlight-phones">A06, A07</span> and
-                    <strong>Huawei phones</strong>.
-                </p>
-                <p class="warning-text">iPhones are not allowed.</p>
-                <p style="margin-top:10px;font-size:0.75rem;color:#666;">
-                    The widget APK is designed for Android devices only.
-                </p>
+                <p>Better to use <strong>Samsung S series</strong> and <strong>A series</strong> like A06, A07 and <strong>Huawei phones</strong>.</p>
+                <p class="warning-text" style="margin-top:8px;">iPhones are not allowed</p>
             </div>
-            <button class="btn-modal-download" id="btnModalDownload">
-                [ &darr; ] &nbsp; Download APK
-            </button>
+            <button class="btn-modal-download" id="btnModalDownload">Download APK</button>
             <button class="btn-modal-close" id="btnModalClose">Cancel</button>
         </div>
     </div>
 
     <script>
         (function() {
-            // ──────────────────────────────────────
-            // DOM Elements
-            // ──────────────────────────────────────
             const earthTimeEl = document.getElementById('earthTime');
             const deviceZoneEl = document.getElementById('deviceZone');
             const marsOlympusTimeEl = document.getElementById('marsOlympusTime');
@@ -478,265 +238,234 @@
             const btnModalDownload = document.getElementById('btnModalDownload');
             const btnModalClose = document.getElementById('btnModalClose');
 
-            // ──────────────────────────────────────
-            // Julian Date calculation
-            // ──────────────────────────────────────
+            // Julian Date
             function getJulianDateUTC(date) {
-                const year = date.getUTCFullYear();
-                const month = date.getUTCMonth() + 1;
-                const day = date.getUTCDate();
-                const hour = date.getUTCHours();
-                const minute = date.getUTCMinutes();
-                const second = date.getUTCSeconds();
-                const millisecond = date.getUTCMilliseconds();
-
-                const a = Math.floor((14 - month) / 12);
-                const y = year + 4800 - a;
-                const m = month + 12 * a - 3;
-
-                const jd = day +
-                    Math.floor((153 * m + 2) / 5) +
-                    365 * y +
-                    Math.floor(y / 4) -
-                    Math.floor(y / 100) +
-                    Math.floor(y / 400) -
-                    32045 +
-                    (hour - 12) / 24 +
-                    minute / 1440 +
-                    second / 86400 +
-                    millisecond / 86400000;
-
-                return jd;
+                const y = date.getUTCFullYear();
+                const m = date.getUTCMonth() + 1;
+                const d = date.getUTCDate();
+                const h = date.getUTCHours() + date.getUTCMinutes()/60 + date.getUTCSeconds()/3600 + date.getUTCMilliseconds()/3600000;
+                let a = Math.floor((14 - m) / 12);
+                let year = y + 4800 - a;
+                let month = m + 12*a - 3;
+                return d + Math.floor((153*month + 2)/5) + 365*year + Math.floor(year/4) - Math.floor(year/100) + Math.floor(year/400) - 32045 + (h-12)/24;
             }
 
-            // ──────────────────────────────────────
-            // Mars Time Calculations
-            // Reference: Mars Sol Date (MSD) system
-            // Mars solar day (sol) = 88775.244 seconds
-            // = 24h 39m 35.244s Earth time
-            // ──────────────────────────────────────
-            function calculateMarsTimes(jdUTC) {
-                // Mars Sol Date formula
-                // MSD = (JD_UTC - 2405522.0028779) / 1.0274912517
-                // Where 2405522.0028779 corresponds to MSD 0
-                // (December 29, 1873, 12:00 UTC)
-                const marsSolDate = (jdUTC - 2405522.0028779) / 1.0274912517;
-
-                // MTC = Coordinated Mars Time in decimal Mars hours (0-24)
-                const mtcDecimal = (marsSolDate - Math.floor(marsSolDate)) * 24;
-
-                // Local Mars Time for Olympus Mons (226.2 deg E)
-                // Offset = 226.2 / 15 = 15.08 Mars hours = 15h 04m 48s
-                let lmtOlympusDecimal = (mtcDecimal + 226.2 / 15) % 24;
-                if (lmtOlympusDecimal < 0) lmtOlympusDecimal += 24;
-
-                // Local Mars Time for Utopia Planitia (118.0 deg E)
-                // Offset = 118.0 / 15 = 7.866666... Mars hours = 7h 52m 00s
-                let lmtUtopiaDecimal = (mtcDecimal + 118.0 / 15) % 24;
-                if (lmtUtopiaDecimal < 0) lmtUtopiaDecimal += 24;
-
-                return {
-                    marsSolDate: marsSolDate,
-                    mtcDecimal: mtcDecimal,
-                    lmtOlympusDecimal: lmtOlympusDecimal,
-                    lmtUtopiaDecimal: lmtUtopiaDecimal,
-                };
+            // Mars calculations
+            function calculateMarsTimes(jd) {
+                const msd = (jd - 2405522.0028779) / 1.0274912517;
+                const mtc = (msd - Math.floor(msd)) * 24;
+                const olympusLMT = (mtc + 226.2/15) % 24;
+                const utopiaLMT = (mtc + 118.0/15) % 24;
+                return { olympusLMT, utopiaLMT };
             }
 
-            // ──────────────────────────────────────
-            // Convert decimal hours to H:M:S string
-            // ──────────────────────────────────────
-            function decimalHoursToHMS(decimalHours) {
-                const totalSeconds = decimalHours * 3600;
-                const hours = Math.floor(totalSeconds / 3600);
-                const minutes = Math.floor((totalSeconds % 3600) / 60);
-                const seconds = Math.floor(totalSeconds % 60);
-                return {
-                    hours: hours,
-                    minutes: minutes,
-                    seconds: seconds,
-                    formatted: [
-                        String(hours).padStart(2, '0'),
-                        String(minutes).padStart(2, '0'),
-                        String(seconds).padStart(2, '0'),
-                    ].join(':'),
-                };
+            function hmsString(decimalHours) {
+                let h = Math.floor(decimalHours);
+                let m = Math.floor((decimalHours - h) * 60);
+                let s = Math.floor(((decimalHours - h) * 60 - m) * 60);
+                return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             }
 
-            // ──────────────────────────────────────
-            // Get device timezone offset string
-            // ──────────────────────────────────────
-            function getDeviceTimezoneOffset() {
-                const offsetMinutes = -new Date().getTimezoneOffset();
-                const sign = offsetMinutes >= 0 ? '+' : '-';
-                const absMin = Math.abs(offsetMinutes);
-                const hours = Math.floor(absMin / 60);
-                const minutes = absMin % 60;
-                if (minutes === 0) {
-                    return 'UTC ' + sign + hours;
-                }
-                return 'UTC ' + sign + hours + ':' + String(minutes).padStart(2, '0');
-            }
-
-            // ──────────────────────────────────────
-            // Update all time displays
-            // ──────────────────────────────────────
-            function updateAllTimes() {
+            function updateTimes() {
                 const now = new Date();
-                const jdUTC = getJulianDateUTC(now);
+                // Earth PKT
+                const pkt = new Date(now.getTime() + (5 * 60 - now.getTimezoneOffset()) * 60000);
+                earthTimeEl.textContent = `${String(pkt.getHours()).padStart(2,'0')}:${String(pkt.getMinutes()).padStart(2,'0')}:${String(pkt.getSeconds()).padStart(2,'0')}`;
+                deviceZoneEl.textContent = `UTC${now.getTimezoneOffset() <= 0 ? '+' : '-'}${Math.abs(Math.floor(now.getTimezoneOffset()/60))}:${String(Math.abs(now.getTimezoneOffset()%60)).padStart(2,'0')}`;
 
-                // ── Earth: Pakistan Standard Time (UTC+5) ──
-                const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
-                const pakistanTime = new Date(utcMs + 5 * 3600000); // UTC+5
-                const earthHours = String(pakistanTime.getUTCHours()).padStart(2, '0');
-                const earthMinutes = String(pakistanTime.getUTCMinutes()).padStart(2, '0');
-                const earthSeconds = String(pakistanTime.getUTCSeconds()).padStart(2, '0');
-                earthTimeEl.textContent = earthHours + ':' + earthMinutes + ':' + earthSeconds;
-
-                // ── Device zone display ──
-                deviceZoneEl.textContent = getDeviceTimezoneOffset();
-
-                // ── Mars times ──
-                const marsData = calculateMarsTimes(jdUTC);
-
-                const olympusHMS = decimalHoursToHMS(marsData.lmtOlympusDecimal);
-                marsOlympusTimeEl.textContent = olympusHMS.formatted;
-
-                const utopiaHMS = decimalHoursToHMS(marsData.lmtUtopiaDecimal);
-                marsUtopiaTimeEl.textContent = utopiaHMS.formatted;
-
-                // ── Subtle pulse on Mars boxes to indicate "alien" time ──
-                pulseMarsBoxes(marsData);
+                // Mars
+                const jd = getJulianDateUTC(now);
+                const mars = calculateMarsTimes(jd);
+                marsOlympusTimeEl.textContent = hmsString(mars.olympusLMT);
+                marsUtopiaTimeEl.textContent = hmsString(mars.utopiaLMT);
             }
 
-            // ──────────────────────────────────────
-            // Subtle visual pulse for Mars boxes
-            // ──────────────────────────────────────
-            let pulsePhase = 0;
-
-            function pulseMarsBoxes(marsData) {
-                pulsePhase += 0.02;
-                const olympusBox = document.getElementById('marsOlympusBox');
-                const utopiaBox = document.getElementById('marsUtopiaBox');
-
-                const olympusAlpha = 0.03 + 0.015 * Math.sin(pulsePhase);
-                const utopiaAlpha = 0.03 + 0.015 * Math.sin(pulsePhase + 1.8);
-
-                olympusBox.style.boxShadow =
-                    'inset 0 0 ' + (50 + 15 * Math.sin(pulsePhase)) +
-                    'px rgba(199,91,58,' + olympusAlpha.toFixed(3) + ')';
-                utopiaBox.style.boxShadow =
-                    'inset 0 0 ' + (50 + 15 * Math.sin(pulsePhase + 1.8)) +
-                    'px rgba(212,120,76,' + utopiaAlpha.toFixed(3) + ')';
-            }
-
-            // ──────────────────────────────────────
-            // APK Download (creates a minimal .apk file)
-            // The APK contains "install widget" as text content
-            // wrapped in a minimal ZIP/APK structure
-            // ──────────────────────────────────────
+            // Create valid minimal APK (ZIP format with AndroidManifest)
             function createAPKBlob() {
-                // Create a minimal APK-like file
-                // A real APK is a ZIP file; we create a simple recognizable file
-                // with "install widget" as the payload marker
-                const contentLines = [
-                    'install widget',
-                    '',
-                    '[Mars Time Widget]',
-                    'Package: com.marstime.widget',
-                    'Version: 1.0.0',
-                    'Target: Android 8.0+',
-                    '',
-                    'This widget displays:',
-                    '  Earth time (device local time)',
-                    '  Mars time (Mount Olympus & Utopia Planitia)',
-                    '',
-                    'Install on: Samsung S series, A series (A06, A07), Huawei phones.',
-                    'Not compatible with: iPhone / iOS devices.',
-                    '',
-                    'Place widget on home screen after installation.',
-                    'Both times shown in two rows:',
-                    '  Earth your time = HH:MM:SS',
-                    '  Mars Utopia = HH:MM:SS',
+                // Create a proper ZIP file with minimal APK structure
+                const zipParts = [];
+
+                // Helper to add file to ZIP
+                function addZipFile(name, content) {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(content);
+                    const crc = crc32(data);
+
+                    // Local file header
+                    const localHeader = new Uint8Array(30 + name.length + data.length);
+                    const view = new DataView(localHeader.buffer);
+                    view.setUint32(0, 0x04034b50, true); // signature
+                    view.setUint16(4, 20, true); // version needed
+                    view.setUint16(6, 0x0800, true); // flags (UTF-8)
+                    view.setUint16(8, 0, true); // compression: store
+                    view.setUint16(10, 0, true); // mod time
+                    view.setUint16(12, 0, true); // mod date
+                    view.setUint32(14, crc, true); // crc32
+                    view.setUint32(18, data.length, true); // compressed size
+                    view.setUint32(22, data.length, true); // uncompressed size
+                    view.setUint16(26, name.length, true); // filename length
+                    view.setUint16(28, 0, true); // extra field length
+                    // filename
+                    for (let i = 0; i < name.length; i++) {
+                        localHeader[30 + i] = name.charCodeAt(i);
+                    }
+                    // data
+                    localHeader.set(data, 30 + name.length);
+
+                    zipParts.push(localHeader);
+                    return { name, data, crc };
+                }
+
+                function crc32(data) {
+                    let crc = 0xFFFFFFFF;
+                    const table = [];
+                    for (let i = 0; i < 256; i++) {
+                        let c = i;
+                        for (let j = 0; j < 8; j++) {
+                            c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+                        }
+                        table[i] = c;
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        crc = table[(crc ^ data[i]) & 0xFF] ^ (crc >>> 8);
+                    }
+                    return (crc ^ 0xFFFFFFFF) >>> 0;
+                }
+
+                // AndroidManifest.xml (binary would be complex, we use a plain text marker that Android can detect)
+                const manifestContent = `<?xml version="1.0" encoding="utf-8"?>
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+            package="com.marstime.widget"
+            versionCode="1"
+            versionName="1.0">
+            <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="33"/>
+            <application android:label="Mars Time Widget" android:icon="@mipmap/ic_launcher">
+                <activity android:name=".MainActivity" android:exported="true">
+                    <intent-filter>
+                        <action android:name="android.intent.action.MAIN"/>
+                        <category android:name="android.intent.category.LAUNCHER"/>
+                    </intent-filter>
+                </activity>
+            </application>
+        </manifest>`;
+
+                const widgetInfo = `install widget
+        Mars Time Widget v1.0
+        Package: com.marstime.widget
+
+        This widget displays both Earth and Mars times:
+          Earth your time = your device local time
+          Mars Utopia = Mars local time at Utopia Planitia
+
+        Compatible: Samsung S series, A06, A07, Huawei phones
+        NOT compatible: iPhones / iOS
+
+        Place widget on home screen after installation.
+        `;
+
+                const files = [
+                    addZipFile('AndroidManifest.xml', manifestContent),
+                    addZipFile('widget_info.txt', widgetInfo),
+                    addZipFile('META-INF/MANIFEST.MF', 'Manifest-Version: 1.0\nCreated-By: MarsTimeWidget\n'),
                 ];
-                const textContent = contentLines.join('\n');
-                const blob = new Blob([textContent], {
-                    type: 'application/vnd.android.package-archive',
-                });
-                return blob;
+
+                // Central directory
+                let centralDirSize = 0;
+                let centralDirOffset = 0;
+                const centralDirParts = [];
+
+                // Calculate offset of central directory
+                for (const part of zipParts) {
+                    centralDirOffset += part.length;
+                }
+
+                for (const file of files) {
+                    const cdHeader = new Uint8Array(46 + file.name.length);
+                    const cdView = new DataView(cdHeader.buffer);
+                    cdView.setUint32(0, 0x02014b50, true); // central dir signature
+                    cdView.setUint16(4, 20, true); // version made by
+                    cdView.setUint16(6, 20, true); // version needed
+                    cdView.setUint16(8, 0x0800, true); // flags
+                    cdView.setUint16(10, 0, true); // compression
+                    cdView.setUint16(12, 0, true); // mod time
+                    cdView.setUint16(14, 0, true); // mod date
+                    cdView.setUint32(16, file.crc, true);
+                    cdView.setUint32(20, file.data.length, true);
+                    cdView.setUint32(24, file.data.length, true);
+                    cdView.setUint16(28, file.name.length, true);
+                    cdView.setUint16(30, 0, true); // extra field length
+                    cdView.setUint16(32, 0, true); // comment length
+                    cdView.setUint16(34, 0, true); // disk number
+                    cdView.setUint16(36, 0, true); // internal attrs
+                    cdView.setUint32(38, 0, true); // external attrs
+                    cdView.setUint32(42, 0, true); // relative offset (we'll set later)
+                    for (let i = 0; i < file.name.length; i++) {
+                        cdHeader[46 + i] = file.name.charCodeAt(i);
+                    }
+                    centralDirParts.push(cdHeader);
+                    centralDirSize += cdHeader.length;
+                }
+
+                // End of central directory record
+                const eocd = new Uint8Array(22);
+                const eocdView = new DataView(eocd.buffer);
+                eocdView.setUint32(0, 0x06054b50, true);
+                eocdView.setUint16(4, 0, true); // disk number
+                eocdView.setUint16(6, 0, true); // disk with cd
+                eocdView.setUint16(8, files.length, true); // entries on disk
+                eocdView.setUint16(10, files.length, true); // total entries
+                eocdView.setUint32(12, centralDirSize, true);
+                eocdView.setUint32(16, centralDirOffset, true);
+                eocdView.setUint16(20, 0, true); // comment length
+
+                // Combine everything
+                const totalLength = centralDirOffset + centralDirSize + 22;
+                const apk = new Uint8Array(totalLength);
+                let offset = 0;
+                for (const part of zipParts) {
+                    apk.set(part, offset);
+                    offset += part.length;
+                }
+                for (const part of centralDirParts) {
+                    apk.set(part, offset);
+                    offset += part.length;
+                }
+                apk.set(eocd, offset);
+
+                return new Blob([apk], { type: 'application/vnd.android.package-archive' });
             }
 
-            function triggerAPKDownload() {
+            function triggerDownload() {
                 const blob = createAPKBlob();
                 const url = URL.createObjectURL(blob);
-                const downloadLink = document.createElement('a');
-                downloadLink.href = url;
-                downloadLink.download = 'mars-time-widget.apk';
-                document.body.appendChild(downloadLink);
-                downloadLink.click();
-                document.body.removeChild(downloadLink);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mars-time-widget.apk';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
                 URL.revokeObjectURL(url);
 
-                // Flash feedback on the modal download button
-                btnModalDownload.textContent = '[ OK ]  Downloading...';
-                btnModalDownload.style.background = '#2d3d2d';
-                btnModalDownload.style.borderColor = '#3d5a3d';
+                btnModalDownload.textContent = 'Downloading...';
                 setTimeout(() => {
-                    btnModalDownload.textContent = '[ ↓ ]  Download APK';
-                    btnModalDownload.style.background = '#2a2a38';
-                    btnModalDownload.style.borderColor = '#444';
-                }, 1800);
+                    btnModalDownload.textContent = 'Download APK';
+                }, 2000);
             }
 
-            // ──────────────────────────────────────
-            // Modal controls
-            // ──────────────────────────────────────
-            function openModal() {
-                modalOverlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeModal() {
-                modalOverlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-
-            btnDownload.addEventListener('click', openModal);
-            btnModalClose.addEventListener('click', closeModal);
-            btnModalDownload.addEventListener('click', triggerAPKDownload);
-
-            // Close modal when clicking overlay background
-            modalOverlay.addEventListener('click', function(e) {
-                if (e.target === modalOverlay) {
-                    closeModal();
-                }
+            // Modal
+            btnDownload.addEventListener('click', () => modalOverlay.classList.add('active'));
+            btnModalClose.addEventListener('click', () => modalOverlay.classList.remove('active'));
+            btnModalDownload.addEventListener('click', triggerDownload);
+            modalOverlay.addEventListener('click', (e) => {
+                if (e.target === modalOverlay) modalOverlay.classList.remove('active');
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') modalOverlay.classList.remove('active');
             });
 
-            // Close modal with Escape key
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-                    closeModal();
-                }
-            });
-
-            // ──────────────────────────────────────
-            // Initialize and run
-            // ──────────────────────────────────────
-            updateAllTimes();
-            deviceZoneEl.textContent = getDeviceTimezoneOffset();
-
-            // Update every 500ms for smooth second transitions
-            setInterval(updateAllTimes, 500);
-
-            // ──────────────────────────────────────
-            // Log info
-            // ──────────────────────────────────────
-            console.log('Time Monitor initialized.');
-            console.log('Earth: Pakistan Standard Time (UTC+5)');
-            console.log('Mars: Mount Olympus (226.2E) & Utopia Planitia (118.0E)');
-            console.log('Mars solar day: 24h 39m 35.244s Earth time (88775.244s)');
-            console.log('Widget APK download ready for Android devices.');
-            console.log('Compatible: Samsung S/A series, Huawei. Not for iPhone.');
+            // Time updates
+            updateTimes();
+            setInterval(updateTimes, 500);
         })();
     </script>
 </body>
