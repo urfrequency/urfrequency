@@ -1,0 +1,4 @@
+title=URFREQUENCY
+status=online
+mode=frequency active
+signal=strong
