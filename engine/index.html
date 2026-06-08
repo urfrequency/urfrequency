@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Engine Design Studio – Government Edition</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --panel: #ffffff;
+      --text: #000000;
+      --accent: #006400;
+      --accent2: #004d00;
+      --border: #a0a0a0;
+      --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --radius: 6px;
+      --input-bg: #f9f9f9;
+      --surface: #f0f5f0;
+      --header-bg: #003300;
+      --header-text: #ffffff;
+      --tab-active-bg: #006400;
+      --tab-active-text: #ffffff;
+      --tab-inactive-bg: #e8ece8;
+      --tab-inactive-text: #333;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .app-header {
+      background: var(--header-bg);
+      color: var(--header-text);
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 4px solid #004d00;
+    }
+    .app-header .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .app-header img {
+      height: 44px;
+      width: auto;
+      display: block;
+    }
+    .app-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+    .header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+    .btn:hover {
+      background: #004d00;
+      border-color: #004d00;
+      transform: translateY(-1px);
+    }
+    .btn-outline {
+      background: #fff;
+      color: #000;
+      border: 1px solid #555;
+    }
+    .btn-outline:hover {
+      background: #e8ece8;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    .tabs {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      background: #e8ece8;
+      border-radius: var(--radius);
+      padding: 4px;
+      box-shadow: var(--shadow);
+    }
+    .tab-btn {
+      padding: 12px 22px;
+      border: none;
+      background: var(--tab-inactive-bg);
+      cursor: pointer;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--tab-inactive-text);
+      transition: all 0.2s;
+      letter-spacing: 0.02em;
+    }
+    .tab-btn.active {
+      background: var(--tab-active-bg);
+      color: var(--tab-active-text);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .tab-btn:hover:not(.active) {
+      background: #d4d9d4;
+      color: #000;
+    }
+    .tab-panel {
+      display: none;
+      background: var(--panel);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      animation: fadeIn 0.3s ease;
+      border: 1px solid #ccc;
+    }
+    .tab-panel.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+    .input-group {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .input-group label {
+      font-weight: 700; font-size: 0.85rem; color: #000;
+    }
+    .input-group input, .input-group select {
+      padding: 10px 14px; border: 2px solid #a0a0a0; border-radius: var(--radius);
+      font-size: 0.95rem; background: var(--input-bg); transition: 0.2s; font-family: inherit;
+    }
+    .input-group input:focus, .input-group select:focus {
+      border-color: #006400; outline: none; box-shadow: 0 0 0 3px rgba(0,100,0,0.1); background: #fff;
+    }
+    .input-group .unit { font-size: 0.75rem; color: #555; font-weight: 500; }
+    .section-title {
+      font-size: 1.25rem; font-weight: 700; margin-bottom: 16px; color: #000;
+      border-bottom: 3px solid #006400; padding-bottom: 8px; display: flex; align-items: center; gap: 6px;
+    }
+    .result-card {
+      background: #f5f8f5; border-radius: 8px; padding: 14px; border-left: 4px solid #006400;
+      transition: 0.2s; border: 1px solid #ddd;
+    }
+    .result-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+    .result-card .part-name { font-weight: 700; font-size: 0.9rem; color: #000; }
+    .result-card .part-dim { font-size: 1.1rem; font-weight: 700; color: #004d00; margin: 4px 0; }
+    .result-card .part-desc { font-size: 0.78rem; color: #444; }
+    .highlight-box {
+      background: #e6f0e6; border: 2px solid #006400; border-radius: 8px; padding: 14px 18px;
+      margin: 12px 0; font-weight: 600;
+    }
+    .calc-step {
+      background: #fafafa; border-radius: 8px; padding: 14px 18px; margin: 8px 0;
+      font-family: 'Courier New', monospace; font-size: 0.85rem; border-left: 3px solid #006400;
+      overflow-x: auto; white-space: pre-wrap; word-break: break-all; color: #000;
+    }
+    .calc-step .eq-number { color: #006400; font-weight: 700; }
+    canvas { display: block; margin: 0 auto; border-radius: 4px; background: #fafafa; border: 1px solid #bbb; }
+    .canvas-container { position: relative; text-align: center; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    table th, table td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #999; }
+    table th { background: #003300; color: #fff; font-weight: 700; }
+    table tr:hover td { background: #f0f5f0; }
+    .badge {
+      display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+    }
+    .badge-na { background: #d4edda; color: #155724; }
+    .badge-turbo { background: #f8d7da; color: #721c24; }
+    .badge-sc { background: #fff3cd; color: #856404; }
+    @media print {
+      body { background: #fff; }
+      .app-header, .tabs, .btn, .header-actions { display: none !important; }
+      .tab-panel { display: block !important; break-inside: avoid; box-shadow: none; border: 1px solid #333; margin-bottom: 14px; padding: 16px; }
+      .container { max-width: 100%; padding: 0; margin: 0; }
+      .result-card { break-inside: avoid; }
+      canvas { max-width: 100%; height: auto; }
+      @page { margin: 12mm; size: A4; }
+    }
+    .report-watermark {
+      display: none;
+    }
+    @media print {
+      .report-watermark {
+        display: block; position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 5rem; color: rgba(0,0,0,0.04); pointer-events: none; z-index: 999;
+        font-weight: bold; white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo-title">
+      <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urotto.png" alt="UR Industries Logo">
+      <h1>Engine Design Studio</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline" onclick="switchTab('cad')" title="CAD Drawing">CAD Drawing</button>
+      <button class="btn" onclick="generateFullReport()">Full Report</button>
+      <button class="btn btn-outline" onclick="window.print()">Print All</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="tabs" id="tabNav">
+      <button class="tab-btn active" onclick="switchTab('inputs')">1. Input Parameters</button>
+      <button class="tab-btn" onclick="switchTab('dims')">2. Part Dimensions</button>
+      <button class="tab-btn" onclick="switchTab('cad')">3. CAD Drawing</button>
+      <button class="tab-btn" onclick="switchTab('graphs')">4. Torque & Power</button>
+      <button class="tab-btn" onclick="switchTab('calcs')">5. Calculations</button>
+      <button class="tab-btn" onclick="switchTab('report')">6. Full Report</button>
+    </div>
+
+    <!-- TAB 1: INPUTS -->
+    <div class="tab-panel active" id="panel-inputs">
+      <div class="section-title">Engine Design Input Parameters</div>
+      <div class="grid-3">
+        <div class="input-group"><label>Engine Configuration</label><select id="engineConfig" onchange="updateAll()"><option value="inline">Inline</option><option value="v">V-Type</option><option value="boxer">Boxer (Flat)</option></select></div>
+        <div class="input-group"><label>Number of Cylinders</label><select id="numCylinders" onchange="updateAll()"><option value="4" selected>4</option><option value="3">3</option><option value="6">6</option><option value="8">8</option><option value="12">12</option><option value="2">2</option><option value="1">1</option></select></div>
+        <div class="input-group"><label>Fuel Type</label><select id="fuelType" onchange="updateAll()"><option value="gasoline" selected>Gasoline (Petrol)</option><option value="diesel">Diesel</option><option value="ethanol">Ethanol (E85)</option></select></div>
+        <div class="input-group"><label>Bore (Cylinder Diameter)</label><input type="number" id="bore" value="86" step="0.01" min="30" max="200" onchange="updateAll()"><span class="unit">millimeters (mm)</span></div>
+        <div class="input-group"><label>Stroke</label><input type="number" id="stroke" value="86" step="0.01" min="30" max="200" onchange="updateAll()"><span class="unit">millimeters (mm)</span></div>
+        <div class="input-group"><label>Target Compression Ratio</label><input type="number" id="compRatio" value="10.5" step="0.01" min="6" max="22" onchange="updateAll()"><span class="unit">e.g., 10.5:1</span></div>
+        <div class="input-group"><label>Aspiration Type</label><select id="aspiration" onchange="updateAll()"><option value="na" selected>Naturally Aspirated</option><option value="turbo">Turbocharged</option><option value="supercharged">Supercharged</option></select></div>
+        <div class="input-group"><label>Target Max RPM</label><input type="number" id="maxRPM" value="6500" step="100" min="2000" max="20000" onchange="updateAll()"><span class="unit">RPM (redline)</span></div>
+        <div class="input-group"><label>Connecting Rod Ratio (L/R)</label><input type="number" id="rodRatio" value="1.75" step="0.001" min="1.4" max="2.5" onchange="updateAll()"><span class="unit">Rod length / Crank radius</span></div>
+      </div>
+      <div class="highlight-box" style="margin-top:16px;">
+        <strong>Quick Presets:</strong>
+        <button class="btn" style="margin:4px;padding:6px 12px;font-size:0.8rem;" onclick="preset('2l-na')">2.0L NA (Honda K20)</button>
+        <button class="btn" style="margin:4px;padding:6px 12px;font-size:0.8rem;" onclick="preset('ls3')">6.2L V8 (GM LS3)</button>
+        <button class="btn" style="margin:4px;padding:6px 12px;font-size:0.8rem;" onclick="preset('diesel')">3.0L Turbo Diesel</button>
+        <button class="btn" style="margin:4px;padding:6px 12px;font-size:0.8rem;" onclick="preset('f1')">1.6L Turbo (F1-style)</button>
+      </div>
+    </div>
+
+    <!-- TAB 2: PART DIMENSIONS -->
+    <div class="tab-panel" id="panel-dims">
+      <div class="section-title">Calculated Dimensions - Every Engine Part</div>
+      <div class="grid-3" id="dimensionGrid"></div>
+    </div>
+
+    <!-- TAB 3: CAD DRAWING -->
+    <div class="tab-panel" id="panel-cad">
+      <div class="section-title">CAD Cross-Section Drawing (To Scale)</div>
+      <div class="canvas-container"><canvas id="cadCanvas" width="750" height="600"></canvas></div>
+      <p style="text-align:center;color:#555;margin-top:8px;font-size:0.85rem;">Cross-section view: Cylinder, Piston, Connecting Rod, Crankshaft, Valves & Ports</p>
+    </div>
+
+    <!-- TAB 4: GRAPHS -->
+    <div class="tab-panel" id="panel-graphs">
+      <div class="section-title">Torque & Power Curves vs RPM</div>
+      <div class="grid-2">
+        <div class="canvas-container"><h4 style="text-align:center;">Torque (Nm) vs RPM</h4><canvas id="torqueCanvas" width="550" height="400"></canvas></div>
+        <div class="canvas-container"><h4 style="text-align:center;">Power (kW / HP) vs RPM</h4><canvas id="powerCanvas" width="550" height="400"></canvas></div>
+      </div>
+      <div class="highlight-box" style="text-align:center;" id="peakSummary"></div>
+    </div>
+
+    <!-- TAB 5: CALCULATIONS -->
+    <div class="tab-panel" id="panel-calcs">
+      <div class="section-title">Step-by-Step Calculations (High Precision)</div>
+      <div id="calcSteps"></div>
+    </div>
+
+    <!-- TAB 6: REPORT -->
+    <div class="tab-panel" id="panel-report">
+      <div class="section-title">Complete Engine Design Report</div>
+      <div id="reportContent"></div>
+      <button class="btn" onclick="window.print()" style="margin-top:16px;">Print This Report</button>
+    </div>
+  </div>
+  <div class="report-watermark">OFFICIAL ENGINE DESIGN REPORT</div>
+
+  <script>
+    (function() {
+      // ==================== GLOBAL STATE ====================
+      let engineData = {};
+
+      function getInputs() {
+        return {
+          config: document.getElementById('engineConfig').value,
+          numCyl: parseInt(document.getElementById('numCylinders').value),
+          fuel: document.getElementById('fuelType').value,
+          bore: parseFloat(document.getElementById('bore').value),
+          stroke: parseFloat(document.getElementById('stroke').value),
+          compRatio: parseFloat(document.getElementById('compRatio').value),
+          aspiration: document.getElementById('aspiration').value,
+          maxRPM: parseInt(document.getElementById('maxRPM').value),
+          rodRatio: parseFloat(document.getElementById('rodRatio').value),
+        };
+      }
+
+      function calculateAll(inp) {
+        const bore_m = inp.bore / 1000;
+        const stroke_m = inp.stroke / 1000;
+        const bore_cm = inp.bore / 10;
+        const stroke_cm = inp.stroke / 10;
+        const radius_cm = bore_cm / 2;
+        const area_cm2 = Math.PI * radius_cm * radius_cm;
+        const disp_per_cyl_cc = area_cm2 * stroke_cm;
+        const total_disp_cc = disp_per_cyl_cc * inp.numCyl;
+        const total_disp_L = total_disp_cc / 1000;
+        const clearance_vol_cc = disp_per_cyl_cc / (inp.compRatio - 1);
+        const combustion_chamber_vol_cc = clearance_vol_cc * 1.08;
+        const crank_radius = inp.stroke / 2;
+        const rod_length = crank_radius * inp.rodRatio;
+        const piston_area_cm2 = area_cm2;
+        const mean_piston_speed_ms = (2 * stroke_m * inp.maxRPM) / 60;
+
+        let bmep_bar;
+        const cr = inp.compRatio;
+        if (inp.aspiration === 'na') {
+          if (inp.fuel === 'gasoline') bmep_bar = 8.5 + (cr - 8) * 0.7;
+          else if (inp.fuel === 'diesel') bmep_bar = 7.5 + (cr - 14) * 0.3;
+          else bmep_bar = 8.0 + (cr - 8) * 0.6;
+        } else if (inp.aspiration === 'turbo') {
+          if (inp.fuel === 'gasoline') bmep_bar = 14 + (cr - 8) * 0.5;
+          else if (inp.fuel === 'diesel') bmep_bar = 18 + (cr - 14) * 0.4;
+          else bmep_bar = 13 + (cr - 8) * 0.5;
+        } else {
+          bmep_bar = 12 + (cr - 8) * 0.5;
+        }
+        bmep_bar = Math.min(bmep_bar, inp.aspiration === 'turbo' ? 28 : (inp.aspiration === 'na' ? 14 : 22));
+        bmep_bar = Math.max(bmep_bar, 5);
+
+        const bmep_pa = bmep_bar * 1e5;
+        const torque_nm = (bmep_pa * total_disp_cc * 1e-6) / (4 * Math.PI);
+        const peak_power_kw = torque_nm * inp.maxRPM * 2 * Math.PI / 60000;
+        const peak_power_hp = peak_power_kw * 1.341;
+
+        const parts = {
+          'Cylinder Bore': { dim: inp.bore.toFixed(2) + ' mm', desc: 'Cylinder inner diameter', detail: 'Bore = ' + inp.bore.toFixed(2) + ' mm' },
+          'Stroke': { dim: inp.stroke.toFixed(2) + ' mm', desc: 'Piston travel distance', detail: 'Stroke = ' + inp.stroke.toFixed(2) + ' mm' },
+          'Displacement (per cyl)': { dim: disp_per_cyl_cc.toFixed(2) + ' cc', desc: 'Swept volume per cylinder', detail: 'V_d = (π/4)×Bore²×Stroke' },
+          'Total Displacement': { dim: total_disp_cc.toFixed(1) + ' cc (' + total_disp_L.toFixed(3) + ' L)', desc: 'Total engine displacement', detail: 'V_total = V_d × N_cyl' },
+          'Clearance Volume': { dim: clearance_vol_cc.toFixed(3) + ' cc', desc: 'Volume at TDC', detail: 'V_c = V_d/(CR-1)' },
+          'Combustion Chamber Vol': { dim: combustion_chamber_vol_cc.toFixed(3) + ' cc', desc: 'Including head gasket', detail: '≈1.08 × Clearance Vol' },
+          'Crankshaft Throw (Radius)': { dim: crank_radius.toFixed(3) + ' mm', desc: 'Half the stroke - crank arm radius', detail: 'R_crank = Stroke/2' },
+          'Connecting Rod Length': { dim: rod_length.toFixed(3) + ' mm', desc: 'Center-to-center', detail: 'L_rod = R_crank × RodRatio' },
+          'Piston Diameter': { dim: (inp.bore - 0.04).toFixed(2) + ' mm', desc: 'With clearance (0.04mm)', detail: 'D_piston = Bore - 0.04mm' },
+          'Piston Pin Diameter': { dim: (inp.bore * 0.26).toFixed(3) + ' mm', desc: 'Wrist pin / gudgeon pin', detail: '≈0.26 × Bore' },
+          'Compression Ring Thickness': { dim: (inp.bore * 0.045).toFixed(3) + ' mm', desc: 'Top ring', detail: '≈0.045 × Bore' },
+          'Oil Ring Thickness': { dim: (inp.bore * 0.04).toFixed(3) + ' mm', desc: 'Oil control ring', detail: '≈0.04 × Bore' },
+          'Piston Height': { dim: (inp.bore * 0.75).toFixed(2) + ' mm', desc: 'Overall piston height', detail: '≈0.75 × Bore' },
+          'Intake Valve Diameter': { dim: (inp.bore * 0.38).toFixed(3) + ' mm', desc: 'Valve head diameter', detail: '≈0.38 × Bore' },
+          'Exhaust Valve Diameter': { dim: (inp.bore * 0.33).toFixed(3) + ' mm', desc: 'Valve head diameter', detail: '≈0.33 × Bore' },
+          'Valve Stem Diameter': { dim: (inp.bore * 0.08).toFixed(3) + ' mm', desc: 'Valve stem', detail: '≈0.08 × Bore' },
+          'Intake Port Diameter': { dim: (inp.bore * 0.35).toFixed(3) + ' mm', desc: 'Intake runner port', detail: '≈0.35 × Bore' },
+          'Exhaust Port Diameter': { dim: (inp.bore * 0.30).toFixed(3) + ' mm', desc: 'Exhaust runner port', detail: '≈0.30 × Bore' },
+          'Crankshaft Main Journal': { dim: (inp.bore * 0.58).toFixed(3) + ' mm', desc: 'Main bearing journal', detail: '≈0.58 × Bore' },
+          'Crank Pin Journal': { dim: (inp.bore * 0.50).toFixed(3) + ' mm', desc: 'Rod bearing journal', detail: '≈0.50 × Bore' },
+          'Flywheel Diameter': { dim: (inp.bore * 3.2).toFixed(0) + ' mm', desc: 'Flywheel outer diameter', detail: '≈3.2 × Bore' },
+          'Cylinder Wall Thickness': { dim: (inp.bore * 0.08).toFixed(3) + ' mm', desc: 'Minimum cylinder wall', detail: '≈0.08 × Bore' },
+          'Engine Block Length': { dim: (inp.bore * inp.numCyl * 1.15).toFixed(0) + ' mm', desc: 'Approximate block length (inline)', detail: '≈Bore × N_cyl × 1.15' },
+          'Spark Plug Thread': { dim: 'M14 × 1.25', desc: inp.fuel === 'diesel' ? 'Glow plug instead' : 'Standard spark plug', detail: inp.fuel === 'diesel' ? 'Glow plug M10' : 'M14×1.25' },
+          'Oil Pan Depth': { dim: (inp.stroke * 1.1).toFixed(0) + ' mm', desc: 'Oil sump depth', detail: '≈1.1 × Stroke' },
+          'Timing Chain Length': { dim: (inp.stroke * 4.5).toFixed(0) + ' mm', desc: 'Approximate timing chain/belt', detail: '≈4.5 × Stroke' },
+        };
+
+        return { inp, disp_per_cyl_cc, total_disp_cc, total_disp_L, clearance_vol_cc, combustion_chamber_vol_cc,
+                 crank_radius, rod_length, piston_area_cm2, mean_piston_speed_ms, bmep_bar, torque_nm,
+                 peak_power_kw, peak_power_hp, parts, bore_cm, stroke_cm, area_cm2, radius_cm };
+      }
+
+      function updateAll() {
+        engineData = calculateAll(getInputs());
+        renderDimensions(engineData);
+        drawCAD(engineData);
+        drawGraphs(engineData);
+        renderCalculations(engineData);
+        renderReport(engineData);
+      }
+
+      function renderDimensions(data) {
+        const grid = document.getElementById('dimensionGrid');
+        let html = '';
+        for (const [name, info] of Object.entries(data.parts)) {
+          html += `<div class="result-card"><div class="part-name">${name}</div><div class="part-dim">${info.dim}</div><div class="part-desc">${info.desc}</div><div style="font-size:0.7rem;color:#555;">${info.detail}</div></div>`;
+        }
+        grid.innerHTML = html;
+      }
+
+      function drawCAD(data) {
+        const canvas = document.getElementById('cadCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+        const bore = data.inp.bore, stroke = data.inp.stroke;
+        const rodLen = data.rod_length, crankR = data.crank_radius;
+        const totalHeight = stroke + rodLen + crankR + 80;
+        const scale = Math.min((H-100)/totalHeight, (W-300)/bore);
+        const cx = W*0.4, cyTop = 60;
+        const borePx = bore*scale, strokePx = stroke*scale, rodPx = rodLen*scale, crankPx = crankR*scale;
+        const wallThick = borePx*0.12;
+        ctx.fillStyle = '#d9d9d9';
+        ctx.fillRect(cx-borePx/2-wallThick, cyTop-20, borePx+wallThick*2, strokePx+30);
+        ctx.fillStyle = '#e8e8e8';
+        ctx.fillRect(cx-borePx/2, cyTop, borePx, strokePx+10);
+        ctx.strokeStyle = '#333'; ctx.lineWidth=2;
+        ctx.strokeRect(cx-borePx/2-wallThick, cyTop-20, borePx+wallThick*2, strokePx+30);
+        ctx.fillStyle = '#f5f5f5';
+        ctx.fillRect(cx-borePx/2, cyTop, borePx, strokePx+5);
+        ctx.strokeStyle = '#222'; ctx.lineWidth=1.5;
+        ctx.strokeRect(cx-borePx/2, cyTop, borePx, strokePx+5);
+        const pistonY = cyTop + strokePx*0.45;
+        const pistonH = borePx*0.75;
+        ctx.fillStyle = '#a0a0a0';
+        ctx.fillRect(cx-borePx/2+2, pistonY, borePx-4, pistonH);
+        ctx.strokeStyle = '#111'; ctx.lineWidth=2;
+        ctx.strokeRect(cx-borePx/2+2, pistonY, borePx-4, pistonH);
+        for(let r=0;r<3;r++){ ctx.fillStyle='#555'; ctx.fillRect(cx-borePx/2+1, pistonY+8+r*12, borePx-2, 3); }
+        const pinY = pistonY+pistonH*0.5;
+        ctx.fillStyle='#777'; ctx.beginPath(); ctx.arc(cx, pinY, borePx*0.13,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#111'; ctx.lineWidth=1.5; ctx.stroke();
+        const rodTopY = pinY, rodBotY = pinY+rodPx;
+        ctx.strokeStyle='#8B4513'; ctx.lineWidth=4;
+        ctx.beginPath(); ctx.moveTo(cx-borePx*0.08, rodTopY); ctx.lineTo(cx-borePx*0.06, rodBotY-crankPx*0.3); ctx.lineTo(cx+borePx*0.06, rodBotY-crankPx*0.3); ctx.lineTo(cx+borePx*0.08, rodTopY); ctx.closePath();
+        ctx.fillStyle='#D2691E'; ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#8B4513'; ctx.beginPath(); ctx.arc(cx, rodBotY, borePx*0.1,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#111'; ctx.stroke();
+        const crankCenterY = rodBotY;
+        ctx.fillStyle='#666'; ctx.beginPath(); ctx.arc(cx, crankCenterY, crankPx*0.6,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#111'; ctx.stroke();
+        ctx.strokeStyle='#777'; ctx.lineWidth=5; ctx.beginPath(); ctx.moveTo(cx,crankCenterY); ctx.lineTo(cx,crankCenterY-crankPx); ctx.stroke();
+        ctx.fillStyle='#888'; ctx.beginPath(); ctx.arc(cx,crankCenterY+crankPx*0.7, crankPx*0.5,0,Math.PI,false); ctx.fill(); ctx.stroke();
+        const headY = cyTop-20;
+        ctx.fillStyle='#aaa'; ctx.fillRect(cx-borePx/2-wallThick, headY-25, borePx+wallThick*2,30);
+        ctx.strokeStyle='#111'; ctx.lineWidth=2; ctx.strokeRect(cx-borePx/2-wallThick, headY-25, borePx+wallThick*2,30);
+        ctx.fillStyle='#f0f0f0'; ctx.fillRect(cx-borePx/2-5, headY-22, borePx+10,24);
+        const valveStemD = borePx*0.08;
+        const intakeValveX = cx-borePx*0.22, exhaustValveX = cx+borePx*0.22;
+        ctx.fillStyle='#aaa'; ctx.fillRect(intakeValveX-valveStemD/2, headY-60, valveStemD, 60);
+        ctx.fillStyle='#ccc'; ctx.beginPath(); ctx.arc(intakeValveX, headY, borePx*0.16,0,Math.PI,false); ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#aaa'; ctx.fillRect(exhaustValveX-valveStemD/2, headY-60, valveStemD, 60);
+        ctx.fillStyle='#bbb'; ctx.beginPath(); ctx.arc(exhaustValveX, headY, borePx*0.14,0,Math.PI,false); ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#000'; ctx.font='10px Arial'; ctx.fillText('I', intakeValveX-3, headY-45); ctx.fillText('E', exhaustValveX-3, headY-45);
+        ctx.fillStyle='#ffd700'; ctx.fillRect(cx-4, headY-40,8,20); ctx.fillStyle='#daa520'; ctx.beginPath(); ctx.arc(cx, headY-42,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle='#000'; ctx.font='9px Arial'; ctx.fillText(data.inp.fuel==='diesel'?'INJ':'IGN', cx-10, headY-50);
+        ctx.fillStyle='#000'; ctx.font='bold 10px Arial';
+        ctx.fillText('Cylinder Head', cx-borePx/2-wallThick-80, headY-5);
+        ctx.fillText('Piston', cx+borePx/2+15, pistonY+pistonH/2);
+        ctx.fillText('Connecting Rod', cx+borePx/2+15, rodTopY+rodPx/2);
+        ctx.fillText('Crankshaft', cx+borePx/2+15, crankCenterY);
+        ctx.strokeStyle='#c00'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+        ctx.beginPath(); ctx.moveTo(cx-borePx/2, cyTop-8); ctx.lineTo(cx+borePx/2, cyTop-8); ctx.stroke();
+        ctx.fillStyle='#c00'; ctx.fillText('Bore: '+bore.toFixed(2)+'mm', cx-25, cyTop-14);
+        ctx.beginPath(); ctx.moveTo(cx+borePx/2+35, cyTop); ctx.lineTo(cx+borePx/2+35, cyTop+strokePx); ctx.stroke();
+        ctx.fillText('Stroke: '+stroke.toFixed(2)+'mm', cx+borePx/2+38, cyTop+strokePx/2);
+        ctx.setLineDash([]);
+      }
+
+      function drawGraphs(data) {
+        const maxRPM = data.inp.maxRPM;
+        const torquePeak = data.torque_nm;
+        const rpmPeakTorque = maxRPM*0.6;
+        const steps = 50;
+        const rpmPoints=[], torquePoints=[], powerKW=[], powerHP=[];
+        for(let i=0;i<=steps;i++){
+          const rpm = 800 + (maxRPM-800)*(i/steps);
+          rpmPoints.push(rpm);
+          let t;
+          if(rpm<=rpmPeakTorque) t = torquePeak*(0.7+0.3*(rpm-800)/(rpmPeakTorque-800));
+          else { const decay=(rpm-rpmPeakTorque)/(maxRPM-rpmPeakTorque); t=torquePeak*(1-0.25*decay*decay); }
+          t = Math.max(t, torquePeak*0.6);
+          torquePoints.push(t);
+          const pkW = t*rpm*2*Math.PI/60000;
+          powerKW.push(pkW);
+          powerHP.push(pkW*1.341);
+        }
+        data._rpmPoints=rpmPoints; data._torquePoints=torquePoints; data._powerKW=powerKW; data._powerHP=powerHP;
+        data._peakTorque = Math.max(...torquePoints);
+        data._peakPowerKW = Math.max(...powerKW);
+        data._peakPowerHP = Math.max(...powerHP);
+        data._rpmPeakTorque = rpmPoints[torquePoints.indexOf(data._peakTorque)];
+        data._rpmPeakPower = rpmPoints[powerKW.indexOf(data._peakPowerKW)];
+
+        drawSingleGraph('torqueCanvas', rpmPoints, torquePoints, 'Torque (Nm)', '#b22222', data._peakTorque, data._rpmPeakTorque, maxRPM, 'Nm');
+        drawSingleGraph('powerCanvas', rpmPoints, powerHP, 'Power (HP)', '#004d00', data._peakPowerHP, data._rpmPeakPower, maxRPM, 'HP');
+
+        document.getElementById('peakSummary').innerHTML = `
+          <strong>Peak Torque:</strong> ${data._peakTorque.toFixed(2)} Nm @ ${Math.round(data._rpmPeakTorque)} RPM &nbsp;|&nbsp;
+          <strong>Peak Power:</strong> ${data._peakPowerKW.toFixed(2)} kW (${data._peakPowerHP.toFixed(2)} HP) @ ${Math.round(data._rpmPeakPower)} RPM
+        `;
+      }
+
+      function drawSingleGraph(canvasId, xData, yData, label, color, peakVal, peakRPM, maxRPM, unit) {
+        const canvas = document.getElementById(canvasId);
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W=canvas.width, H=canvas.height;
+        ctx.clearRect(0,0,W,H);
+        const margin={top:40,right:50,bottom:50,left:65};
+        const plotW=W-margin.left-margin.right, plotH=H-margin.top-margin.bottom;
+        const xMin=800, xMax=maxRPM;
+        const yMin=0, yMax=Math.max(...yData)*1.15;
+        const toX=v=>margin.left+(v-xMin)/(xMax-xMin)*plotW;
+        const toY=v=>margin.top+plotH-(v-yMin)/(yMax-yMin)*plotH;
+        ctx.strokeStyle='#ccc'; ctx.lineWidth=0.5;
+        for(let i=0;i<=8;i++){const y=margin.top+plotH*i/8; ctx.beginPath(); ctx.moveTo(margin.left,y); ctx.lineTo(W-margin.right,y); ctx.stroke();}
+        for(let i=0;i<=10;i++){const x=margin.left+plotW*i/10; ctx.beginPath(); ctx.moveTo(x,margin.top); ctx.lineTo(x,H-margin.bottom); ctx.stroke();}
+        ctx.strokeStyle='#000'; ctx.lineWidth=2;
+        ctx.beginPath(); ctx.moveTo(margin.left,margin.top); ctx.lineTo(margin.left,H-margin.bottom); ctx.lineTo(W-margin.right,H-margin.bottom); ctx.stroke();
+        ctx.strokeStyle=color; ctx.lineWidth=3; ctx.beginPath();
+        for(let i=0;i<xData.length;i++){ const px=toX(xData[i]), py=toY(yData[i]); i===0?ctx.moveTo(px,py):ctx.lineTo(px,py); } ctx.stroke();
+        const peakX=toX(peakRPM), peakY=toY(peakVal);
+        ctx.fillStyle=color; ctx.beginPath(); ctx.arc(peakX,peakY,6,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle='#000'; ctx.font='bold 11px Arial'; ctx.fillText(`Peak: ${peakVal.toFixed(2)} ${unit} @ ${Math.round(peakRPM)} RPM`, peakX+10, peakY-10);
+        ctx.fillStyle='#000'; ctx.font='bold 13px Arial'; ctx.fillText(label, W/2-30, margin.top-10);
+        ctx.fillText('RPM', W/2-15, H-8);
+        ctx.save(); ctx.translate(12, H/2); ctx.rotate(-Math.PI/2); ctx.fillText(unit, -20,0); ctx.restore();
+      }
+
+      function renderCalculations(data) {
+        const d = data, inp = d.inp;
+        const r_cm = d.radius_cm;
+        const area_cm2_high = d.area_cm2;
+        const disp_cc = d.disp_per_cyl_cc;
+        const total_cc = d.total_disp_cc;
+        const cr = inp.compRatio;
+        const clearance = d.clearance_vol_cc;
+        const chamber = d.combustion_chamber_vol_cc;
+        const crankR = d.crank_radius;
+        const rodL = d.rod_length;
+        const pistonSpeed = d.mean_piston_speed_ms;
+        const bmep = d.bmep_bar;
+        const torque = d.torque_nm;
+        const power_kw = d.peak_power_kw;
+        const power_hp = d.peak_power_hp;
+        const rodAngle = Math.asin(crankR/rodL)*180/Math.PI;
+
+        document.getElementById('calcSteps').innerHTML = `
+          <div class="calc-step"><span class="eq-number">[1]</span> <strong>Cylinder Area (high precision):</strong><br>
+          A_cyl = π × (Bore/2)² = π × (${inp.bore.toFixed(4)}/2)² = π × ${r_cm.toFixed(6)}² = <strong>${area_cm2_high.toFixed(8)} cm²</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[2]</span> <strong>Displacement per Cylinder:</strong><br>
+          V_d = A_cyl × Stroke = ${area_cm2_high.toFixed(8)} × ${(inp.stroke/10).toFixed(4)} = <strong>${disp_cc.toFixed(6)} cc</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[3]</span> <strong>Total Displacement:</strong><br>
+          V_total = V_d × N = ${disp_cc.toFixed(6)} × ${inp.numCyl} = <strong>${total_cc.toFixed(4)} cc = ${(total_cc/1000).toFixed(5)} L</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[4]</span> <strong>Clearance Volume (from CR):</strong><br>
+          CR = (V_d + V_c) / V_c → ${cr.toFixed(4)} = (${disp_cc.toFixed(6)} + V_c) / V_c<br>
+          V_c = V_d / (CR - 1) = ${disp_cc.toFixed(6)} / ${(cr-1).toFixed(6)} = <strong>${clearance.toFixed(6)} cc</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[5]</span> <strong>Combustion Chamber Volume:</strong><br>
+          V_comb ≈ 1.08 × V_c = 1.08 × ${clearance.toFixed(6)} = <strong>${chamber.toFixed(6)} cc</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[6]</span> <strong>Crankshaft Radius:</strong><br>
+          R_crank = Stroke / 2 = ${inp.stroke.toFixed(4)} / 2 = <strong>${crankR.toFixed(6)} mm</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[7]</span> <strong>Connecting Rod Length:</strong><br>
+          L_rod = R_crank × RodRatio = ${crankR.toFixed(6)} × ${inp.rodRatio.toFixed(4)} = <strong>${rodL.toFixed(6)} mm</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[8]</span> <strong>Mean Piston Speed:</strong><br>
+          V_piston = 2 × Stroke × RPM / 60 = 2 × ${(inp.stroke/1000).toFixed(6)} × ${inp.maxRPM} / 60 = <strong>${pistonSpeed.toFixed(6)} m/s</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[9]</span> <strong>Estimated BMEP:</strong><br>
+          BMEP ≈ <strong>${bmep.toFixed(4)} bar</strong> = ${(bmep*1e5).toFixed(0)} Pa
+          </div>
+          <div class="calc-step"><span class="eq-number">[10]</span> <strong>Torque:</strong><br>
+          T = (BMEP × V_total) / (4π) = (${(bmep*1e5).toFixed(0)} × ${(total_cc*1e-6).toFixed(10)}) / (4π) = <strong>${torque.toFixed(4)} Nm</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[11]</span> <strong>Peak Power:</strong><br>
+          P = T × RPM × 2π / 60 = ${torque.toFixed(4)} × ${inp.maxRPM} × 2π / 60 = <strong>${power_kw.toFixed(4)} kW = ${power_hp.toFixed(4)} HP</strong>
+          </div>
+          <div class="calc-step"><span class="eq-number">[12]</span> <strong>Connecting Rod Angle (max):</strong><br>
+          θ_max = arcsin(R_crank / L_rod) = arcsin(${crankR.toFixed(6)} / ${rodL.toFixed(6)}) = <strong>${rodAngle.toFixed(6)}°</strong>
+          </div>
+        `;
+      }
+
+      function renderReport(data) {
+        const d = data, inp = d.inp;
+        let partsHTML = '';
+        for(const [name,info] of Object.entries(d.parts)){
+          partsHTML += `<tr><td>${name}</td><td><strong>${info.dim}</strong></td><td>${info.desc}</td><td style="font-size:0.75rem;">${info.detail}</td></tr>`;
+        }
+        document.getElementById('reportContent').innerHTML = `
+          <h2>Engine Design Report</h2>
+          <p><strong>Date:</strong> ${new Date().toLocaleDateString()} &nbsp;|&nbsp; <strong>Configuration:</strong> ${inp.config.toUpperCase()} ${inp.numCyl}-Cylinder &nbsp;|&nbsp; <strong>Fuel:</strong> ${inp.fuel} &nbsp;|&nbsp; <strong>Aspiration:</strong> ${inp.aspiration}</p>
+          <h3>Key Specifications</h3>
+          <table><tr><th>Parameter</th><th>Value</th></tr>
+          <tr><td>Bore</td><td>${inp.bore.toFixed(2)} mm</td></tr>
+          <tr><td>Stroke</td><td>${inp.stroke.toFixed(2)} mm</td></tr>
+          <tr><td>Compression Ratio</td><td>${inp.compRatio.toFixed(2)}:1</td></tr>
+          <tr><td>Total Displacement</td><td>${d.total_disp_cc.toFixed(2)} cc (${d.total_disp_L.toFixed(4)} L)</td></tr>
+          <tr><td>Peak Torque</td><td>${d._peakTorque ? d._peakTorque.toFixed(2) : d.torque_nm.toFixed(2)} Nm @ ${d._rpmPeakTorque ? Math.round(d._rpmPeakTorque) : Math.round(d.inp.maxRPM*0.6)} RPM</td></tr>
+          <tr><td>Peak Power</td><td>${d._peakPowerKW ? d._peakPowerKW.toFixed(2) : d.peak_power_kw.toFixed(2)} kW (${d._peakPowerHP ? d._peakPowerHP.toFixed(2) : d.peak_power_hp.toFixed(2)} HP) @ ${d._rpmPeakPower ? Math.round(d._rpmPeakPower) : d.inp.maxRPM} RPM</td></tr>
+          <tr><td>Max RPM</td><td>${inp.maxRPM} RPM</td></tr>
+          <tr><td>Mean Piston Speed</td><td>${d.mean_piston_speed_ms.toFixed(4)} m/s</td></tr>
+          <tr><td>BMEP (estimated)</td><td>${d.bmep_bar.toFixed(4)} bar</td></tr>
+          </table>
+          <h3>All Part Dimensions</h3>
+          <table style="font-size:0.85rem;"><tr><th>Part</th><th>Dimension</th><th>Description</th><th>Formula</th></tr>${partsHTML}</table>
+        `;
+      }
+
+      function generateFullReport() {
+        switchTab('report');
+        setTimeout(() => window.print(), 300);
+      }
+
+      window.switchTab = function(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        const btn = document.querySelector(`.tab-btn[onclick*="${tabName}"]`);
+        if(btn) btn.classList.add('active');
+        const panel = document.getElementById('panel-'+tabName);
+        if(panel) panel.classList.add('active');
+        if(tabName==='cad') setTimeout(()=>drawCAD(engineData),100);
+        if(tabName==='graphs') setTimeout(()=>drawGraphs(engineData),100);
+      };
+
+      window.preset = function(type) {
+        const presets = {
+          '2l-na':{config:'inline',numCyl:4,fuel:'gasoline',bore:86,stroke:86,compRatio:11.0,aspiration:'na',maxRPM:8200,rodRatio:1.75},
+          'ls3':{config:'v',numCyl:8,fuel:'gasoline',bore:103.25,stroke:92,compRatio:10.7,aspiration:'na',maxRPM:6600,rodRatio:1.68},
+          'diesel':{config:'inline',numCyl:6,fuel:'diesel',bore:84,stroke:90,compRatio:16.5,aspiration:'turbo',maxRPM:4800,rodRatio:1.72},
+          'f1':{config:'v',numCyl:6,fuel:'gasoline',bore:80,stroke:53,compRatio:14.0,aspiration:'turbo',maxRPM:15000,rodRatio:2.1},
+        };
+        const p=presets[type]; if(!p) return;
+        document.getElementById('engineConfig').value=p.config;
+        document.getElementById('numCylinders').value=p.numCyl;
+        document.getElementById('fuelType').value=p.fuel;
+        document.getElementById('bore').value=p.bore;
+        document.getElementById('stroke').value=p.stroke;
+        document.getElementById('compRatio').value=p.compRatio;
+        document.getElementById('aspiration').value=p.aspiration;
+        document.getElementById('maxRPM').value=p.maxRPM;
+        document.getElementById('rodRatio').value=p.rodRatio;
+        updateAll();
+        switchTab('dims');
+      };
+
+      window.updateAll = updateAll;
+      window.addEventListener('DOMContentLoaded', ()=>{
+        updateAll();
+        switchTab('inputs');
+      });
+      window.addEventListener('resize', ()=>{
+        if(document.getElementById('panel-cad').classList.contains('active')) drawCAD(engineData);
+        if(document.getElementById('panel-graphs').classList.contains('active')) drawGraphs(engineData);
+      });
+    })();
+  </script>
+</body>
+</html>
