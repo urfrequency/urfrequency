@@ -3,29 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>UR Industries | Professional Gearbox Designer | Full Equation Report</title>
+    <title>UR Industries | Professional Gearbox Designer | Mobile Optimized</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             background: #eef2f7;
             font-family: 'Segoe UI', 'Roboto', 'Times New Roman', Georgia, serif;
-            padding: 28px 24px;
+            padding: 16px 12px;
             line-height: 1.45;
         }
+
         .gov-official-banner {
             background: #1a5f2a;
             color: #f5f5f0;
             text-align: center;
-            font-size: 0.72rem;
+            font-size: 0.65rem;
             font-weight: 600;
             letter-spacing: 1px;
             padding: 6px 0;
             border-bottom: 1px solid #c0cfdf;
         }
+
         .gov-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -35,171 +38,188 @@
             overflow: hidden;
             border: 1px solid #cddae9;
         }
+
         .gov-header {
             background: #ffffff;
             color: #002147;
-            padding: 20px 32px 16px 32px;
+            padding: 16px 20px;
         }
+
         .header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 12px;
             margin-bottom: 12px;
         }
+
         .emblem-section {
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 12px;
+            flex-wrap: wrap;
         }
+
         .official-emblem-icon {
             background: #002147;
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
             color: #c9f0b2;
         }
+
         .title-text h1 {
-            font-size: 1.6rem;
+            font-size: 1.2rem;
             font-weight: 700;
             color: #002147;
             letter-spacing: -0.3px;
         }
+
         .title-text p {
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             color: #3a5a7a;
             font-weight: 500;
-            margin-top: 6px;
+            margin-top: 4px;
         }
+
         .logo-section {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
         }
         .ur-logo-img {
-            height: 52px;
+            height: 40px;
             width: auto;
-            max-width: 130px;
+            max-width: 100px;
             object-fit: contain;
-            border-radius: 8px;
+            border-radius: 6px;
         }
         .logo-text {
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             letter-spacing: 1px;
             border-left: 2px solid #6c8fae;
-            padding-left: 12px;
+            padding-left: 8px;
             color: #002147;
         }
+
         .agency-signature {
             background: #f9fafc;
-            padding: 6px 18px;
+            padding: 4px 12px;
             border-radius: 30px;
-            font-size: 0.7rem;
+            font-size: 0.6rem;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             border: 1px solid #e0e8f0;
+            flex-wrap: wrap;
         }
+
         .section-card {
             background: #ffffff;
             border-radius: 12px;
-            padding: 20px 24px;
-            margin-bottom: 24px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
             border: 1px solid #e2e8f0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.03);
         }
+
         .section-title {
-            font-size: 1.2rem;
+            font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: #0a2942;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
+
         .form-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 22px;
-            align-items: baseline;
+            gap: 12px;
+            margin-bottom: 16px;
         }
         .form-field {
             flex: 1;
-            min-width: 150px;
+            min-width: 130px;
         }
         label {
             font-weight: 700;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             color: #1e4663;
             text-transform: uppercase;
             letter-spacing: 0.4px;
         }
         input, select {
             width: 100%;
-            padding: 10px 14px;
+            padding: 8px 10px;
             border: 1px solid #bac8d9;
             border-radius: 8px;
             font-family: 'Courier New', monospace;
             font-weight: 500;
             background: #fefefe;
-            transition: 0.15s;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
+
+        /* Mobile‑friendly table (horizontal scroll) */
         .gear-table {
             overflow-x: auto;
-            margin: 20px 0 12px;
+            margin: 16px 0 12px;
             border-radius: 10px;
             border: 1px solid #e2edf5;
+            -webkit-overflow-scrolling: touch;
         }
         .gear-table table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
-            min-width: 700px;
+            font-size: 0.7rem;
+            min-width: 550px;
         }
         .gear-table th {
             background: #eef3fc;
             font-weight: 700;
             color: #002147;
-            padding: 12px 8px;
+            padding: 8px 5px;
             border: 1px solid #d4dfea;
             text-align: center;
         }
         .gear-table td {
             border: 1px solid #e2edf5;
-            padding: 8px 6px;
+            padding: 6px 4px;
             text-align: center;
             vertical-align: middle;
         }
         .gear-table td input {
-            width: 80px;
+            width: 65px;
             text-align: center;
-            padding: 6px;
+            padding: 5px;
+            font-size: 0.7rem;
         }
         .stage-ratio-cell {
             font-weight: 800;
             background: #f9f3e0;
         }
+
         .btn {
             background: #1e6f3c;
             color: white;
             border: none;
-            padding: 10px 26px;
+            padding: 8px 18px;
             border-radius: 40px;
             font-weight: 600;
             cursor: pointer;
+            font-size: 0.75rem;
             transition: 0.2s;
-            font-size: 0.8rem;
         }
         .btn-secondary {
             background: #2c6e9e;
@@ -217,19 +237,22 @@
             transform: translateY(-1px);
             filter: brightness(1.05);
         }
+
         .output-box {
             background: #f8fafd;
-            padding: 18px;
+            padding: 14px;
             border-radius: 16px;
             margin-top: 10px;
+            font-size: 0.75rem;
         }
         .highlight {
             font-weight: 800;
             color: #1a5f6e;
             background: #e2f0f5;
-            padding: 0 6px;
+            padding: 0 4px;
             border-radius: 8px;
         }
+
         canvas {
             background: #fefef8;
             border-radius: 12px;
@@ -238,75 +261,116 @@
             height: auto;
             border: 1px solid #cfddee;
         }
+
         .calc-steps {
             background: #fafcff;
-            padding: 18px;
+            padding: 14px;
             font-family: 'Courier New', 'Times New Roman', monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             border-radius: 14px;
             margin-top: 12px;
-            max-height: 450px;
+            max-height: 400px;
             overflow-y: auto;
             border: 1px solid #e2ecf5;
             white-space: pre-wrap;
-            line-height: 1.5;
+            line-height: 1.45;
+            -webkit-overflow-scrolling: touch;
         }
+
         .official-watermark {
             display: flex;
             justify-content: space-between;
-            margin-top: 18px;
-            padding-top: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 10px;
             border-top: 1px solid #dee6ef;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             color: #607b96;
         }
+
         footer {
             background: #f2f6fa;
-            padding: 14px 32px;
-            font-size: 0.65rem;
+            padding: 12px 20px;
+            font-size: 0.6rem;
             color: #2a4c6e;
             border-top: 1px solid #d4e0ec;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
+            gap: 8px;
         }
+
         .grid-layout {
             display: grid;
-            grid-template-columns: 1fr 0.95fr;
-            gap: 24px;
-            padding: 20px 28px;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 16px 20px;
         }
+
         .flex-btns {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-top: 6px;
-            gap: 12px;
+            gap: 10px;
         }
-        @media (max-width: 1000px) {
-            .grid-layout { grid-template-columns: 1fr; padding: 20px; }
+        .flex-btns .btn {
+            flex: 1 1 auto;
+            text-align: center;
         }
+
         .stress-warning {
             color: #c0392b;
             font-weight: bold;
             background: #ffe6e6;
             padding: 4px 8px;
             border-radius: 8px;
-        }
-        .eq {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-            background: #f4f7fb;
             display: inline-block;
-            padding: 0 4px;
-            border-radius: 6px;
+            font-size: 0.7rem;
+        }
+
+        .inline-note {
+            font-size: 0.65rem;
+            color: #2c6e9e;
+            background: #eef3fc;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        /* Large screens: two columns */
+        @media (min-width: 900px) {
+            .grid-layout {
+                grid-template-columns: 1fr 0.95fr;
+                padding: 20px 28px;
+            }
+            body {
+                padding: 28px 24px;
+            }
+            .title-text h1 {
+                font-size: 1.6rem;
+            }
+            .gear-table table {
+                font-size: 0.85rem;
+                min-width: auto;
+            }
+            .gear-table td input {
+                width: 80px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .gov-container { border-radius: 0; box-shadow: none; }
+            .btn, .gov-official-banner, footer { display: none; }
+            canvas { border: 2px solid #000; }
         }
     </style>
 </head>
 <body>
 <div class="gov-official-banner">
-    UR Industries | Advanced Gearbox Designer | Full Equation Traceability
+    UR Industries | Advanced Gearbox Designer | Mobile‑optimized | Full equations
 </div>
 <div class="gov-container">
     <div class="gov-header">
@@ -320,7 +384,7 @@
             </div>
             <div class="logo-section">
                 <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urindustries2.jpeg" 
-                     alt="UR Industries Official Logo" 
+                     alt="UR Industries Logo" 
                      class="ur-logo-img"
                      onerror="this.style.display='none';">
                 <div class="logo-text">UR INDUSTRIES</div>
@@ -337,7 +401,7 @@
         <!-- LEFT PANEL -->
         <div>
             <div class="section-card">
-                <div class="section-title"><span>⚙️ DESIGN INPUTS</span> <span class="inline-note">with standard pressure angles</span></div>
+                <div class="section-title"><span>⚙️ DESIGN INPUTS</span> <span class="inline-note">standard pressure angles</span></div>
                 <div class="form-row">
                     <div class="form-field"><label>Gear Type</label><select id="gearType"><option>Spur Gear</option><option>Helical Gear</option></select></div>
                     <div class="form-field"><label>Stages (1-5)</label><input type="number" id="stepsCount" min="1" max="5" value="2" step="1"></div>
@@ -350,11 +414,11 @@
                             <option value="14.5">14.5° (standard)</option>
                             <option value="20" selected>20° (standard)</option>
                             <option value="25">25° (standard)</option>
-                            <option value="30">30° (high torque / heavy duty)</option>
-                            <option value="45">45° (maximum torque & contact)</option>
+                            <option value="30">30° (high torque)</option>
+                            <option value="45">45° (max contact)</option>
                         </select>
                     </div>
-                    <div class="form-field"><label>Service Factor (K<sub>o</sub>)</label>
+                    <div class="form-field"><label>Service Factor K<sub>o</sub></label>
                         <select id="serviceFactorSelect">
                             <option value="1.0">1.0 (uniform load)</option>
                             <option value="1.25" selected>1.25 (light shock)</option>
@@ -363,12 +427,12 @@
                             <option value="2.0">2.0 (extreme shock)</option>
                         </select>
                     </div>
-                    <div class="form-field"><label>Normal Module (mm) [0=auto]</label><input type="number" id="moduleInput" value="0" step="0.5"></div>
+                    <div class="form-field"><label>Module m (mm) [0=auto]</label><input type="number" id="moduleInput" value="0" step="0.5"></div>
                     <div class="form-field"><label>Face width b (mm)</label><input type="number" id="faceWidth" value="20" step="5"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-field"><label>Allowable bending stress σ<sub>all</sub> (MPa)</label><input type="number" id="allowableStress" value="200" step="10"></div>
-                    <div class="form-field"><label>Desired lifetime (hrs)</label><input type="number" id="lifeHours" value="10000" step="1000"></div>
+                    <div class="form-field"><label>Allowable σ<sub>all</sub> (MPa)</label><input type="number" id="allowableStress" value="200" step="10"></div>
+                    <div class="form-field"><label>Lifetime (hrs)</label><input type="number" id="lifeHours" value="10000" step="1000"></div>
                 </div>
                 
                 <div class="gear-table" id="dynamicTeethTable"></div>
@@ -376,25 +440,25 @@
                     <button class="btn" id="recalcBtn">⟳ RECALCULATE WITH EQUATIONS</button>
                 </div>
                 
-                <div class="section-card" style="margin-top: 12px;">
-                    <div class="section-title"><span>📊 PERFORMANCE SUMMARY</span></div>
+                <div class="section-card" style="margin-top: 12px; padding: 14px;">
+                    <div class="section-title">📊 PERFORMANCE SUMMARY</div>
                     <div class="output-box" id="performanceOutputContainer"></div>
                 </div>
             </div>
 
             <div class="section-card">
-                <div class="section-title"><span>🧠 SMART CONFIGURATOR</span></div>
+                <div class="section-title">🧠 SMART CONFIGURATOR</div>
                 <div class="form-row">
                     <div class="form-field"><label>Target Input RPM</label><input type="number" id="advSpeedIn" placeholder="e.g., 1450"></div>
                     <div class="form-field"><label>Desired Output RPM</label><input type="number" id="advSpeedOut" placeholder="e.g., 280"></div>
                 </div>
                 <div class="form-row">
-                    <div class="form-field"><label>Max stage ratio (≤8 rec.)</label><input type="number" id="maxStageRatio" value="6" step="0.5"></div>
+                    <div class="form-field"><label>Max stage ratio (≤8)</label><input type="number" id="maxStageRatio" value="6" step="0.5"></div>
                 </div>
-                <div class="form-row">
+                <div class="flex-btns">
                     <button class="btn btn-outline" id="autoGearBtn">⚡ AUTO-DESIGN (AGMA based)</button>
                 </div>
-                <div id="advMsg" style="font-size:0.7rem; background:#eef3fc; padding:8px; border-radius:40px; margin-top:8px;"></div>
+                <div id="advMsg" style="font-size:0.65rem; background:#eef3fc; padding:8px; border-radius:40px; margin-top:10px;"></div>
             </div>
         </div>
 
@@ -402,12 +466,16 @@
         <div>
             <div class="section-card">
                 <div class="section-title">🎨 GEAR TRAIN SCHEMATIC</div>
-                <canvas id="gearboxCanvas" width="550" height="240" style="width:100%; background:#fff; border-radius:12px; border:1px solid #dfe8f0;"></canvas>
+                <canvas id="gearboxCanvas" width="550" height="220" style="width:100%; background:#fff; border-radius:12px; border:1px solid #dfe8f0;"></canvas>
+                <div class="official-watermark">
+                    <span>UR-EXPERT v4.0</span>
+                    <span>Lewis equation based</span>
+                </div>
             </div>
             <div class="section-card">
                 <div class="section-title"><span>📐 ANALYTICAL & STRESS REPORT (with equations)</span></div>
                 <div id="calcDetails" class="calc-steps"></div>
-                <div style="font-size:0.65rem; margin-top:8px; text-align:right;">* Lewis equation: σ<sub>b</sub> = (F<sub>t</sub> · K<sub>o</sub>) / (b · m · Y)</div>
+                <div style="font-size:0.6rem; margin-top:8px; text-align:right;">* σ<sub>b</sub> = (F<sub>t</sub>·K<sub>o</sub>)/(b·m·Y)</div>
             </div>
             <div class="flex-btns" style="justify-content: flex-end;">
                 <button class="btn btn-secondary" id="printDesignBtn">🖨️ PRINT FULL REPORT</button>
@@ -416,7 +484,7 @@
     </div>
     <footer>
         <span>UR Industries | Advanced Gearbox Engineering | Full equation transparency</span>
-        <span>Doc: UR/EQUATION/2026</span>
+        <span>Doc: UR/MOBILE/2026</span>
     </footer>
 </div>
 
@@ -448,24 +516,13 @@
     let pinionTeethArr = [];
     let gearTeethArr = [];
 
-    function getPressureAngleDeg() {
-        return parseFloat(pressureAngleSelect.value);
-    }
-
-    // Minimum teeth to avoid undercut: z_min = 2 / sin^2(φ)
+    function getPressureAngleDeg() { return parseFloat(pressureAngleSelect.value); }
     function getMinPinionTeeth() {
-        let phi = getPressureAngleDeg() * Math.PI / 180;
-        let min = Math.ceil(2 / (Math.sin(phi) ** 2));
-        // For high pressure angles, add a practical lower limit: 4 for 45°, 6 for 30°
-        if (min < 4) min = 4;
-        if (min > 25) min = 25;
-        return min;
+        let phiRad = getPressureAngleDeg() * Math.PI / 180;
+        let min = Math.ceil(2 / (Math.sin(phiRad) ** 2));
+        return Math.min(Math.max(min, 4), 25);
     }
-
-    function getStageEfficiency() {
-        return gearTypeSelect.value === 'Spur Gear' ? 0.97 : 0.95;
-    }
-
+    function getStageEfficiency() { return gearTypeSelect.value === 'Spur Gear' ? 0.97 : 0.95; }
     function getModule() {
         let mod = parseFloat(moduleInput.value);
         if (mod > 0.1) return mod;
@@ -474,168 +531,118 @@
         if (torque < 100) return 2.0;
         return 2.5;
     }
-
-    // Lewis form factor Y (approximation for spur gears, depends on teeth and pressure angle)
     function lewisY(teeth, phiDeg) {
-        // Standard formula Y = 0.484 - 0.32/teeth for 20°; adjust using pressure angle factor
         let factor = (phiDeg === 20) ? 1.0 : (Math.sin(phiDeg * Math.PI/180) / Math.sin(20 * Math.PI/180));
         let Y20 = 0.484 - 0.32 / teeth;
         return Y20 * factor;
     }
 
     function computeGearTrain() {
-        // sync teeth from table
         for (let i = 0; i < currentSteps; i++) {
             let pinInput = document.querySelector(`.pinionTeethIn[data-stage='${i}']`);
             let gearInput = document.querySelector(`.gearTeethIn[data-stage='${i}']`);
             if (pinInput) pinionTeethArr[i] = Math.max(2, parseInt(pinInput.value) || 10);
             if (gearInput) gearTeethArr[i] = Math.max(2, parseInt(gearInput.value) || 10);
         }
-        let totalRatio = 1.0;
-        let totalEfficiency = 1.0;
+        let totalRatio = 1.0, totalEfficiency = 1.0;
         let stageData = [];
-        const m = getModule();
-        const b = parseFloat(faceWidthInput.value) || 20;
+        const m = getModule(), b = parseFloat(faceWidthInput.value) || 20;
         const sigmaAllow = parseFloat(allowableStressInput.value) || 200;
         const Ko = parseFloat(serviceFactorSelect.value);
         const inputTorque = parseFloat(inputTorqueEl.value) || 0;
         const inputRPM = parseFloat(motorRPMEl.value) || 0;
         const phi = getPressureAngleDeg();
-        const phiRad = phi * Math.PI/180;
         const minTeeth = getMinPinionTeeth();
 
         for (let i = 0; i < currentSteps; i++) {
-            let z1 = pinionTeethArr[i];
-            let z2 = gearTeethArr[i];
+            let z1 = pinionTeethArr[i], z2 = gearTeethArr[i];
             let ratio = z2 / z1;
             let eff = getStageEfficiency();
             totalRatio *= ratio;
             totalEfficiency *= eff;
             let center = m * (z1 + z2) / 2;
-            // torque at this stage (input stage accumulates previous ratios and losses)
             let torqueAtStage = inputTorque;
             for (let j=0; j<i; j++) torqueAtStage *= stageData[j].ratio * getStageEfficiency();
-            let d1 = m * z1; // pitch diameter pinion (mm)
-            let Ft = (2 * torqueAtStage * 1000) / d1; // tangential force (N)
+            let d1 = m * z1;
+            let Ft = (2 * torqueAtStage * 1000) / d1;
             let Y = lewisY(z1, phi);
-            let sigmaB = (Ft * Ko) / (b * m * Y); // bending stress MPa
+            let sigmaB = (Ft * Ko) / (b * m * Y);
             let SF = sigmaAllow / sigmaB;
             let warnings = [];
-            if (z1 < minTeeth) warnings.push(`z₁=${z1} < recommended min (${minTeeth}) for φ=${phi}° → undercut risk.`);
+            if (z1 < minTeeth) warnings.push(`z₁=${z1} < min rec. (${minTeeth}) for φ=${phi}° → undercut risk.`);
             if (ratio > 8) warnings.push(`Stage ratio ${ratio.toFixed(2)} > 8 → not recommended.`);
-            stageData.push({
-                stage: i+1, z1, z2, ratio, efficiency: eff, center, torqueAtStage, d1, Ft, Y, sigmaB, SF, warnings
-            });
+            stageData.push({ stage: i+1, z1, z2, ratio, efficiency: eff, center, torqueAtStage, d1, Ft, Y, sigmaB, SF, warnings });
         }
         let outputRPM = (inputRPM && totalRatio !== 0) ? inputRPM / totalRatio : 0;
-        let outputTorqueIdeal = inputTorque * totalRatio;
         let outputTorqueReal = inputTorque * totalRatio * totalEfficiency;
         let powerLoss = (inputTorque * inputRPM / 9550) * (1 - totalEfficiency);
         let thermalNeeded = powerLoss > 0.5 ? "⚠️ Forced cooling recommended" : "Natural convection sufficient";
-        let lifeHrs = parseFloat(lifeHoursInput.value) || 10000;
-
-        return { totalRatio, totalEfficiency, outputRPM, outputTorqueIdeal, outputTorqueReal, stageData, inputRPM, inputTorque, m, b, Ko, sigmaAllow, phi, powerLoss, thermalNeeded, lifeHrs, minTeeth };
+        return { totalRatio, totalEfficiency, outputRPM, outputTorqueReal, stageData, inputRPM, inputTorque, m, b, Ko, sigmaAllow, phi, powerLoss, thermalNeeded, minTeeth };
     }
 
-    function updateTableAndReport() {
+    function updateAll() {
         let calc = computeGearTrain();
-        // update stage ratio cells and center, stress, warnings
         for (let i = 0; i < calc.stageData.length; i++) {
             let s = calc.stageData[i];
             let ratioCell = document.getElementById(`stageRatio_${i}`);
             if (ratioCell) ratioCell.innerText = s.ratio.toFixed(5);
             let centerCell = document.getElementById(`center_${i}`);
-            if (centerCell) centerCell.innerText = s.center.toFixed(2) + " mm";
+            if (centerCell) centerCell.innerText = s.center.toFixed(1) + " mm";
             let stressCell = document.getElementById(`stress_${i}`);
             if (stressCell) stressCell.innerHTML = `${s.sigmaB.toFixed(1)} MPa / SF=${s.SF.toFixed(2)}`;
             let warnCell = document.getElementById(`warn_${i}`);
             if (warnCell) warnCell.innerText = s.warnings.join("; ");
         }
-        // performance summary
         let stressOk = calc.stageData.every(s => s.SF >= 1.0);
         performanceContainer.innerHTML = `
-            <p><strong>Total ratio:</strong> ${calc.totalRatio.toFixed(5)} &nbsp;| <strong>Overall η:</strong> ${(calc.totalEfficiency*100).toFixed(1)}%</p>
-            <p><strong>Output speed:</strong> ${calc.outputRPM.toFixed(2)} RPM &nbsp;| <strong>Real output torque:</strong> ${calc.outputTorqueReal.toFixed(2)} Nm</p>
-            <p><strong>Power loss:</strong> ${calc.powerLoss.toFixed(2)} kW &nbsp;| <strong>Thermal:</strong> ${calc.thermalNeeded}</p>
-            <p><strong>Module m:</strong> ${calc.m.toFixed(2)} mm &nbsp;| <strong>Face width b:</strong> ${calc.b} mm &nbsp;| <strong>K<sub>o</sub>:</strong> ${calc.Ko}</p>
-            <p><strong>Pressure angle φ:</strong> ${calc.phi}° &nbsp;| <strong>Min recommended teeth:</strong> ${calc.minTeeth}</p>
-            ${!stressOk ? '<span class="stress-warning">⚠️ Bending stress safety factor below 1.0 – increase module, face width, or reduce load.</span>' : '✅ All stages satisfy bending stress requirement (SF ≥ 1.0).'}
+            <p><strong>Total ratio:</strong> ${calc.totalRatio.toFixed(5)} &nbsp;| <strong>η:</strong> ${(calc.totalEfficiency*100).toFixed(1)}%</p>
+            <p><strong>Output speed:</strong> ${calc.outputRPM.toFixed(2)} RPM &nbsp;| <strong>Real torque:</strong> ${calc.outputTorqueReal.toFixed(2)} Nm</p>
+            <p><strong>Power loss:</strong> ${calc.powerLoss.toFixed(2)} kW &nbsp;| ${calc.thermalNeeded}</p>
+            <p><strong>m=${calc.m.toFixed(2)} mm | b=${calc.b} mm | K<sub>o</sub>=${calc.Ko} | φ=${calc.phi}°</strong></p>
+            ${!stressOk ? '<div class="stress-warning">⚠️ Bending SF &lt; 1.0 – increase module/face width.</div>' : '✅ All stages satisfy bending stress (SF ≥ 1.0).'}
         `;
-
-        // Detailed analytical report with equations
-        let report = `═══════════════════════════════════════════════════════════════\n`;
+        let report = `═══════════════════════════════════════════════════════════\n`;
         report += `              GEARBOX ANALYTICAL REPORT (Full Equations)\n`;
-        report += `═══════════════════════════════════════════════════════════════\n\n`;
-        report += `INPUT DATA\n`;
-        report += `  Input torque T_in    = ${calc.inputTorque} Nm\n`;
-        report += `  Input speed n_in     = ${calc.inputRPM} rpm\n`;
-        report += `  Pressure angle φ     = ${calc.phi}°\n`;
-        report += `  Module m             = ${calc.m.toFixed(2)} mm\n`;
-        report += `  Face width b         = ${calc.b} mm\n`;
-        report += `  Service factor K_o   = ${calc.Ko}\n`;
-        report += `  Allowable stress σ_all = ${calc.sigmaAllow} MPa\n`;
-        report += `  Min teeth (undercut) = ${calc.minTeeth}  (z_min = 2 / sin²φ)\n\n`;
-        
+        report += `═══════════════════════════════════════════════════════════\n\n`;
+        report += `INPUT DATA\n  T_in = ${calc.inputTorque} Nm, n_in = ${calc.inputRPM} rpm\n  φ = ${calc.phi}°, m = ${calc.m.toFixed(2)} mm, b = ${calc.b} mm\n  K_o = ${calc.Ko}, σ_all = ${calc.sigmaAllow} MPa\n  Min teeth (undercut) = ${calc.minTeeth}  (z_min = 2/sin²φ)\n\n`;
         for (let s of calc.stageData) {
-            report += `───────────────────────────────────────────────────────────────\n`;
-            report += `STAGE ${s.stage}\n`;
-            report += `───────────────────────────────────────────────────────────────\n`;
-            report += `1) Gear ratio:\n`;
-            report += `   i = z₂ / z₁ = ${s.z2} / ${s.z1} = ${s.ratio.toFixed(5)}\n\n`;
-            report += `2) Centre distance:\n`;
-            report += `   a = m·(z₁ + z₂)/2 = ${calc.m}·(${s.z1}+${s.z2})/2 = ${s.center.toFixed(2)} mm\n\n`;
-            report += `3) Torque at this stage:\n`;
-            report += `   T_stage = T_in · ∏(i_j·η_j) for previous stages\n`;
-            report += `   T_stage = ${s.torqueAtStage.toFixed(2)} Nm\n\n`;
-            report += `4) Tangential force (on pinion):\n`;
-            report += `   d₁ = m·z₁ = ${calc.m}·${s.z1} = ${s.d1.toFixed(2)} mm\n`;
-            report += `   F_t = (2·T_stage·1000) / d₁ = (2·${s.torqueAtStage.toFixed(2)}·1000) / ${s.d1.toFixed(2)} = ${s.Ft.toFixed(1)} N\n\n`;
-            report += `5) Lewis form factor Y (for φ = ${calc.phi}°):\n`;
-            report += `   Y = 0.484 - 0.32/z₁   (base 20°) corrected for pressure angle.\n`;
-            report += `   Y = ${s.Y.toFixed(4)}\n\n`;
-            report += `6) Bending stress (Lewis equation):\n`;
-            report += `   σ_b = (F_t · K_o) / (b · m · Y)\n`;
-            report += `   σ_b = (${s.Ft.toFixed(1)} · ${calc.Ko}) / (${calc.b} · ${calc.m.toFixed(2)} · ${s.Y.toFixed(4)}) = ${s.sigmaB.toFixed(2)} MPa\n\n`;
-            report += `7) Safety factor:\n`;
-            report += `   SF = σ_all / σ_b = ${calc.sigmaAllow} / ${s.sigmaB.toFixed(2)} = ${s.SF.toFixed(3)}\n`;
-            report += `   → ${s.SF >= 1.0 ? "✔ SAFE" : "✗ OVERSTRESSED"}\n\n`;
-            if (s.warnings.length) report += `   ⚠️ Warnings: ${s.warnings.join("; ")}\n\n`;
+            report += `───────────────────────────────────────────────────────────────\nSTAGE ${s.stage}\n`;
+            report += `1) i = z₂/z₁ = ${s.z2}/${s.z1} = ${s.ratio.toFixed(5)}\n`;
+            report += `2) a = m·(z₁+z₂)/2 = ${calc.m}·(${s.z1}+${s.z2})/2 = ${s.center.toFixed(2)} mm\n`;
+            report += `3) T_stage = ${s.torqueAtStage.toFixed(2)} Nm\n`;
+            report += `4) d₁ = m·z₁ = ${calc.m}·${s.z1} = ${s.d1.toFixed(2)} mm\n`;
+            report += `   F_t = (2·T·1000)/d₁ = ${s.Ft.toFixed(1)} N\n`;
+            report += `5) Lewis Y (φ=${calc.phi}°) = ${s.Y.toFixed(4)}\n`;
+            report += `6) σ_b = (F_t·K_o)/(b·m·Y) = ${s.sigmaB.toFixed(2)} MPa\n`;
+            report += `7) SF = σ_all/σ_b = ${s.SF.toFixed(3)} → ${s.SF >= 1.0 ? "✔ SAFE" : "✗ OVERSTRESSED"}\n`;
+            if (s.warnings.length) report += `   ⚠️ ${s.warnings.join("; ")}\n\n`;
         }
-        report += `───────────────────────────────────────────────────────────────\n`;
-        report += `GLOBAL RESULTS\n`;
-        report += `  Total gear ratio   i_tot = ${calc.totalRatio.toFixed(5)}\n`;
-        report += `  Overall efficiency η_tot = ${(calc.totalEfficiency*100).toFixed(2)}%\n`;
-        report += `  Output speed       n_out = n_in / i_tot = ${calc.outputRPM.toFixed(2)} rpm\n`;
-        report += `  Output torque (real) T_out = T_in · i_tot · η_tot = ${calc.outputTorqueReal.toFixed(2)} Nm\n`;
-        report += `  Power loss         P_loss = T_in·n_in/9550 · (1-η_tot) = ${calc.powerLoss.toFixed(3)} kW\n`;
-        report += `  Thermal assessment : ${calc.thermalNeeded}\n`;
-        report += `═══════════════════════════════════════════════════════════════\n`;
+        report += `───────────────────────────────────────────────────────────────\nGLOBAL\n  i_tot = ${calc.totalRatio.toFixed(5)}, η_tot = ${(calc.totalEfficiency*100).toFixed(2)}%\n  n_out = ${calc.outputRPM.toFixed(2)} rpm, T_out = ${calc.outputTorqueReal.toFixed(2)} Nm\n  P_loss = ${calc.powerLoss.toFixed(3)} kW, ${calc.thermalNeeded}\n═══════════════════════════════════════════════════════════\n`;
         calcDetailsDiv.innerText = report;
 
-        // draw canvas
         const ctx = canvas.getContext('2d');
         let w = canvas.clientWidth;
         canvas.width = w;
-        canvas.height = 240;
+        canvas.height = 220;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if (calc.stageData.length === 0) return;
         let stepX = canvas.width / (calc.stageData.length + 1);
         let yCenter = canvas.height / 2;
-        ctx.font = "bold 12px 'Segoe UI'";
+        ctx.font = "bold 11px 'Segoe UI'";
         for (let i = 0; i < calc.stageData.length; i++) {
-            let xPin = stepX * (i+1) - 22;
-            let xGear = stepX * (i+1) + 22;
-            ctx.beginPath(); ctx.arc(xPin, yCenter, 18, 0, 2*Math.PI); ctx.fillStyle = '#e7edf6'; ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#001f4e'; ctx.fillText(`P${i+1}`, xPin-8, yCenter+5);
-            ctx.beginPath(); ctx.arc(xGear, yCenter, 26, 0, 2*Math.PI); ctx.fillStyle = '#f4e9d8'; ctx.fill(); ctx.stroke();
-            ctx.fillStyle = '#6a3e0a'; ctx.fillText(`G${i+1}`, xGear-8, yCenter+5);
-            ctx.beginPath(); ctx.moveTo(xPin+14, yCenter); ctx.lineTo(xGear-22, yCenter); ctx.lineWidth = 1.8; ctx.stroke();
-            ctx.fillStyle = '#2c6e9e'; ctx.font = "bold 10px monospace";
-            ctx.fillText(`${calc.stageData[i].ratio.toFixed(2)}`, (xPin+xGear)/2-15, yCenter-18);
+            let xPin = stepX * (i+1) - 18;
+            let xGear = stepX * (i+1) + 18;
+            ctx.beginPath(); ctx.arc(xPin, yCenter, 14, 0, 2*Math.PI); ctx.fillStyle = '#e7edf6'; ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#001f4e'; ctx.fillText(`P${i+1}`, xPin-6, yCenter+4);
+            ctx.beginPath(); ctx.arc(xGear, yCenter, 20, 0, 2*Math.PI); ctx.fillStyle = '#f4e9d8'; ctx.fill(); ctx.stroke();
+            ctx.fillStyle = '#6a3e0a'; ctx.fillText(`G${i+1}`, xGear-6, yCenter+4);
+            ctx.beginPath(); ctx.moveTo(xPin+10, yCenter); ctx.lineTo(xGear-16, yCenter); ctx.lineWidth = 1.5; ctx.stroke();
+            ctx.fillStyle = '#2c6e9e'; ctx.font = "bold 9px monospace";
+            ctx.fillText(`${calc.stageData[i].ratio.toFixed(2)}`, (xPin+xGear)/2-12, yCenter-14);
             if (i > 0) {
-                let prevGearX = stepX*(i) + 22;
-                let currPinX = stepX*(i+1) - 22;
-                ctx.beginPath(); ctx.moveTo(prevGearX, yCenter); ctx.lineTo(currPinX, yCenter); ctx.lineWidth = 2.2; ctx.stroke();
+                let prevGearX = stepX*(i) + 18;
+                let currPinX = stepX*(i+1) - 18;
+                ctx.beginPath(); ctx.moveTo(prevGearX, yCenter); ctx.lineTo(currPinX, yCenter); ctx.lineWidth = 1.8; ctx.stroke();
             }
         }
     }
@@ -649,23 +656,22 @@
         while (gearTeethArr.length < steps) gearTeethArr.push(42);
         pinionTeethArr = pinionTeethArr.slice(0, steps);
         gearTeethArr = gearTeethArr.slice(0, steps);
-        
-        let html = `<table><thead><tr><th>Stage</th><th>Pinion z₁</th><th>Gear z₂</th><th>Ratio i</th><th>Centre a (mm)</th><th>σ_b / SF</th><th>Warnings</th></tr></thead><tbody>`;
+        let html = `<table><thead><tr><th>Stage</th><th>Pinion z₁</th><th>Gear z₂</th><th>Ratio i</th><th>Centre a</th><th>σ_b / SF</th><th>Warnings</th></tr></thead><tbody>`;
         for (let i = 0; i < steps; i++) {
             html += `<tr>
                         <td>${i+1}</td>
-                        <td><input type="number" class="pinionTeethIn" data-stage="${i}" value="${pinionTeethArr[i]}" min="4" max="200" step="1" style="width:70px;"></td>
-                        <td><input type="number" class="gearTeethIn" data-stage="${i}" value="${gearTeethArr[i]}" min="4" max="250" step="1" style="width:70px;"></td>
+                        <td><input type="number" class="pinionTeethIn" data-stage="${i}" value="${pinionTeethArr[i]}" min="4" max="200" step="1"></td>
+                        <td><input type="number" class="gearTeethIn" data-stage="${i}" value="${gearTeethArr[i]}" min="4" max="250" step="1"></td>
                         <td class="stage-ratio-cell" id="stageRatio_${i}">--</td>
                         <td id="center_${i}">--</td>
                         <td id="stress_${i}">--</td>
-                        <td id="warn_${i}" style="font-size:0.7rem;">--</td>
-                    </tr>`;
+                        <td id="warn_${i}" style="font-size:0.65rem;">--</td>
+                     </tr>`;
         }
         html += `</tbody></table>`;
         teethContainer.innerHTML = html;
-        document.querySelectorAll('.pinionTeethIn, .gearTeethIn').forEach(inp => inp.addEventListener('change', () => updateTableAndReport()));
-        updateTableAndReport();
+        document.querySelectorAll('.pinionTeethIn, .gearTeethIn').forEach(inp => inp.addEventListener('change', () => updateAll()));
+        updateAll();
     }
 
     function autoDesign() {
@@ -697,7 +703,7 @@
         rebuildTeethTable();
         setTimeout(() => {
             let calc = computeGearTrain();
-            advMsg.innerHTML = `✅ Auto-design completed: ${steps} stages, total ratio ${calc.totalRatio.toFixed(4)} (target ${requiredRatio.toFixed(3)}), η=${(calc.totalEfficiency*100).toFixed(1)}%`;
+            advMsg.innerHTML = `✅ Auto-design: ${steps} stages, ratio ${calc.totalRatio.toFixed(4)} (target ${requiredRatio.toFixed(3)}), η=${(calc.totalEfficiency*100).toFixed(1)}%`;
         }, 30);
     }
 
@@ -705,10 +711,10 @@
         let calc = computeGearTrain();
         let canvasData = canvas.toDataURL();
         let reportContent = document.getElementById('calcDetails').innerText;
-        let printWindow = window.open('', '_blank');
-        printWindow.document.write(`<!DOCTYPE html><html><head><title>UR Gearbox Full Report</title><style>body{font-family:'Times New Roman',serif; padding:30px;} pre{white-space:pre-wrap; font-size:12px;} img{max-width:100%;}</style></head><body><h1>UR Industries – Official Gearbox Design Report</h1><pre>${reportContent}</pre><img src="${canvasData}" style="width:100%; margin-top:20px;"><p>Generated: ${new Date().toLocaleString()}</p></body></html>`);
-        printWindow.document.close();
-        printWindow.print();
+        let win = window.open('', '_blank');
+        win.document.write(`<!DOCTYPE html><html><head><title>UR Gearbox Full Report</title><style>body{font-family:'Times New Roman',serif;padding:20px;}pre{white-space:pre-wrap;font-size:12px;}img{max-width:100%;}</style></head><body><h1>UR Industries – Official Gearbox Design Report</h1><pre>${reportContent}</pre><img src="${canvasData}" style="width:100%; margin-top:20px;"><p>${new Date().toLocaleString()}</p></body></html>`);
+        win.document.close();
+        win.print();
     }
 
     stepsInput.addEventListener('change', () => {
@@ -720,11 +726,10 @@
         gearTeethArr = gearTeethArr.slice(0, currentSteps);
         rebuildTeethTable();
     });
-    recalcBtn.addEventListener('click', updateTableAndReport);
+    recalcBtn.addEventListener('click', updateAll);
     printBtn.addEventListener('click', printReport);
     autoGearBtn.addEventListener('click', autoDesign);
-    [inputTorqueEl, motorRPMEl, gearTypeSelect, pressureAngleSelect, serviceFactorSelect, moduleInput, faceWidthInput, allowableStressInput, lifeHoursInput].forEach(el => el.addEventListener('input', updateTableAndReport));
-    
+    [inputTorqueEl, motorRPMEl, gearTypeSelect, pressureAngleSelect, serviceFactorSelect, moduleInput, faceWidthInput, allowableStressInput, lifeHoursInput].forEach(el => el.addEventListener('input', updateAll));
     rebuildTeethTable();
 </script>
 </body>
