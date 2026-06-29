@@ -1,0 +1,2835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UR Frequency OS 2.0</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background: #000;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+        }
+        #os {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* ===== SPLASH ===== */
+        #splash {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #0a0a2a, #050510, #000);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 1.2s;
+        }
+        #splash .logo-wrap {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 20px;
+        }
+        #splash .logo-wrap svg {
+            width: 100%;
+            height: 100%;
+            animation: pulse 2.5s infinite;
+        }
+        #splash .logo-wrap .freq-ring {
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #a855f7;
+            border-right-color: #06b6d4;
+            animation: spin 4s linear infinite;
+        }
+        #splash .logo-wrap .freq-ring:nth-child(2) {
+            inset: -20px;
+            animation-duration: 6s;
+            animation-direction: reverse;
+            border-top-color: #ec4899;
+            border-right-color: #8b5cf6;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(0.96);
+            }
+        }
+        #splash h1 {
+            background: linear-gradient(135deg, #a855f7, #06b6d4, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 10px;
+            text-shadow: none;
+            filter: drop-shadow(0 0 40px #a855f766);
+        }
+        #splash .sub {
+            color: #8899bb;
+            margin-top: 4px;
+            font-size: 14px;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+        #splash .bar-wrap {
+            width: 340px;
+            height: 3px;
+            background: #1a1a3a;
+            margin-top: 36px;
+            border-radius: 2px;
+            overflow: hidden;
+            box-shadow: 0 0 20px #06b6d433;
+        }
+        #splash .bar {
+            height: 100%;
+            background: linear-gradient(90deg, #a855f7, #06b6d4, #ec4899);
+            width: 0%;
+            transition: width 0.1s;
+            border-radius: 2px;
+        }
+        #splash .boot-log {
+            color: #445566;
+            font-size: 11px;
+            margin-top: 14px;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        /* ===== LOGIN ===== */
+        #login {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 30% 40%, #0a0a2a, #050510);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 900;
+        }
+        #login .login-box {
+            background: rgba(8, 8, 30, 0.96);
+            border: 1px solid #a855f766;
+            border-radius: 20px;
+            padding: 48px 56px;
+            width: 420px;
+            text-align: center;
+            box-shadow: 0 0 80px #a855f722, inset 0 0 80px #06b6d411;
+            backdrop-filter: blur(8px);
+        }
+        #login .avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            border-radius: 50%;
+            margin: 0 auto 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: #fff;
+            font-weight: bold;
+            box-shadow: 0 0 40px #a855f744;
+        }
+        #login .username {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #login .user-full {
+            color: #8899bb;
+            font-size: 13px;
+            margin-bottom: 28px;
+            letter-spacing: 2px;
+        }
+        #login input {
+            width: 100%;
+            background: #0a0a1a;
+            border: 1px solid #a855f744;
+            border-radius: 10px;
+            padding: 12px 18px;
+            color: #ddeeff;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            outline: none;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+            transition: border-color 0.3s;
+        }
+        #login input:focus {
+            border-color: #a855f7aa;
+            box-shadow: 0 0 30px #a855f722;
+        }
+        #login button {
+            width: 100%;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 3px;
+            transition: opacity 0.3s, transform 0.2s;
+        }
+        #login button:hover {
+            opacity: 0.9;
+            transform: scale(1.01);
+        }
+        #login .err {
+            color: #ff4466;
+            font-size: 12px;
+            margin-top: 8px;
+            min-height: 16px;
+        }
+        #login .version {
+            color: #334466;
+            font-size: 11px;
+            margin-top: 24px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== DESKTOP ===== */
+        #desktop {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 60% 30%, #0a0a1e, #050510);
+            display: none;
+            flex-direction: column;
+        }
+
+        /* ===== HEADER ===== */
+        #header {
+            height: 42px;
+            background: rgba(5, 5, 20, 0.94);
+            border-bottom: 1px solid #a855f733;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            position: relative;
+            z-index: 500;
+            backdrop-filter: blur(4px);
+        }
+        #logo-btn {
+            background: none;
+            border: none;
+            color: #a855f7;
+            font-size: 20px;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+        #logo-btn:hover {
+            background: #a855f722;
+        }
+        #logo-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+        #clock {
+            color: #ccddee;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-shadow: 0 0 20px #06b6d433;
+        }
+        #battery {
+            color: #8899bb;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #battery-icon {
+            width: 26px;
+            height: 13px;
+            border: 1px solid #8899bb;
+            border-radius: 3px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            padding: 1.5px;
+        }
+        #battery-icon::after {
+            content: '';
+            width: 2px;
+            height: 5px;
+            background: #8899bb;
+            position: absolute;
+            right: -3px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 0 1px 1px 0;
+        }
+        #battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a855f7, #06b6d4);
+            border-radius: 1px;
+            width: 85%;
+        }
+
+        /* ===== START MENU ===== */
+        #start-menu {
+            position: absolute;
+            top: 44px;
+            left: 10px;
+            background: rgba(5, 5, 25, 0.98);
+            border: 1px solid #a855f755;
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 210px;
+            display: none;
+            z-index: 600;
+            box-shadow: 0 12px 48px #000c, inset 0 0 60px #a855f711;
+            backdrop-filter: blur(8px);
+        }
+        #start-menu button {
+            display: block;
+            width: 100%;
+            background: none;
+            border: none;
+            color: #ccddee;
+            padding: 10px 22px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            transition: background 0.15s, color 0.15s;
+        }
+        #start-menu button:hover {
+            background: #a855f722;
+            color: #a855f7;
+        }
+        #start-menu .sep {
+            height: 1px;
+            background: #a855f733;
+            margin: 4px 12px;
+        }
+
+        /* ===== BODY ===== */
+        #body {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ===== APPS ===== */
+        .app {
+            position: absolute;
+            background: rgba(5, 5, 25, 0.97);
+            border: 1px solid #a855f744;
+            border-radius: 14px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 48px #000a;
+        }
+        .app.active {
+            display: flex;
+        }
+        .app-title {
+            background: rgba(20, 10, 50, 0.85);
+            border-bottom: 1px solid #a855f733;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #a855f7;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .app-title .app-actions {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .app-close {
+            background: #ff446688;
+            border: none;
+            color: #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .app-close:hover {
+            background: #ff4466;
+        }
+        .app-body {
+            flex: 1;
+            overflow: auto;
+            padding: 0;
+        }
+
+        /* ===== FILE EXPLORER ===== */
+        #file-app {
+            top: 50px;
+            left: 30px;
+            width: 660px;
+            height: 460px;
+        }
+        .file-toolbar {
+            background: #0a0a1a;
+            border-bottom: 1px solid #a855f733;
+            padding: 6px 14px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .file-btn {
+            background: #0a0a2a;
+            border: 1px solid #a855f744;
+            border-radius: 5px;
+            color: #8899bb;
+            padding: 4px 12px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+        .file-btn:hover {
+            background: #a855f722;
+            color: #a855f7;
+            border-color: #a855f7aa;
+        }
+        .file-path {
+            color: #8899bb;
+            font-size: 11px;
+            margin-left: 10px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+        .file-layout {
+            display: flex;
+            height: calc(100% - 38px);
+        }
+        .file-sidebar {
+            width: 160px;
+            background: #060612;
+            border-right: 1px solid #a855f733;
+            padding: 10px 0;
+            overflow: auto;
+        }
+        .file-sidebar-item {
+            padding: 7px 18px;
+            color: #8899bb;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+        }
+        .file-sidebar-item:hover,
+        .file-sidebar-item.selected {
+            background: #a855f715;
+            color: #a855f7;
+        }
+        .file-grid {
+            flex: 1;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 14px;
+            align-content: start;
+            overflow: auto;
+        }
+        .file-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            border: 2px solid transparent;
+            transition: all 0.15s;
+        }
+        .file-item:hover {
+            background: #a855f715;
+            border-color: #a855f744;
+        }
+        .file-item.selected-item {
+            background: #a855f722;
+            border-color: #a855f7aa;
+        }
+        .file-icon {
+            font-size: 34px;
+            line-height: 1;
+        }
+        .file-name {
+            color: #aabbcc;
+            font-size: 10px;
+            text-align: center;
+            word-break: break-word;
+            font-family: 'Courier New', monospace;
+        }
+        .file-status {
+            padding: 4px 14px;
+            background: #060612;
+            border-top: 1px solid #a855f733;
+            color: #556688;
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ===== TERMINAL ===== */
+        #term-app {
+            top: 60px;
+            left: 80px;
+            width: 720px;
+            height: 460px;
+        }
+        .term-body {
+            background: #05050f;
+            color: #ddeeff;
+            padding: 12px 16px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.7;
+            overflow: auto;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .term-output {
+            flex: 1;
+            overflow: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .term-output .line {
+            padding: 0;
+        }
+        .term-output .line .prompt {
+            color: #a855f7;
+        }
+        .term-output .line .cmd {
+            color: #06b6d4;
+        }
+        .term-output .line .output {
+            color: #ccddee;
+        }
+        .term-input-line {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding-top: 4px;
+            border-top: 1px solid #a855f722;
+            margin-top: 4px;
+        }
+        .term-input-line .prompt {
+            color: #a855f7;
+            font-weight: bold;
+        }
+        .term-input-line input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #ddeeff;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            outline: none;
+            padding: 4px 0;
+        }
+        .term-input-line input::selection {
+            background: #a855f744;
+        }
+
+        /* ===== MEDIA PLAYER ===== */
+        #media-app {
+            top: 100px;
+            left: 160px;
+            width: 520px;
+            height: 400px;
+        }
+        .media-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 16px 20px;
+            background: #060612;
+        }
+        .media-art {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #1a0a3a, #0a1a3a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            border: 1px solid #a855f733;
+            position: relative;
+            overflow: hidden;
+        }
+        .media-art .wave-bg {
+            position: absolute;
+            inset: 0;
+            opacity: 0.2;
+            background: repeating-linear-gradient(0deg, transparent, transparent 10px, #a855f7 10px, #06b6d4 12px, transparent 12px, transparent 20px);
+            background-size: 100% 20px;
+            animation: waveMove 3s linear infinite;
+        }
+        @keyframes waveMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 20px;
+            }
+        }
+        .media-art .art-text {
+            font-size: 48px;
+            z-index: 1;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 30px #a855f766);
+        }
+        .media-info {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .media-info .track {
+            color: #ddeeff;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        .media-info .artist {
+            color: #8899bb;
+            font-size: 12px;
+        }
+        .media-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin: 6px 0 10px;
+        }
+        .media-controls button {
+            background: none;
+            border: none;
+            color: #8899bb;
+            font-size: 22px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        .media-controls button:hover {
+            color: #a855f7;
+            background: #a855f722;
+        }
+        .media-controls button.playing {
+            color: #06b6d4;
+        }
+        .media-progress {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 4px 0 8px;
+        }
+        .media-progress input[type="range"] {
+            flex: 1;
+            -webkit-appearance: none;
+            background: #1a1a3a;
+            height: 4px;
+            border-radius: 2px;
+            outline: none;
+        }
+        .media-progress input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            cursor: pointer;
+        }
+        .media-time {
+            color: #556688;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            min-width: 80px;
+            text-align: center;
+        }
+        .media-volume {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .media-volume input[type="range"] {
+            -webkit-appearance: none;
+            background: #1a1a3a;
+            height: 3px;
+            border-radius: 2px;
+            outline: none;
+            flex: 1;
+        }
+        .media-volume input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #a855f7;
+            cursor: pointer;
+        }
+        .media-volume span {
+            color: #556688;
+            font-size: 11px;
+            min-width: 30px;
+        }
+        .media-playlist {
+            margin-top: 10px;
+            border-top: 1px solid #a855f733;
+            padding-top: 8px;
+            max-height: 100px;
+            overflow: auto;
+        }
+        .media-playlist .pl-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            color: #8899bb;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .media-playlist .pl-item:hover,
+        .media-playlist .pl-item.active {
+            background: #a855f715;
+            color: #a855f7;
+        }
+        .media-playlist .pl-item .pl-idx {
+            color: #445566;
+            margin-right: 8px;
+        }
+
+        /* ===== TELESCOPE ===== */
+        #telescope-app {
+            top: 80px;
+            left: 120px;
+            width: 600px;
+            height: 440px;
+        }
+        .tel-body {
+            background: #000;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #tel-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+        .tel-overlay {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid #a855f744;
+            border-radius: 8px;
+            padding: 6px 16px;
+            color: #8899bb;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+        }
+        .tel-overlay span {
+            color: #a855f7;
+        }
+
+        /* ===== RETRO GAMES ===== */
+        #games-app {
+            top: 120px;
+            left: 200px;
+            width: 640px;
+            height: 480px;
+        }
+        .games-body {
+            height: 100%;
+            background: #0a0a1a;
+            display: flex;
+            flex-direction: column;
+        }
+        .games-toolbar {
+            display: flex;
+            gap: 4px;
+            padding: 6px 12px;
+            background: #060612;
+            border-bottom: 1px solid #a855f733;
+            flex-wrap: wrap;
+        }
+        .games-toolbar .game-btn {
+            background: #0a0a2a;
+            border: 1px solid #a855f744;
+            border-radius: 5px;
+            color: #8899bb;
+            padding: 4px 14px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+        .games-toolbar .game-btn:hover {
+            background: #a855f722;
+            color: #a855f7;
+            border-color: #a855f7aa;
+        }
+        .games-toolbar .game-btn.active {
+            background: #a855f722;
+            color: #a855f7;
+            border-color: #a855f7aa;
+        }
+        .games-canvas-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #05050f;
+            position: relative;
+            overflow: hidden;
+        }
+        #game-canvas {
+            background: #050510;
+            display: block;
+            image-rendering: pixelated;
+        }
+        .game-score {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            color: #a855f7;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px #a855f744;
+            pointer-events: none;
+        }
+        .game-overlay-msg {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(2px);
+            color: #fff;
+            font-size: 22px;
+            font-family: 'Courier New', monospace;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .game-overlay-msg.show {
+            display: flex;
+        }
+        .game-overlay-msg .sub {
+            font-size: 13px;
+            color: #8899bb;
+            cursor: pointer;
+        }
+        .game-overlay-msg .sub:hover {
+            color: #a855f7;
+        }
+
+        /* ===== SETTINGS ===== */
+        #settings-app {
+            top: 130px;
+            left: 240px;
+            width: 520px;
+            height: 440px;
+        }
+        .settings-nav {
+            display: flex;
+            border-bottom: 1px solid #a855f733;
+            background: #060612;
+        }
+        .settings-tab {
+            padding: 10px 22px;
+            color: #556688;
+            font-size: 12px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+        .settings-tab.active {
+            color: #a855f7;
+            border-bottom-color: #a855f7;
+        }
+        .settings-panel {
+            padding: 24px;
+            display: none;
+        }
+        .settings-panel.active {
+            display: block;
+        }
+        .settings-row {
+            margin-bottom: 18px;
+        }
+        .settings-label {
+            color: #8899bb;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-family: 'Courier New', monospace;
+        }
+        .settings-input {
+            background: #0a0a1a;
+            border: 1px solid #a855f744;
+            border-radius: 6px;
+            padding: 8px 14px;
+            color: #ddeeff;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .settings-input:focus {
+            border-color: #a855f7aa;
+        }
+        .settings-save {
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            border: none;
+            border-radius: 6px;
+            padding: 8px 22px;
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            transition: opacity 0.2s;
+        }
+        .settings-save:hover {
+            opacity: 0.9;
+        }
+        .color-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .color-swatch {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .color-swatch.picked {
+            border-color: #fff;
+            box-shadow: 0 0 20px #a855f766;
+        }
+
+        /* ===== DESKTOP ICONS ===== */
+        .desk-icon {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .desk-icon:hover {
+            background: #a855f711;
+            border-color: #a855f744;
+        }
+        .desk-icon .di-ico {
+            font-size: 44px;
+            filter: drop-shadow(0 0 20px #a855f733);
+        }
+        .desk-icon .di-lbl {
+            color: #ccddee;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 2px 8px #000;
+            text-align: center;
+        }
+
+        /* ===== MODALS ===== */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: #000a;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 800;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+        .modal-box {
+            background: #050f25;
+            border: 1px solid #a855f766;
+            border-radius: 14px;
+            padding: 32px 40px;
+            text-align: center;
+            min-width: 300px;
+            box-shadow: 0 0 60px #a855f722;
+        }
+        .modal-box h3 {
+            color: #a855f7;
+            font-size: 16px;
+            margin-bottom: 10px;
+            font-family: 'Courier New', monospace;
+        }
+        .modal-box p {
+            color: #8899bb;
+            font-size: 13px;
+            margin-bottom: 22px;
+            font-family: 'Courier New', monospace;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            background: #0a0a2a;
+            border: 1px solid #a855f744;
+            border-radius: 6px;
+            padding: 8px 24px;
+            color: #a855f7;
+            cursor: pointer;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.2s;
+        }
+        .modal-btn:hover {
+            background: #a855f722;
+        }
+        .modal-btn.danger {
+            border-color: #ff446666;
+            color: #ff6688;
+        }
+        .modal-btn.danger:hover {
+            background: #ff000011;
+        }
+
+        /* ===== SAVE AS ===== */
+        #saveas-modal .saveas-input {
+            background: #0a0a1a;
+            border: 1px solid #a855f744;
+            border-radius: 6px;
+            padding: 8px 14px;
+            color: #ddeeff;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            outline: none;
+            margin-bottom: 16px;
+        }
+
+        /* ===== SLEEP ===== */
+        #sleep-overlay {
+            position: absolute;
+            inset: 0;
+            background: #000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 700;
+            cursor: pointer;
+        }
+        #sleep-overlay div {
+            text-align: center;
+        }
+        #sleep-overlay .moon {
+            font-size: 72px;
+            opacity: 0.3;
+            animation: pulse 3s infinite;
+        }
+        #sleep-overlay .label {
+            color: #a855f755;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            margin-top: 16px;
+            letter-spacing: 2px;
+        }
+
+        /* ===== NOTIFICATION ===== */
+        #notif {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: rgba(10, 10, 40, 0.95);
+            border: 1px solid #a855f766;
+            border-radius: 10px;
+            padding: 10px 20px;
+            color: #a855f7;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            display: none;
+            z-index: 9999;
+            transition: opacity 0.5s;
+            box-shadow: 0 0 40px #a855f722;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050510;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a855f744;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a855f788;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            #file-app,
+            #term-app,
+            #media-app,
+            #telescope-app,
+            #games-app,
+            #settings-app {
+                width: 92% !important;
+                height: 70% !important;
+                left: 4% !important;
+                top: 12% !important;
+            }
+            #login .login-box {
+                width: 90%;
+                padding: 32px 24px;
+            }
+            #splash h1 {
+                font-size: 28px;
+                letter-spacing: 4px;
+            }
+            #splash .bar-wrap {
+                width: 80%;
+            }
+            .desk-icon .di-ico {
+                font-size: 32px;
+            }
+            .desk-icon .di-lbl {
+                font-size: 9px;
+            }
+            .file-sidebar {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="os">
+
+        <!-- ===== SPLASH ===== -->
+        <div id="splash">
+            <div class="logo-wrap">
+                <svg viewBox="0 0 120 120">
+                    <defs>
+                        <linearGradient id="fg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#a855f7"/>
+                            <stop offset="50%" stop-color="#06b6d4"/>
+                            <stop offset="100%" stop-color="#ec4899"/>
+                        </linearGradient>
+                    </defs>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="url(#fg1)" stroke-width="2.5" opacity="0.6"/>
+                    <circle cx="60" cy="60" r="38" fill="#050518" stroke="url(#fg1)" stroke-width="1" opacity="0.3"/>
+                    <text x="60" y="52" font-size="18" fill="#a855f7" font-weight="bold" text-anchor="middle" font-family="'Courier New',monospace">UR</text>
+                    <text x="60" y="72" font-size="9" fill="#06b6d4" text-anchor="middle" font-family="'Courier New',monospace">FREQ</text>
+                    <circle cx="60" cy="92" r="3" fill="#a855f788"/>
+                    <circle cx="44" cy="86" r="2" fill="#06b6d466"/>
+                    <circle cx="76" cy="86" r="2" fill="#ec489966"/>
+                    <path d="M40,104 Q50,96 60,104 Q70,112 80,104" stroke="url(#fg1)" stroke-width="1.5" fill="none" opacity="0.5"/>
+                </svg>
+                <div class="freq-ring"></div>
+                <div class="freq-ring"></div>
+            </div>
+            <h1>UR FREQUENCY OS</h1>
+            <div class="sub">version 2.0 · resonate</div>
+            <div class="bar-wrap"><div class="bar" id="splash-bar"></div></div>
+            <div class="boot-log" id="boot-log">Initializing frequency kernel...</div>
+        </div>
+
+        <!-- ===== LOGIN ===== -->
+        <div id="login">
+            <div class="login-box">
+                <div class="avatar">◈</div>
+                <div class="username">UR FREQUENCY OS</div>
+                <div class="user-full">Ubaid UR Rehman · Resonate</div>
+                <input type="password" id="pass-input" placeholder="Enter Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+                <button onclick="doLogin()">TUNE IN</button>
+                <div class="err" id="login-err"></div>
+                <div class="version">© 2026 UR Frequency — All Rights Reserved</div>
+            </div>
+        </div>
+
+        <!-- ===== DESKTOP ===== -->
+        <div id="desktop">
+            <!-- HEADER -->
+            <div id="header">
+                <button id="logo-btn" onclick="toggleStart()" title="System Menu">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10" fill="none" stroke="#a855f7" stroke-width="1.8"/>
+                        <text x="12" y="16" font-size="8" fill="#a855f7" font-weight="bold" text-anchor="middle" font-family="'Courier New',monospace">UR</text>
+                    </svg>
+                </button>
+                <div id="clock">--:--:--</div>
+                <div id="battery">
+                    <span id="battery-pct">87%</span>
+                    <div id="battery-icon"><div id="battery-fill"></div></div>
+                </div>
+            </div>
+
+            <!-- START MENU -->
+            <div id="start-menu">
+                <button onclick="doMenu('restart')">↺ &nbsp;Restart</button>
+                <button onclick="doMenu('shutdown')">⏻ &nbsp;Shutdown</button>
+                <div class="sep"></div>
+                <button onclick="doMenu('sleep')">☽ &nbsp;Sleep</button>
+                <button onclick="doMenu('lock')">🔒 &nbsp;Lock</button>
+            </div>
+
+            <!-- BODY -->
+            <div id="body">
+
+                <!-- Desktop Icons -->
+                <div class="desk-icon" style="top:30px;left:40px;" ondblclick="openApp('file')" tabindex="0">
+                    <div class="di-ico">📁</div>
+                    <div class="di-lbl">File Explorer</div>
+                </div>
+                <div class="desk-icon" style="top:150px;left:40px;" ondblclick="openApp('term')" tabindex="0">
+                    <div class="di-ico">⌨️</div>
+                    <div class="di-lbl">Terminal</div>
+                </div>
+                <div class="desk-icon" style="top:270px;left:40px;" ondblclick="openApp('media')" tabindex="0">
+                    <div class="di-ico">🎵</div>
+                    <div class="di-lbl">Media Player</div>
+                </div>
+                <div class="desk-icon" style="top:390px;left:40px;" ondblclick="openApp('telescope')" tabindex="0">
+                    <div class="di-ico">🔭</div>
+                    <div class="di-lbl">Live Telescope</div>
+                </div>
+                <div class="desk-icon" style="top:510px;left:40px;" ondblclick="openApp('games')" tabindex="0">
+                    <div class="di-ico">🎮</div>
+                    <div class="di-lbl">Retro Games</div>
+                </div>
+                <div class="desk-icon" style="top:630px;left:40px;" ondblclick="openApp('settings')" tabindex="0">
+                    <div class="di-ico">⚙️</div>
+                    <div class="di-lbl">Settings</div>
+                </div>
+                <div class="desk-icon" style="top:750px;left:40px;" ondblclick="doMenu('shutdown')" tabindex="0">
+                    <div class="di-ico">⏻</div>
+                    <div class="di-lbl">Shutdown</div>
+                </div>
+
+                <!-- ===== FILE EXPLORER ===== -->
+                <div class="app" id="file-app">
+                    <div class="app-title">
+                        <span>📁 File Explorer</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('file')">✕</button>
+                        </div>
+                    </div>
+                    <div class="file-toolbar">
+                        <button class="file-btn" onclick="fileNav('up')">↑ Up</button>
+                        <button class="file-btn" onclick="fileNav('back')">← Back</button>
+                        <button class="file-btn" onclick="fileNewFolder()">+ Folder</button>
+                        <button class="file-btn" onclick="fileNewTxt()">+ Text</button>
+                        <span class="file-path" id="file-path">/Home</span>
+                    </div>
+                    <div class="file-layout">
+                        <div class="file-sidebar" id="file-sidebar">
+                            <div class="file-sidebar-item selected" onclick="navSidebar('Home')">🏠 Home</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Documents')">📄 Documents</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Pictures')">🖼️ Pictures</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Music')">🎵 Music</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Videos')">🎬 Videos</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Trash')">🗑️ Trash</div>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;">
+                            <div class="file-grid" id="file-grid"></div>
+                            <div class="file-status" id="file-status">Ready</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== TERMINAL ===== -->
+                <div class="app" id="term-app">
+                    <div class="app-title">
+                        <span>⌨️ Terminal — UR Shell</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('term')">✕</button>
+                        </div>
+                    </div>
+                    <div class="term-body" id="term-body">
+                        <div class="term-output" id="term-output">
+                            <div class="line"><span class="prompt">ur@freq:~$ </span><span class="cmd">echo "Welcome to UR Frequency OS"</span></div>
+                            <div class="line"><span class="output">Welcome to UR Frequency OS</span></div>
+                            <div class="line"><span class="prompt">ur@freq:~$ </span><span class="cmd">help</span></div>
+                            <div class="line"><span class="output">Available commands: help, ls, cd, pwd, echo, date, whoami, clear, cat, touch, mkdir, rm, neofetch</span></div>
+                            <div class="line"><span class="prompt">ur@freq:~$ </span><span class="cmd">neofetch</span></div>
+                            <div class="line"><span class="output">OS: UR Frequency OS 2.0\nKernel: 6.8.0-freq\nShell: UR Shell v1.0\nTerminal: UR Terminal\nCPU: Quantum Core @ 3.4GHz\nMemory: 16GB DDR5</span></div>
+                        </div>
+                        <div class="term-input-line">
+                            <span class="prompt">ur@freq:~$ </span>
+                            <input id="term-input" type="text" autofocus spellcheck="false" onkeydown="if(event.key==='Enter')runCommand()"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== MEDIA PLAYER ===== -->
+                <div class="app" id="media-app">
+                    <div class="app-title">
+                        <span>🎵 Media Player</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('media')">✕</button>
+                        </div>
+                    </div>
+                    <div class="media-body">
+                        <div class="media-art">
+                            <div class="wave-bg"></div>
+                            <div class="art-text" id="media-art-icon">◈</div>
+                        </div>
+                        <div class="media-info">
+                            <div class="track" id="media-track">Frequency Wave</div>
+                            <div class="artist" id="media-artist">UR Records</div>
+                        </div>
+                        <div class="media-controls">
+                            <button onclick="mediaPrev()" title="Previous">⏮</button>
+                            <button id="media-play-btn" onclick="mediaToggle()" title="Play/Pause">▶</button>
+                            <button onclick="mediaNext()" title="Next">⏭</button>
+                            <button onclick="mediaShuffle()" title="Shuffle" style="font-size:16px;">🔀</button>
+                        </div>
+                        <div class="media-progress">
+                            <span class="media-time" id="media-current">0:00</span>
+                            <input type="range" id="media-progress-slider" min="0" max="100" value="0" oninput="mediaSeek(this.value)"/>
+                            <span class="media-time" id="media-duration">3:30</span>
+                        </div>
+                        <div class="media-volume">
+                            <span>🔊</span>
+                            <input type="range" id="media-volume-slider" min="0" max="100" value="70" oninput="mediaVolume(this.value)"/>
+                            <span id="media-vol-label">70%</span>
+                        </div>
+                        <div class="media-playlist" id="media-playlist"></div>
+                    </div>
+                </div>
+
+                <!-- ===== TELESCOPE ===== -->
+                <div class="app" id="telescope-app">
+                    <div class="app-title">
+                        <span>🔭 Live Telescope — Deep Space</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('telescope')">✕</button>
+                        </div>
+                    </div>
+                    <div class="tel-body">
+                        <canvas id="tel-canvas"></canvas>
+                        <div class="tel-overlay">🔭 <span id="tel-coords">RA: 12h 34m · Dec: +45°</span> · zoom: <span id="tel-zoom">1.0x</span></div>
+                    </div>
+                </div>
+
+                <!-- ===== RETRO GAMES ===== -->
+                <div class="app" id="games-app">
+                    <div class="app-title">
+                        <span>🎮 Retro Games</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('games')">✕</button>
+                        </div>
+                    </div>
+                    <div class="games-body">
+                        <div class="games-toolbar">
+                            <button class="game-btn active" data-game="snake" onclick="switchGame('snake')">🐍 Snake</button>
+                            <button class="game-btn" data-game="pong" onclick="switchGame('pong')">🏓 Pong</button>
+                            <button class="game-btn" data-game="tetris" onclick="switchGame('tetris')">🧱 Tetris</button>
+                            <button class="game-btn" onclick="resetGame()">↺ Reset</button>
+                        </div>
+                        <div class="games-canvas-wrap">
+                            <canvas id="game-canvas"></canvas>
+                            <div class="game-score" id="game-score">0</div>
+                            <div class="game-overlay-msg" id="game-overlay">
+                                <div id="game-overlay-title">Game Over</div>
+                                <div class="sub" onclick="resetGame()">Click to restart</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== SETTINGS ===== -->
+                <div class="app" id="settings-app">
+                    <div class="app-title">
+                        <span>⚙️ Settings</span>
+                        <div class="app-actions">
+                            <button class="app-close" onclick="closeApp('settings')">✕</button>
+                        </div>
+                    </div>
+                    <div class="app-body">
+                        <div class="settings-nav">
+                            <div class="settings-tab active" onclick="settingsTab('password')">Password</div>
+                            <div class="settings-tab" onclick="settingsTab('appearance')">Appearance</div>
+                            <div class="settings-tab" onclick="settingsTab('datetime')">Date &amp; Time</div>
+                        </div>
+                        <div class="settings-panel active" id="panel-password">
+                            <div class="settings-row">
+                                <div class="settings-label">Current Password</div>
+                                <input class="settings-input" type="password" id="s-old-pass" placeholder="Current password"/>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label">New Password</div>
+                                <input class="settings-input" type="password" id="s-new-pass" placeholder="New password"/>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label">Confirm New Password</div>
+                                <input class="settings-input" type="password" id="s-confirm-pass" placeholder="Confirm new password"/>
+                            </div>
+                            <button class="settings-save" onclick="changePassword()">Save Password</button>
+                            <div id="pass-msg" style="color:#44ff88;font-size:12px;margin-top:8px;font-family:'Courier New',monospace;min-height:16px;"></div>
+                        </div>
+                        <div class="settings-panel" id="panel-appearance">
+                            <div class="settings-row">
+                                <div class="settings-label">Text Color Theme</div>
+                                <div class="color-row">
+                                    <div class="color-swatch picked" style="background:#ddeeff;" onclick="setTextColor('#ddeeff')" title="Default"></div>
+                                    <div class="color-swatch" style="background:#a855f7;" onclick="setTextColor('#a855f7')" title="Purple"></div>
+                                    <div class="color-swatch" style="background:#06b6d4;" onclick="setTextColor('#06b6d4')" title="Cyan"></div>
+                                    <div class="color-swatch" style="background:#00ff88;" onclick="setTextColor('#00ff88')" title="Matrix"></div>
+                                    <div class="color-swatch" style="background:#ffdd44;" onclick="setTextColor('#ffdd44')" title="Amber"></div>
+                                    <div class="color-swatch" style="background:#ff88cc;" onclick="setTextColor('#ff88cc')" title="Pink"></div>
+                                </div>
+                            </div>
+                            <div style="margin-top:12px;color:#8899bb;font-size:12px;font-family:'Courier New',monospace;">Preview:</div>
+                            <div id="color-preview" style="background:#0a0a1a;border:1px solid #a855f744;border-radius:6px;padding:12px;margin-top:6px;font-family:'Courier New',monospace;font-size:13px;color:#ddeeff;">
+                                The quick brown fox jumps over the lazy dog. ✦
+                            </div>
+                        </div>
+                        <div class="settings-panel" id="panel-datetime">
+                            <div class="settings-row">
+                                <div class="settings-label">Current Date &amp; Time</div>
+                                <div id="dt-display" style="color:#a855f7;font-size:20px;font-family:'Courier New',monospace;margin:8px 0;"></div>
+                            </div>
+                            <div class="settings-row">
+                                <div class="settings-label">Time Zone</div>
+                                <select class="settings-input" id="tz-select" onchange="updateTZ()">
+                                    <option value="Asia/Karachi">Pakistan (PKT)</option>
+                                    <option value="UTC">UTC</option>
+                                    <option value="America/New_York">Eastern (EST)</option>
+                                    <option value="America/Los_Angeles">Pacific (PST)</option>
+                                    <option value="Europe/London">London (GMT)</option>
+                                    <option value="Asia/Dubai">Dubai (GST)</option>
+                                </select>
+                            </div>
+                            <div style="color:#556688;font-size:11px;font-family:'Courier New',monospace;margin-top:6px;">Time updates automatically from system clock.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ===== MODALS ===== -->
+            <div class="modal-overlay" id="power-modal">
+                <div class="modal-box">
+                    <h3 id="modal-title">Confirm Action</h3>
+                    <p id="modal-msg">Are you sure?</p>
+                    <div class="modal-btns">
+                        <button class="modal-btn" onclick="document.getElementById('power-modal').classList.remove('show')">Cancel</button>
+                        <button class="modal-btn danger" id="modal-confirm">Confirm</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="saveas-modal">
+                <div class="modal-box">
+                    <h3>Save As</h3>
+                    <p>Enter a filename:</p>
+                    <input class="saveas-input" id="saveas-input" type="text" value="Untitled.txt" placeholder="filename.txt"/>
+                    <div class="modal-btns">
+                        <button class="modal-btn" onclick="document.getElementById('saveas-modal').classList.remove('show')">Cancel</button>
+                        <button class="modal-btn" onclick="doSaveAs()">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLEEP OVERLAY -->
+            <div id="sleep-overlay" onclick="wakeUp()">
+                <div>
+                    <div class="moon">☽</div>
+                    <div class="label">Click anywhere to wake</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- NOTIFICATION -->
+        <div id="notif"></div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  STATE
+        // ============================================================
+        let osPass = '';
+        let currentPath = ['Home'];
+        let fileHistory = [
+            ['Home']
+        ];
+        let textColor = '#ddeeff';
+        let tz = 'Asia/Karachi';
+        let selectedFile = null;
+
+        // Terminal state
+        let termCwd = ['Home'];
+        let termHistory = [];
+        let termHistIdx = 0;
+
+        // Media player
+        const playlist = [
+            { title: 'Frequency Wave', artist: 'UR Records', icon: '◈' },
+            { title: 'Neon Pulse', artist: 'Synthwave', icon: '✦' },
+            { title: 'Deep Space', artist: 'Ambient', icon: '★' },
+            { title: 'Resonance', artist: 'UR Records', icon: '◉' },
+            { title: 'Galactic Drift', artist: 'Cosmic', icon: '◆' },
+        ];
+        let mediaIdx = 0;
+        let mediaPlaying = false;
+        let mediaProgress = 0;
+        let mediaInterval = null;
+        let mediaVol = 70;
+
+        // Telescope
+        let telStars = [];
+        let telZoom = 1.0;
+        let telAnim = null;
+        let telClickX = 0,
+            telClickY = 0;
+
+        // Games
+        let currentGame = 'snake';
+        let gameRunning = false;
+        let gameLoop = null;
+
+        // ============================================================
+        //  FILE SYSTEM
+        // ============================================================
+        let fs = {
+            'Home': {
+                type: 'folder',
+                children: {
+                    'Documents': { type: 'folder', children: {
+                            'Resume.txt': { type: 'file', content: 'Ubaid UR Rehman\nSoftware Developer\n\nExperience:\n- System Architecture\n- Full Stack Development\n' },
+                            'Notes.txt': { type: 'file', content: 'Personal Notes\n\nRemember to review the frequency project.\n' },
+                            'Work': { type: 'folder', children: {
+                                    'Project.txt': { type: 'file', content: 'Project Plan\n\nPhase 1: Design\nPhase 2: Development\nPhase 3: Testing\n' }
+                                } }
+                        } },
+                    'Pictures': { type: 'folder', children: {
+                            'Wallpapers': { type: 'folder', children: {
+                                    'freq.png': { type: 'image', content: '' },
+                                    'dark.png': { type: 'image', content: '' }
+                                } },
+                            'screenshot.png': { type: 'image', content: '' }
+                        } },
+                    'Music': { type: 'folder', children: {
+                            'Playlist.txt': { type: 'file', content: 'My Playlist\n1. Frequency Wave\n2. Neon Pulse\n3. Deep Space\n' }
+                        } },
+                    'Videos': { type: 'folder', children: {} },
+                    'Desktop': { type: 'folder', children: {
+                            'UR_Logo.png': { type: 'image', content: 'Logo' }
+                        } },
+                    'Trash': { type: 'folder', children: {} }
+                }
+            }
+        };
+
+        function getNode(path) {
+            let node = fs['Home'];
+            if (path[0] === 'Home' && path.length === 1) return node;
+            let parts = path.slice(1);
+            for (let p of parts) {
+                if (node.children && node.children[p]) node = node.children[p];
+                else return null;
+            }
+            return node;
+        }
+
+        function getNodeFromPath(pathArr) {
+            let node = fs['Home'];
+            for (let p of pathArr) {
+                if (node.children && node.children[p]) node = node.children[p];
+                else return null;
+            }
+            return node;
+        }
+
+        // ============================================================
+        //  SPLASH
+        // ============================================================
+        let bootMsgs = [
+            'Initializing frequency kernel...',
+            'Loading quantum drivers...',
+            'Mounting resonant file system...',
+            'Starting network harmonic services...',
+            'Loading user interface...',
+            'Applying frequency configuration...',
+            'Starting UR Frequency OS 2.0...',
+            'Resonate with the future!'
+        ];
+        let bootIdx = 0;
+        let splashPct = 0;
+
+        function runSplash() {
+            let bar = document.getElementById('splash-bar');
+            let log = document.getElementById('boot-log');
+            let timer = setInterval(() => {
+                splashPct += Math.random() * 14 + 6;
+                if (splashPct > 100) splashPct = 100;
+                bar.style.width = splashPct + '%';
+                if (bootIdx < bootMsgs.length) {
+                    log.textContent = bootMsgs[bootIdx];
+                    bootIdx++;
+                }
+                if (splashPct >= 100) {
+                    clearInterval(timer);
+                    setTimeout(() => {
+                        document.getElementById('splash').style.opacity = '0';
+                        setTimeout(() => {
+                            document.getElementById('splash').style.display = 'none';
+                            document.getElementById('login').style.display = 'flex';
+                            document.getElementById('pass-input').focus();
+                        }, 1000);
+                    }, 500);
+                }
+            }, 220);
+        }
+        runSplash();
+
+        // ============================================================
+        //  LOGIN
+        // ============================================================
+        function doLogin() {
+            let v = document.getElementById('pass-input').value;
+            let err = document.getElementById('login-err');
+            if (v === osPass) {
+                document.getElementById('login').style.display = 'none';
+                let d = document.getElementById('desktop');
+                d.style.display = 'flex';
+                startClock();
+                renderFileGrid();
+                initMedia();
+                initTelescope();
+                initGame('snake');
+                notify('Welcome back, Ubaid UR Rehman! ◈');
+            } else {
+                err.textContent = 'Incorrect password. Try again.';
+                document.getElementById('pass-input').value = '';
+                setTimeout(() => err.textContent = '', 2000);
+            }
+        }
+
+        // ============================================================
+        //  CLOCK
+        // ============================================================
+        function startClock() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            setInterval(() => {
+                let dt = document.getElementById('dt-display');
+                if (dt) dt.textContent = new Date().toLocaleString('en-PK', { timeZone: tz });
+            }, 1000);
+        }
+
+        function updateClock() {
+            let now = new Date();
+            let t = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit',
+                timeZone: tz });
+            document.getElementById('clock').textContent = t;
+        }
+
+        function updateTZ() {
+            tz = document.getElementById('tz-select').value;
+        }
+
+        // ============================================================
+        //  START MENU
+        // ============================================================
+        function toggleStart() {
+            let m = document.getElementById('start-menu');
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+        document.addEventListener('click', e => {
+            if (!e.target.closest('#start-menu') && !e.target.closest('#logo-btn'))
+                document.getElementById('start-menu').style.display = 'none';
+        });
+
+        function doMenu(action) {
+            document.getElementById('start-menu').style.display = 'none';
+            if (action === 'shutdown') {
+                showModal('Shutdown', 'Shut down UR Frequency OS?', () => {
+                    document.getElementById('desktop').innerHTML =
+                        '<div style="background:#000;width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#a855f744;font-size:18px;font-family:Courier New">◈ System has been shut down.</div>';
+                });
+            } else if (action === 'restart') {
+                showModal('Restart', 'Restart UR Frequency OS?', () => {
+                    location.reload();
+                });
+            } else if (action === 'sleep') {
+                document.getElementById('sleep-overlay').style.display = 'flex';
+            } else if (action === 'lock') {
+                document.getElementById('desktop').style.display = 'none';
+                document.getElementById('login').style.display = 'flex';
+                document.getElementById('pass-input').value = '';
+                document.getElementById('pass-input').focus();
+            }
+        }
+
+        function wakeUp() {
+            document.getElementById('sleep-overlay').style.display = 'none';
+        }
+
+        function showModal(title, msg, cb) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-msg').textContent = msg;
+            let btn = document.getElementById('modal-confirm');
+            btn.onclick = () => {
+                document.getElementById('power-modal').classList.remove('show');
+                cb();
+            };
+            document.getElementById('power-modal').classList.add('show');
+        }
+
+        // ============================================================
+        //  APP MANAGEMENT
+        // ============================================================
+        function openApp(id) {
+            document.getElementById(id + '-app').classList.add('active');
+            if (id === 'file') renderFileGrid();
+            if (id === 'settings') {
+                let dt = document.getElementById('dt-display');
+                if (dt) dt.textContent = new Date().toLocaleString('en-PK', { timeZone: tz });
+            }
+            if (id === 'telescope') initTelescope();
+            if (id === 'games') initGame(currentGame);
+            if (id === 'term') document.getElementById('term-input').focus();
+            if (id === 'media') updateMediaUI();
+        }
+
+        function closeApp(id) {
+            if (id === 'media' && mediaPlaying) mediaToggle();
+            if (id === 'telescope' && telAnim) { cancelAnimationFrame(telAnim);
+                telAnim = null; }
+            if (id === 'games' && gameLoop) { cancelAnimationFrame(gameLoop);
+                gameLoop = null;
+                gameRunning = false; }
+            document.getElementById(id + '-app').classList.remove('active');
+        }
+
+        // ============================================================
+        //  FILE EXPLORER
+        // ============================================================
+        function renderFileGrid() {
+            let grid = document.getElementById('file-grid');
+            let pathStr = '/' + currentPath.join('/');
+            document.getElementById('file-path').textContent = pathStr;
+            let node = getNode(currentPath);
+            grid.innerHTML = '';
+            if (!node || node.type !== 'folder') { grid.innerHTML =
+                    '<div style="color:#556688;padding:20px;font-family:Courier New;font-size:12px;">Empty</div>'; return; }
+            let children = node.children || {};
+            let keys = Object.keys(children);
+            if (keys.length === 0) { grid.innerHTML =
+                    '<div style="color:#556688;padding:20px;font-family:Courier New;font-size:12px;">Folder is empty</div>'; return; }
+            for (let name of keys) {
+                let item = children[name];
+                let icon = item.type === 'folder' ? '📁' : item.type === 'image' ? '🖼️' : '📄';
+                let el = document.createElement('div');
+                el.className = 'file-item';
+                el.innerHTML = `<div class="file-icon">${icon}</div><div class="file-name">${name}</div>`;
+                el.dataset.name = name;
+                el.onclick = () => selectFile(name, el);
+                el.ondblclick = () => openFileItem(name, item);
+                el.onkeydown = ev => { if (ev.key === 'Enter') openFileItem(name, item); };
+                el.tabIndex = 0;
+                grid.appendChild(el);
+            }
+            document.getElementById('file-status').textContent = keys.length + ' item(s) in ' + pathStr;
+        }
+
+        function selectFile(name, el) {
+            document.querySelectorAll('.file-item').forEach(e => e.classList.remove('selected-item'));
+            el.classList.add('selected-item');
+            selectedFile = name;
+        }
+
+        function openFileItem(name, item) {
+            if (item.type === 'folder') {
+                fileHistory.push([...currentPath]);
+                currentPath.push(name);
+                renderFileGrid();
+            } else if (item.type === 'file') {
+                notify('📄 Opened: ' + name);
+                // Use the editor (re-use from original)
+                let editor = document.getElementById('editor-app');
+                if (editor) {
+                    // We don't have a full editor in this build, but we can show content
+                    alert('File content:\n\n' + (item.content || '(empty)'));
+                } else {
+                    alert('File: ' + name + '\n\n' + (item.content || '(empty)'));
+                }
+            } else {
+                notify('Cannot open image files in this version.');
+            }
+        }
+
+        function fileNav(dir) {
+            if (dir === 'up') {
+                if (currentPath.length > 1) {
+                    fileHistory.push([...currentPath]);
+                    currentPath.pop();
+                    renderFileGrid();
+                }
+            } else if (dir === 'back') {
+                if (fileHistory.length > 0) {
+                    currentPath = [...fileHistory.pop()];
+                    renderFileGrid();
+                }
+            }
+        }
+
+        function navSidebar(name) {
+            let el = event.target;
+            document.querySelectorAll('.file-sidebar-item').forEach(e => e.classList.remove('selected'));
+            el.classList.add('selected');
+            if (name === 'Trash' || name === 'Home') {
+                currentPath = ['Home'];
+                if (name === 'Trash') currentPath = ['Home', 'Trash'];
+            } else {
+                currentPath = ['Home', name];
+            }
+            fileHistory = [];
+            renderFileGrid();
+        }
+
+        function fileNewFolder() {
+            let name = prompt('Folder name:', 'New Folder');
+            if (!name) return;
+            let node = getNode(currentPath);
+            if (!node || !node.children) return;
+            if (node.children[name]) { notify('A folder with that name already exists.'); return; }
+            node.children[name] = { type: 'folder', children: {} };
+            renderFileGrid();
+            notify('📁 Folder created: ' + name);
+        }
+
+        function fileNewTxt() {
+            let name = prompt('File name:', 'NewFile.txt');
+            if (!name) return;
+            if (!name.endsWith('.txt')) name += '.txt';
+            let node = getNode(currentPath);
+            if (!node || !node.children) return;
+            node.children[name] = { type: 'file', content: '' };
+            renderFileGrid();
+            notify('📄 File created: ' + name);
+        }
+
+        // ============================================================
+        //  TERMINAL
+        // ============================================================
+        function runCommand() {
+            let input = document.getElementById('term-input');
+            let cmd = input.value.trim();
+            if (!cmd) { input.value = '';
+                input.focus(); return; }
+
+            let output = document.getElementById('term-output');
+            let line = document.createElement('div');
+            line.className = 'line';
+            line.innerHTML = `<span class="prompt">ur@freq:~$ </span><span class="cmd">${escapeHtml(cmd)}</span>`;
+            output.appendChild(line);
+
+            let resp = handleCommand(cmd);
+            if (resp) {
+                let rline = document.createElement('div');
+                rline.className = 'line';
+                rline.innerHTML = `<span class="output">${escapeHtml(resp)}</span>`;
+                output.appendChild(rline);
+            }
+
+            input.value = '';
+            output.scrollTop = output.scrollHeight;
+            input.focus();
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        function handleCommand(cmd) {
+            let parts = cmd.split(/\s+/);
+            let main = parts[0].toLowerCase();
+
+            if (main === 'help') {
+                return 'Available commands: help, ls, cd, pwd, echo, date, whoami, clear, cat, touch, mkdir, rm, neofetch, freq';
+            }
+            if (main === 'whoami') return 'ur';
+            if (main === 'date') return new Date().toString();
+            if (main === 'pwd') return '/' + termCwd.join('/');
+            if (main === 'clear') {
+                document.getElementById('term-output').innerHTML = '';
+                return null;
+            }
+            if (main === 'echo') {
+                return parts.slice(1).join(' ') || '';
+            }
+            if (main === 'freq') {
+                return '◈ UR Frequency OS 2.0 — Resonate with the future. ◈';
+            }
+            if (main === 'neofetch') {
+                return 'OS: UR Frequency OS 2.0\nKernel: 6.8.0-freq\nShell: UR Shell v1.0\nTerminal: UR Terminal\nCPU: Quantum Core @ 3.4GHz\nMemory: 16GB DDR5\nResonance: ∞';
+            }
+            if (main === 'ls') {
+                let node = getNodeFromPath(termCwd);
+                if (!node || node.type !== 'folder') return 'Not a directory';
+                let keys = Object.keys(node.children || {});
+                if (keys.length === 0) return '(empty)';
+                let folders = keys.filter(k => node.children[k].type === 'folder');
+                let files = keys.filter(k => node.children[k].type !== 'folder');
+                let sorted = [...folders, ...files];
+                let col1 = sorted.map(k => k + (node.children[k].type === 'folder' ? '/' : ''));
+                return col1.join('  ');
+            }
+            if (main === 'cd') {
+                let target = parts[1] || 'Home';
+                if (target === '..') {
+                    if (termCwd.length > 1) termCwd.pop();
+                    return null;
+                }
+                if (target === '/') { termCwd = ['Home']; return null; }
+                if (target === '~') { termCwd = ['Home']; return null; }
+                let node = getNodeFromPath(termCwd);
+                if (node && node.children && node.children[target] && node.children[target].type === 'folder') {
+                    termCwd.push(target);
+                    return null;
+                }
+                return 'cd: ' + target + ': No such directory';
+            }
+            if (main === 'cat') {
+                let name = parts[1];
+                if (!name) return 'cat: missing filename';
+                let node = getNodeFromPath(termCwd);
+                if (node && node.children && node.children[name] && node.children[name].type === 'file') {
+                    return node.children[name].content || '(empty)';
+                }
+                return 'cat: ' + name + ': No such file';
+            }
+            if (main === 'touch') {
+                let name = parts[1];
+                if (!name) return 'touch: missing filename';
+                let node = getNodeFromPath(termCwd);
+                if (node && node.children) {
+                    if (node.children[name]) return 'touch: file already exists';
+                    node.children[name] = { type: 'file', content: '' };
+                    return null;
+                }
+                return 'touch: error';
+            }
+            if (main === 'mkdir') {
+                let name = parts[1];
+                if (!name) return 'mkdir: missing directory name';
+                let node = getNodeFromPath(termCwd);
+                if (node && node.children) {
+                    if (node.children[name]) return 'mkdir: directory already exists';
+                    node.children[name] = { type: 'folder', children: {} };
+                    return null;
+                }
+                return 'mkdir: error';
+            }
+            if (main === 'rm') {
+                let name = parts[1];
+                if (!name) return 'rm: missing operand';
+                let node = getNodeFromPath(termCwd);
+                if (node && node.children && node.children[name]) {
+                    delete node.children[name];
+                    return null;
+                }
+                return 'rm: cannot remove ' + name + ': No such file or directory';
+            }
+            return 'Command not found: ' + main + ' (type "help" for available commands)';
+        }
+
+        // ============================================================
+        //  MEDIA PLAYER
+        // ============================================================
+        function initMedia() {
+            renderPlaylist();
+            updateMediaUI();
+        }
+
+        function renderPlaylist() {
+            let el = document.getElementById('media-playlist');
+            el.innerHTML = '';
+            playlist.forEach((t, i) => {
+                let div = document.createElement('div');
+                div.className = 'pl-item' + (i === mediaIdx ? ' active' : '');
+                div.innerHTML =
+                    `<span><span class="pl-idx">${i+1}.</span> ${t.title}</span><span style="color:#556688;">${t.artist}</span>`;
+                div.onclick = () => { mediaIdx = i;
+                    updateMediaUI(); };
+                el.appendChild(div);
+            });
+        }
+
+        function updateMediaUI() {
+            let track = playlist[mediaIdx];
+            document.getElementById('media-track').textContent = track.title;
+            document.getElementById('media-artist').textContent = track.artist;
+            document.getElementById('media-art-icon').textContent = track.icon;
+            document.querySelectorAll('.pl-item').forEach((el, i) => {
+                el.classList.toggle('active', i === mediaIdx);
+            });
+            document.getElementById('media-duration').textContent = '3:30';
+            document.getElementById('media-current').textContent = '0:00';
+            document.getElementById('media-progress-slider').value = 0;
+            mediaProgress = 0;
+            if (mediaPlaying) {
+                document.getElementById('media-play-btn').textContent = '⏸';
+            } else {
+                document.getElementById('media-play-btn').textContent = '▶';
+            }
+        }
+
+        function mediaToggle() {
+            mediaPlaying = !mediaPlaying;
+            document.getElementById('media-play-btn').textContent = mediaPlaying ? '⏸' : '▶';
+            if (mediaPlaying) {
+                if (mediaInterval) clearInterval(mediaInterval);
+                mediaInterval = setInterval(() => {
+                    mediaProgress += 0.3;
+                    if (mediaProgress > 100) { mediaProgress = 0;
+                        mediaNext(); }
+                    document.getElementById('media-progress-slider').value = mediaProgress;
+                    let sec = Math.floor((mediaProgress / 100) * 210);
+                    document.getElementById('media-current').textContent = Math.floor(sec / 60) + ':' +
+                        String(sec % 60).padStart(2, '0');
+                }, 200);
+                notify('▶ Playing: ' + playlist[mediaIdx].title);
+            } else {
+                if (mediaInterval) { clearInterval(mediaInterval);
+                    mediaInterval = null; }
+            }
+        }
+
+        function mediaNext() {
+            mediaIdx = (mediaIdx + 1) % playlist.length;
+            updateMediaUI();
+            if (mediaPlaying) {
+                mediaProgress = 0;
+                document.getElementById('media-progress-slider').value = 0;
+                document.getElementById('media-current').textContent = '0:00';
+            }
+        }
+
+        function mediaPrev() {
+            mediaIdx = (mediaIdx - 1 + playlist.length) % playlist.length;
+            updateMediaUI();
+            if (mediaPlaying) {
+                mediaProgress = 0;
+                document.getElementById('media-progress-slider').value = 0;
+                document.getElementById('media-current').textContent = '0:00';
+            }
+        }
+
+        function mediaSeek(val) {
+            mediaProgress = parseFloat(val);
+            let sec = Math.floor((mediaProgress / 100) * 210);
+            document.getElementById('media-current').textContent = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2,
+            '0');
+        }
+
+        function mediaVolume(val) {
+            mediaVol = parseInt(val);
+            document.getElementById('media-vol-label').textContent = mediaVol + '%';
+        }
+
+        function mediaShuffle() {
+            let idx = Math.floor(Math.random() * playlist.length);
+            mediaIdx = idx;
+            updateMediaUI();
+            notify('🔀 Shuffled to: ' + playlist[idx].title);
+            if (mediaPlaying) {
+                mediaProgress = 0;
+                document.getElementById('media-progress-slider').value = 0;
+                document.getElementById('media-current').textContent = '0:00';
+            }
+        }
+
+        // ============================================================
+        //  TELESCOPE
+        // ============================================================
+        function initTelescope() {
+            let canvas = document.getElementById('tel-canvas');
+            if (!canvas) return;
+            let rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width || 600;
+            canvas.height = rect.height || 400;
+            let ctx = canvas.getContext('2d');
+
+            if (telStars.length === 0) {
+                for (let i = 0; i < 300; i++) {
+                    telStars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        r: Math.random() * 2 + 0.5,
+                        a: Math.random() * 0.8 + 0.2,
+                        speed: Math.random() * 0.3 + 0.05,
+                        phase: Math.random() * 100,
+                        color: ['#a855f7', '#06b6d4', '#ec4899', '#ffffff', '#fbbf24'][Math.floor(Math.random() * 5)]
+                    });
+                }
+            }
+
+            if (telAnim) cancelAnimationFrame(telAnim);
+            drawTelescope(ctx, canvas);
+        }
+
+        function drawTelescope(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Background nebula
+            let grad = ctx.createRadialGradient(canvas.width * 0.3, canvas.height * 0.4, 10, canvas.width * 0.5, canvas
+                .height * 0.5, canvas.width * 0.8);
+            grad.addColorStop(0, '#1a0a3a33');
+            grad.addColorStop(0.5, '#0a1a3a22');
+            grad.addColorStop(1, '#000');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Stars
+            for (let s of telStars) {
+                let twinkle = 0.6 + 0.4 * Math.sin(Date.now() / 1000 * s.speed + s.phase);
+                let alpha = s.a * twinkle;
+                let radius = s.r * (0.8 + 0.2 * twinkle);
+                // Apply zoom (zoom centered on canvas center)
+                let cx = canvas.width / 2;
+                let cy = canvas.height / 2;
+                let zx = cx + (s.x - cx) * telZoom;
+                let zy = cy + (s.y - cy) * telZoom;
+                ctx.beginPath();
+                ctx.arc(zx, zy, radius * telZoom, 0, Math.PI * 2);
+                ctx.fillStyle = s.color;
+                ctx.globalAlpha = alpha;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+
+                // Glow for bright stars
+                if (s.r > 1.5) {
+                    ctx.beginPath();
+                    ctx.arc(zx, zy, radius * telZoom * 3, 0, Math.PI * 2);
+                    ctx.fillStyle = s.color;
+                    ctx.globalAlpha = alpha * 0.08;
+                    ctx.fill();
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            // Crosshair
+            ctx.strokeStyle = '#a855f744';
+            ctx.lineWidth = 0.5;
+            ctx.setLineDash([4, 8]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2 - 30, canvas.height / 2);
+            ctx.lineTo(canvas.width / 2 + 30, canvas.height / 2);
+            ctx.moveTo(canvas.width / 2, canvas.height / 2 - 30);
+            ctx.lineTo(canvas.width / 2, canvas.height / 2 + 30);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Center dot
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#a855f7aa';
+            ctx.fill();
+
+            // Update coords
+            let ra = (Date.now() / 1000 % 86400) / 86400 * 360;
+            let dec = 45 + Math.sin(Date.now() / 10000) * 10;
+            document.getElementById('tel-coords').textContent =
+                'RA: ' + Math.floor(ra / 15) + 'h ' + Math.floor((ra % 15) * 4) + 'm · Dec: +' + Math.floor(dec) + '°';
+            document.getElementById('tel-zoom').textContent = telZoom.toFixed(1) + 'x';
+
+            telAnim = requestAnimationFrame(() => drawTelescope(ctx, canvas));
+        }
+
+        // Telescope zoom on wheel
+        document.addEventListener('wheel', (e) => {
+            let tel = document.getElementById('telescope-app');
+            if (tel && tel.classList.contains('active')) {
+                if (e.deltaY < 0) telZoom = Math.min(telZoom + 0.1, 3.0);
+                else telZoom = Math.max(telZoom - 0.1, 0.3);
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // ============================================================
+        //  RETRO GAMES
+        // ============================================================
+        let gameState = {};
+
+        function initGame(game) {
+            currentGame = game;
+            let canvas = document.getElementById('game-canvas');
+            let wrap = canvas.parentElement;
+            let rect = wrap.getBoundingClientRect();
+            let size = Math.min(rect.width - 20, rect.height - 20, 480);
+            canvas.width = size;
+            canvas.height = size;
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+
+            document.getElementById('game-overlay').classList.remove('show');
+            document.querySelectorAll('.game-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.game-btn[data-game="${game}"]`)?.classList.add('active');
+
+            if (gameLoop) { cancelAnimationFrame(gameLoop);
+                gameLoop = null;
+                gameRunning = false; }
+
+            if (game === 'snake') initSnake(canvas);
+            else if (game === 'pong') initPong(canvas);
+            else if (game === 'tetris') initTetris(canvas);
+        }
+
+        function resetGame() {
+            document.getElementById('game-overlay').classList.remove('show');
+            initGame(currentGame);
+        }
+
+        function switchGame(game) {
+            document.getElementById('game-overlay').classList.remove('show');
+            initGame(game);
+        }
+
+        // ---- SNAKE ----
+        function initSnake(canvas) {
+            let ctx = canvas.getContext('2d');
+            let gridSize = 20;
+            let tileCount = Math.floor(canvas.width / gridSize);
+            let snake = [{ x: 10, y: 10 }];
+            let dir = { x: 1, y: 0 };
+            let nextDir = { x: 1, y: 0 };
+            let food = { x: 15, y: 10 };
+            let score = 0;
+            let gameOver = false;
+            let speed = 120;
+            let lastMove = 0;
+
+            function placeFood() {
+                let pos;
+                do {
+                    pos = {
+                        x: Math.floor(Math.random() * tileCount),
+                        y: Math.floor(Math.random() * tileCount)
+                    };
+                } while (snake.some(s => s.x === pos.x && s.y === pos.y));
+                food = pos;
+            }
+            placeFood();
+
+            function update() {
+                if (gameOver) return;
+                let now = Date.now();
+                if (now - lastMove < speed) return;
+                lastMove = now;
+
+                dir = { ...nextDir };
+                let head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+                // Wall wrap
+                if (head.x < 0) head.x = tileCount - 1;
+                if (head.x >= tileCount) head.x = 0;
+                if (head.y < 0) head.y = tileCount - 1;
+                if (head.y >= tileCount) head.y = 0;
+
+                // Self collision
+                if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                    gameOver = true;
+                    document.getElementById('game-overlay-title').textContent = '💀 Game Over! Score: ' + score;
+                    document.getElementById('game-overlay').classList.add('show');
+                    return;
+                }
+
+                snake.unshift(head);
+                if (head.x === food.x && head.y === food.y) {
+                    score++;
+                    document.getElementById('game-score').textContent = score;
+                    placeFood();
+                    if (speed > 60) speed -= 2;
+                } else {
+                    snake.pop();
+                }
+                draw();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Grid
+                ctx.strokeStyle = '#a855f711';
+                ctx.lineWidth = 0.5;
+                for (let i = 0; i <= tileCount; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * gridSize, 0);
+                    ctx.lineTo(i * gridSize, canvas.height);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * gridSize);
+                    ctx.lineTo(canvas.width, i * gridSize);
+                    ctx.stroke();
+                }
+
+                // Snake
+                snake.forEach((s, i) => {
+                    let alpha = 1 - (i / snake.length) * 0.5;
+                    ctx.fillStyle = i === 0 ? '#a855f7' : '#06b6d4';
+                    ctx.globalAlpha = alpha;
+                    ctx.fillRect(s.x * gridSize + 1, s.y * gridSize + 1, gridSize - 2, gridSize - 2);
+                });
+                ctx.globalAlpha = 1;
+
+                // Food
+                ctx.fillStyle = '#ec4899';
+                ctx.shadowColor = '#ec4899';
+                ctx.shadowBlur = 12;
+                ctx.beginPath();
+                ctx.arc(food.x * gridSize + gridSize / 2, food.y * gridSize + gridSize / 2, gridSize / 2 - 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+
+            function keyHandler(e) {
+                if (gameOver) return;
+                let k = e.key;
+                if (k === 'ArrowUp' && dir.y !== 1) nextDir = { x: 0, y: -1 };
+                else if (k === 'ArrowDown' && dir.y !== -1) nextDir = { x: 0, y: 1 };
+                else if (k === 'ArrowLeft' && dir.x !== 1) nextDir = { x: -1, y: 0 };
+                else if (k === 'ArrowRight' && dir.x !== -1) nextDir = { x: 1, y: 0 };
+                e.preventDefault();
+            }
+
+            document.removeEventListener('keydown', gameKeyHandler);
+            document.addEventListener('keydown', keyHandler);
+            window.gameKeyHandler = keyHandler;
+
+            gameRunning = true;
+
+            function loop() {
+                if (!gameRunning) return;
+                update();
+                gameLoop = requestAnimationFrame(loop);
+            }
+            loop();
+            document.getElementById('game-score').textContent = '0';
+        }
+
+        // ---- PONG ----
+        function initPong(canvas) {
+            let ctx = canvas.getContext('2d');
+            let w = canvas.width,
+                h = canvas.height;
+            let paddleW = 10,
+                paddleH = 70;
+            let leftY = h / 2 - paddleH / 2;
+            let rightY = h / 2 - paddleH / 2;
+            let ball = { x: w / 2, y: h / 2, dx: 4, dy: 3, size: 8 };
+            let scoreL = 0,
+                scoreR = 0;
+            let gameOver = false;
+            let speedMult = 1;
+
+            function resetBall(dir) {
+                ball.x = w / 2;
+                ball.y = h / 2 + (Math.random() - 0.5) * 40;
+                let angle = (Math.random() - 0.5) * 0.8;
+                let speed = 4 + Math.random() * 1.5;
+                ball.dx = (dir || (Math.random() > 0.5 ? 1 : -1)) * speed * Math.cos(angle);
+                ball.dy = speed * Math.sin(angle);
+                speedMult = 1;
+            }
+            resetBall(1);
+
+            function update() {
+                if (gameOver) return;
+
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+
+                // Top/bottom bounce
+                if (ball.y - ball.size < 0 || ball.y + ball.size > h) ball.dy *= -1;
+
+                // Left paddle
+                if (ball.dx < 0 && ball.x - ball.size < paddleW &&
+                    ball.y > leftY && ball.y < leftY + paddleH) {
+                    let hit = (ball.y - leftY) / paddleH - 0.5;
+                    let angle = hit * 1.2;
+                    let speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy) * 1.05;
+                    ball.dx = speed * Math.cos(angle);
+                    ball.dy = speed * Math.sin(angle);
+                    ball.x = paddleW + ball.size;
+                    speedMult += 0.05;
+                }
+
+                // Right paddle
+                if (ball.dx > 0 && ball.x + ball.size > w - paddleW &&
+                    ball.y > rightY && ball.y < rightY + paddleH) {
+                    let hit = (ball.y - rightY) / paddleH - 0.5;
+                    let angle = hit * 1.2;
+                    let speed = Math.sqrt(ball.dx * ball.dx + ball.dy * ball.dy) * 1.05;
+                    ball.dx = -speed * Math.cos(angle);
+                    ball.dy = speed * Math.sin(angle);
+                    ball.x = w - paddleW - ball.size;
+                    speedMult += 0.05;
+                }
+
+                // Scoring
+                if (ball.x - ball.size < 0) {
+                    scoreR++;
+                    resetBall(1);
+                }
+                if (ball.x + ball.size > w) {
+                    scoreL++;
+                    resetBall(-1);
+                }
+
+                // AI (right paddle)
+                let targetY = ball.y - paddleH / 2;
+                let diff = targetY - rightY;
+                let aiSpeed = 4.5 + speedMult * 0.5;
+                if (Math.abs(diff) > 10) {
+                    rightY += Math.sign(diff) * Math.min(Math.abs(diff), aiSpeed);
+                }
+                rightY = Math.max(0, Math.min(h - paddleH, rightY));
+
+                draw();
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, w, h);
+
+                // Center line
+                ctx.strokeStyle = '#a855f733';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([8, 12]);
+                ctx.beginPath();
+                ctx.moveTo(w / 2, 0);
+                ctx.lineTo(w / 2, h);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Paddles
+                ctx.fillStyle = '#a855f7';
+                ctx.shadowColor = '#a855f7';
+                ctx.shadowBlur = 12;
+                ctx.fillRect(0, leftY, paddleW, paddleH);
+                ctx.fillStyle = '#06b6d4';
+                ctx.shadowColor = '#06b6d4';
+                ctx.fillRect(w - paddleW, rightY, paddleW, paddleH);
+                ctx.shadowBlur = 0;
+
+                // Ball
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#ffffff';
+                ctx.shadowBlur = 20;
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Score
+                ctx.fillStyle = '#a855f744';
+                ctx.font = '32px Courier New';
+                ctx.textAlign = 'center';
+                ctx.fillText(scoreL, w / 2 - 60, 48);
+                ctx.fillStyle = '#06b6d444';
+                ctx.fillText(scoreR, w / 2 + 60, 48);
+
+                document.getElementById('game-score').textContent = scoreL + ' - ' + scoreR;
+            }
+
+            function keyHandler(e) {
+                if (e.key === 'ArrowUp') leftY = Math.max(0, leftY - 20);
+                else if (e.key === 'ArrowDown') leftY = Math.min(h - paddleH, leftY + 20);
+                e.preventDefault();
+            }
+            document.removeEventListener('keydown', gameKeyHandler);
+            document.addEventListener('keydown', keyHandler);
+            window.gameKeyHandler = keyHandler;
+
+            gameRunning = true;
+
+            function loop() {
+                if (!gameRunning) return;
+                update();
+                gameLoop = requestAnimationFrame(loop);
+            }
+            loop();
+            document.getElementById('game-score').textContent = '0 - 0';
+        }
+
+        // ---- TETRIS ----
+        function initTetris(canvas) {
+            let ctx = canvas.getContext('2d');
+            let cols = 10,
+                rows = 20;
+            let blockSize = canvas.width / cols;
+            let board = [];
+            for (let r = 0; r < rows; r++) {
+                board.push(new Array(cols).fill(0));
+            }
+
+            const pieces = [
+                { shape: [
+                        [1, 1, 1, 1]
+                    ], color: '#06b6d4' },
+                { shape: [
+                        [1, 1],
+                        [1, 1]
+                    ], color: '#fbbf24' },
+                { shape: [
+                        [0, 1, 0],
+                        [1, 1, 1]
+                    ], color: '#a855f7' },
+                { shape: [
+                        [1, 0, 0],
+                        [1, 1, 1]
+                    ], color: '#ec4899' },
+                { shape: [
+                        [0, 0, 1],
+                        [1, 1, 1]
+                    ], color: '#34d399' },
+                { shape: [
+                        [1, 1, 0],
+                        [0, 1, 1]
+                    ], color: '#f472b6' },
+                { shape: [
+                        [0, 1, 1],
+                        [1, 1, 0]
+                    ], color: '#60a5fa' }
+            ];
+
+            let piece = null;
+            let px = 3,
+                py = 0;
+            let score = 0;
+            let gameOver = false;
+            let dropInterval = 500;
+            let lastDrop = 0;
+
+            function randomPiece() {
+                let p = pieces[Math.floor(Math.random() * pieces.length)];
+                return { shape: p.shape.map(row => [...row]), color: p.color };
+            }
+
+            function spawnPiece() {
+                piece = randomPiece();
+                px = Math.floor((cols - piece.shape[0].length) / 2);
+                py = 0;
+                if (collision(piece.shape, px, py)) {
+                    gameOver = true;
+                    document.getElementById('game-overlay-title').textContent = '💀 Game Over! Score: ' + score;
+                    document.getElementById('game-overlay').classList.add('show');
+                    return false;
+                }
+                return true;
+            }
+
+            function collision(shape, offX, offY) {
+                for (let r = 0; r < shape.length; r++) {
+                    for (let c = 0; c < shape[r].length; c++) {
+                        if (shape[r][c]) {
+                            let x = offX + c,
+                                y = offY + r;
+                            if (x < 0 || x >= cols || y >= rows || y < 0) return true;
+                            if (y >= 0 && board[y][x]) return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            function merge() {
+                for (let r = 0; r < piece.shape.length; r++) {
+                    for (let c = 0; c < piece.shape[r].length; c++) {
+                        if (piece.shape[r][c]) {
+                            let y = py + r,
+                                x = px + c;
+                            if (y >= 0) board[y][x] = piece.color;
+                        }
+                    }
+                }
+            }
+
+            function clearLines() {
+                let cleared = 0;
+                for (let r = rows - 1; r >= 0; r--) {
+                    if (board[r].every(cell => cell !== 0)) {
+                        board.splice(r, 1);
+                        board.unshift(new Array(cols).fill(0));
+                        cleared++;
+                        r++;
+                    }
+                }
+                if (cleared > 0) {
+                    score += [0, 100, 300, 600, 1000][cleared] || 1000;
+                    document.getElementById('game-score').textContent = score;
+                    if (dropInterval > 100) dropInterval -= 10;
+                }
+            }
+
+            function hardDrop() {
+                while (!collision(piece.shape, px, py + 1)) py++;
+                lockPiece();
+            }
+
+            function lockPiece() {
+                merge();
+                clearLines();
+                if (!spawnPiece()) {
+                    gameOver = true;
+                    document.getElementById('game-overlay-title').textContent = '💀 Game Over! Score: ' + score;
+                    document.getElementById('game-overlay').classList.add('show');
+                }
+                draw();
+            }
+
+            function update() {
+                if (gameOver) return;
+                let now = Date.now();
+                if (now - lastDrop > dropInterval) {
+                    lastDrop = now;
+                    if (!collision(piece.shape, px, py + 1)) {
+                        py++;
+                    } else {
+                        lockPiece();
+                    }
+                    draw();
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Board
+                for (let r = 0; r < rows; r++) {
+                    for (let c = 0; c < cols; c++) {
+                        if (board[r][c]) {
+                            ctx.fillStyle = board[r][c];
+                            ctx.shadowColor = board[r][c];
+                            ctx.shadowBlur = 6;
+                            ctx.fillRect(c * blockSize, r * blockSize, blockSize - 1, blockSize - 1);
+                            ctx.shadowBlur = 0;
+                        }
+                    }
+                }
+
+                // Current piece
+                if (piece) {
+                    for (let r = 0; r < piece.shape.length; r++) {
+                        for (let c = 0; c < piece.shape[r].length; c++) {
+                            if (piece.shape[r][c]) {
+                                let x = (px + c) * blockSize,
+                                    y = (py + r) * blockSize;
+                                ctx.fillStyle = piece.color;
+                                ctx.shadowColor = piece.color;
+                                ctx.shadowBlur = 10;
+                                ctx.fillRect(x, y, blockSize - 1, blockSize - 1);
+                                ctx.shadowBlur = 0;
+                            }
+                        }
+                    }
+                }
+
+                // Grid
+                ctx.strokeStyle = '#a855f711';
+                ctx.lineWidth = 0.5;
+                for (let r = 0; r <= rows; r++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, r * blockSize);
+                    ctx.lineTo(canvas.width, r * blockSize);
+                    ctx.stroke();
+                }
+                for (let c = 0; c <= cols; c++) {
+                    ctx.beginPath();
+                    ctx.moveTo(c * blockSize, 0);
+                    ctx.lineTo(c * blockSize, canvas.height);
+                    ctx.stroke();
+                }
+            }
+
+            function keyHandler(e) {
+                if (gameOver) return;
+                let k = e.key;
+                if (k === 'ArrowLeft' && !collision(piece.shape, px - 1, py)) px--;
+                else if (k === 'ArrowRight' && !collision(piece.shape, px + 1, py)) px++;
+                else if (k === 'ArrowDown' && !collision(piece.shape, px, py + 1)) py++;
+                else if (k === 'ArrowUp') {
+                    let rotated = piece.shape[0].map((_, i) => piece.shape.map(row => row[i]).reverse());
+                    if (!collision(rotated, px, py)) piece.shape = rotated;
+                } else if (k === ' ') { hardDrop(); return; }
+                e.preventDefault();
+                draw();
+            }
+
+            document.removeEventListener('keydown', gameKeyHandler);
+            document.addEventListener('keydown', keyHandler);
+            window.gameKeyHandler = keyHandler;
+
+            spawnPiece();
+            gameRunning = true;
+            lastDrop = Date.now();
+            document.getElementById('game-score').textContent = '0';
+
+            function loop() {
+                if (!gameRunning) return;
+                update();
+                gameLoop = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        // ============================================================
+        //  SETTINGS
+        // ============================================================
+        function settingsTab(tab) {
+            document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('panel-' + tab).classList.add('active');
+        }
+
+        function changePassword() {
+            let old = document.getElementById('s-old-pass').value;
+            let nw = document.getElementById('s-new-pass').value;
+            let conf = document.getElementById('s-confirm-pass').value;
+            let msg = document.getElementById('pass-msg');
+            if (old !== osPass) { msg.style.color = '#ff4466';
+                msg.textContent = 'Current password is incorrect.'; return; }
+            if (nw !== conf) { msg.style.color = '#ff4466';
+                msg.textContent = 'New passwords do not match.'; return; }
+            if (nw.length < 1) { msg.style.color = '#ff4466';
+                msg.textContent = 'Password cannot be empty.'; return; }
+            osPass = nw;
+            msg.style.color = '#44ff88';
+            msg.textContent = 'Password changed successfully! ◈';
+            document.getElementById('s-old-pass').value = '';
+            document.getElementById('s-new-pass').value = '';
+            document.getElementById('s-confirm-pass').value = '';
+            setTimeout(() => msg.textContent = '', 3000);
+        }
+
+        function setTextColor(color) {
+            textColor = color;
+            document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('picked'));
+            event.target.classList.add('picked');
+            document.getElementById('color-preview').style.color = color;
+            // Apply to various elements
+            document.querySelectorAll(
+                '.file-name,.di-lbl,.file-sidebar-item,#clock,.media-info .track,.term-output .output,.game-score'
+                ).forEach(el => el.style.color = color);
+            notify('Text color updated. ◈');
+        }
+
+        // ============================================================
+        //  KEYBOARD
+        // ============================================================
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                document.getElementById('start-menu').style.display = 'none';
+                document.getElementById('power-modal').classList.remove('show');
+                document.getElementById('saveas-modal').classList.remove('show');
+            }
+        });
+
+        // ============================================================
+        //  NOTIFICATION
+        // ============================================================
+        let notifTimer;
+
+        function notify(msg) {
+            let n = document.getElementById('notif');
+            n.textContent = msg;
+            n.style.display = 'block';
+            n.style.opacity = '1';
+            clearTimeout(notifTimer);
+            notifTimer = setTimeout(() => {
+                n.style.opacity = '0';
+                setTimeout(() => n.style.display = 'none', 500);
+            }, 2800);
+        }
+
+        // ============================================================
+        //  SAVE AS (dummy for compatibility)
+        // ============================================================
+        function doSaveAs() {
+            let name = document.getElementById('saveas-input').value.trim() || 'Untitled.txt';
+            if (!name.endsWith('.txt')) name += '.txt';
+            notify('📄 Saved as: ' + name);
+            document.getElementById('saveas-modal').classList.remove('show');
+        }
+
+        // ============================================================
+        //  INIT
+        // ============================================================
+        console.log('◈ UR Frequency OS 2.0 loaded. Resonate!');
+    </script>
+</body>
+</html>
