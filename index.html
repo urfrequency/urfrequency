@@ -1,267 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="https://i.ibb.co/nMMKcSWC/ur-logo.png">
-<link rel="apple-touch-icon" href="https://i.ibb.co/nMMKcSWC/ur-logo.png">
-<script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<title>UR Frequency - Official Portal</title>
+    <link rel="apple-touch-icon" href="https://i.ibb.co/nMMKcSWC/ur-logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+    <title>UR Frequency - Official Portal</title>
 
-<style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Arial, sans-serif;
-        background: #eaf7ea;
-        color: #1e3a1e;
-    }
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #eaf7ea;
+            color: #1e3a1e;
+        }
 
-    /* Header - Deep Forest Green */
-    header {
-        background: #0f3b1a;
-        color: white;
-        padding: 15px 30px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+        header {
+            background: #0f3b1a;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    .logo {
-        font-size: 24px;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
 
-    nav a {
-        color: #e0f0da;
-        text-decoration: none;
-        margin-left: 24px;
-        font-size: 15px;
-        font-weight: 500;
-        transition: 0.2s;
-    }
+        nav a {
+            color: #e0f0da;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
 
-    nav a:hover {
-        text-decoration: underline;
-        color: #b8e0a8;
-    }
+        nav a:hover {
+            text-decoration: underline;
+            color: #b8e0a8;
+        }
 
-    /* Hero with user-provided image */
-    .hero {
-        position: relative;
-        background: linear-gradient(rgba(0, 40, 0, 0.5), rgba(0, 30, 0, 0.6)), 
-                    url('https://scontent.flhe4-1.fna.fbcdn.net/v/t39.30808-6/475357746_944391694534983_7812688787132028347_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=Y9u415YsR_IQ7kNvwFLudFR&_nc_oc=AdoK5eiJvCZOH_pVJK5HtAjhcXEqaKDTST1OuBdUP18eMhfFLYMH4JUuSS_G8p7lx7E&_nc_zt=23&_nc_ht=scontent.flhe4-1.fna&_nc_gid=BJy7YWPmIYcSNq73JWC3uw&_nc_ss=7a289&oh=00_Af69D2pMh4H5DpHs6xXLrzjL-wyUyEqomzHjxpgTkJ_7Xw&oe=6A1931D5');
-        background-size: cover;
-        background-position: center 30%;
-        padding: 80px 20px;
-        text-align: center;
-        border-bottom: 5px solid #2e7d32;
-    }
+        .hero {
+            position: relative;
+            background: linear-gradient(rgba(0, 40, 0, 0.5), rgba(0, 30, 0, 0.6)),
+                url('https://scontent.flhe4-1.fna.fbcdn.net/v/t39.30808-6/475357746_944391694534983_7812688787132028347_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=cc71e4&_nc_ohc=Y9u415YsR_IQ7kNvwFLudFR&_nc_oc=AdoK5eiJvCZOH_pVJK5HtAjhcXEqaKDTST1OuBdUP18eMhfFLYMH4JUuSS_G8p7lx7E&_nc_zt=23&_nc_ht=scontent.flhe4-1.fna&_nc_gid=BJy7YWPmIYcSNq73JWC3uw&_nc_ss=7a289&oh=00_Af69D2pMh4H5DpHs6xXLrzjL-wyUyEqomzHjxpgTkJ_7Xw&oe=6A1931D5');
+            background-size: cover;
+            background-position: center 30%;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 5px solid #2e7d32;
+        }
 
-    .hero h1 {
-        margin-bottom: 10px;
-        color: white;
-        font-weight: 700;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
-        font-size: 2.8rem;
-    }
+        .hero h1 {
+            margin-bottom: 10px;
+            color: white;
+            font-weight: 700;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+            font-size: 2.8rem;
+        }
 
-    .hero p {
-        font-size: 1.3rem;
-        color: #f0fce8;
-        text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
-    }
+        .hero p {
+            font-size: 1.3rem;
+            color: #f0fce8;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
 
-    /* Sections */
-    section {
-        padding: 50px 20px;
-        max-width: 1200px;
-        margin: auto;
-    }
+        section {
+            padding: 50px 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
 
-    h2 {
-        color: #1a5c2a;
-        border-left: 6px solid #2e7d32;
-        padding-left: 18px;
-        margin-bottom: 28px;
-        font-weight: 600;
-    }
+        h2 {
+            color: #1a5c2a;
+            border-left: 6px solid #2e7d32;
+            padding-left: 18px;
+            margin-bottom: 28px;
+            font-weight: 600;
+        }
 
-    /* Grid & Cards */
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 24px;
-    }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+        }
 
-    .card {
-        background: white;
-        padding: 20px;
-        border-radius: 16px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-        transition: 0.25s ease;
-        border: 1px solid #bdd9ae;
-    }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+            transition: 0.25s ease;
+            border: 1px solid #bdd9ae;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-    .card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 14px 28px rgba(0,0,0,0.08);
-    }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+        }
 
-    .card a {
-        text-decoration: none;
-        color: #1f6b2c;
-        font-weight: 600;
-    }
+        .card a {
+            text-decoration: none;
+            color: #1f6b2c;
+            font-weight: 600;
+        }
 
-    .card a:hover {
-        color: #0b4a1a;
-    }
+        .card a:hover {
+            color: #0b4a1a;
+        }
 
-    /* Green video button */
-    .video-btn {
-        background: #2a7530;
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 40px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        transition: 0.2s;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
+        /* Special OS Box Styling */
+        .os-feature-box {
+            background: linear-gradient(145deg, #ffffff 0%, #f0faf0 100%);
+            padding: 0;
+            border-radius: 20px;
+            box-shadow: 0 10px 32px rgba(0, 40, 0, 0.1);
+            border: 2px solid #2e7d32;
+            transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            grid-column: span 2;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            min-height: 220px;
+            text-align: left;
+        }
 
-    .video-btn:hover {
-        background: #1d5a22;
-        transform: scale(1.02);
-    }
+        .os-feature-box:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 22px 48px rgba(0, 60, 0, 0.18);
+            border-color: #1b5e20;
+            background: linear-gradient(145deg, #f8fff8 0%, #e8f8e8 100%);
+        }
 
-    /* Video Modal */
-    .video-modal {
-        display: none;
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.85);
-    }
+        .os-feature-box:hover .os-badge {
+            background: #1b5e20;
+            letter-spacing: 1.2px;
+        }
 
-    .video-content {
-        margin: 5% auto;
-        width: 80%;
-        max-width: 800px;
-        background: #111;
-        padding: 12px;
-        border-radius: 12px;
-    }
+        .os-feature-box .os-image-wrap {
+            flex: 0 0 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a1f0a;
+            border-radius: 20px 0 0 20px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .close-btn {
-        float: right;
-        font-size: 32px;
-        color: white;
-        cursor: pointer;
-        margin-right: 8px;
-    }
+        .os-feature-box .os-image-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(46, 125, 50, 0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
 
-    /* Earth & Astronomy */
-    .data-badge {
-        font-size: 20px;
-        font-weight: bold;
-        background: #e0f0da;
-        border-radius: 28px;
-        padding: 8px 16px;
-        display: inline-block;
-    }
+        .os-feature-box .os-image-wrap img {
+            width: 100%;
+            height: auto;
+            max-height: 180px;
+            object-fit: contain;
+            border-radius: 10px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s;
+        }
 
-    #hero-time {
-        position: absolute;
-        top: 12px;
-        right: 20px;
-        text-align: right;
-        font-size: 11px;
-        font-weight: 500;
-        background: rgba(0,0,0,0.55);
-        backdrop-filter: blur(4px);
-        padding: 6px 12px;
-        border-radius: 20px;
-        color: #e0f0da;
-    }
+        .os-feature-box:hover .os-image-wrap img {
+            transform: scale(1.06);
+        }
 
-    .iframe-card {
-        position: relative;
-        height: 300px;
-        padding: 0 !important;
-        overflow: hidden;
-    }
+        .os-feature-box .os-info {
+            flex: 1;
+            padding: 24px 28px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
 
-    .iframe-card iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
+        .os-feature-box .os-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f3b1a;
+            letter-spacing: 0.5px;
+            margin: 0;
+            line-height: 1.2;
+        }
 
-    footer {
-        background: #0f3b1a;
-        color: #d8f0ce;
-        text-align: center;
-        padding: 22px;
-        margin-top: 30px;
-        font-size: 14px;
-    }
-</style>
+        .os-feature-box .os-subtitle {
+            font-size: 0.95rem;
+            color: #3a5a3a;
+            margin: 0;
+            line-height: 1.5;
+        }
+
+        .os-feature-box .os-memory-note {
+            font-size: 0.82rem;
+            color: #6b8f6b;
+            background: #eaf7ea;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .os-feature-box .os-memory-note .mem-icon {
+            font-size: 1.2rem;
+        }
+
+        .os-feature-box .os-badge {
+            display: inline-block;
+            background: #2e7d32;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 5px 14px;
+            border-radius: 20px;
+            align-self: flex-start;
+            transition: all 0.3s;
+        }
+
+        .os-feature-box .os-arrow {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.4rem;
+            color: #2e7d32;
+            transition: transform 0.3s;
+            opacity: 0.7;
+        }
+
+        .os-feature-box:hover .os-arrow {
+            transform: translateX(4px);
+            opacity: 1;
+        }
+
+        /* Responsive: stack on small screens */
+        @media (max-width: 768px) {
+            .os-feature-box {
+                grid-column: span 1;
+                flex-direction: column;
+                min-height: auto;
+            }
+            .os-feature-box .os-image-wrap {
+                flex: 0 0 auto;
+                border-radius: 20px 20px 0 0;
+                padding: 20px;
+            }
+            .os-feature-box .os-image-wrap img {
+                max-height: 140px;
+            }
+            .os-feature-box .os-info {
+                padding: 18px 20px;
+            }
+            .os-feature-box .os-arrow {
+                top: auto;
+                bottom: 14px;
+                right: 18px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .os-feature-box .os-image-wrap {
+                flex: 0 0 auto;
+                padding: 14px;
+            }
+            .os-feature-box .os-image-wrap img {
+                max-height: 100px;
+            }
+            .os-feature-box .os-title {
+                font-size: 1.2rem;
+            }
+            .os-feature-box .os-subtitle {
+                font-size: 0.85rem;
+            }
+        }
+
+        .video-btn {
+            background: #2a7530;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-btn:hover {
+            background: #1d5a22;
+            transform: scale(1.02);
+        }
+
+        .video-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+        }
+
+        .video-content {
+            margin: 5% auto;
+            width: 80%;
+            max-width: 800px;
+            background: #111;
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 32px;
+            color: white;
+            cursor: pointer;
+            margin-right: 8px;
+        }
+
+        .data-badge {
+            font-size: 20px;
+            font-weight: bold;
+            background: #e0f0da;
+            border-radius: 28px;
+            padding: 8px 16px;
+            display: inline-block;
+        }
+
+        #hero-time {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            text-align: right;
+            font-size: 11px;
+            font-weight: 500;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(4px);
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: #e0f0da;
+        }
+
+        .iframe-card {
+            position: relative;
+            height: 300px;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+
+        .iframe-card iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        footer {
+            background: #0f3b1a;
+            color: #d8f0ce;
+            text-align: center;
+            padding: 22px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <div style="display:flex; align-items:center; gap:10px;">
+    <header>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urfrequencynewlogo.png" alt="UR Frequency Logo"
+            style="width:42px; height:42px; object-fit:contain; border-radius:10px;">
+            <span style="font-size:26px; font-weight:800;">UR Frequency</span>
+        </div>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#services">Services</a>
+            <a href="#earth">Earth Data</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
 
-        
-        <img src="
-https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urfrequencynewlogo.png" alt="UR Frequency Logo" 
-             style="width:42px; height:42px; object-fit:contain; border-radius:10px;">
-        <span style="font-size:26px; font-weight:800;">UR Frequency</span>
+    <!-- Hero -->
+    <div class="hero" id="home">
+        <h1>UR Frequency Official Portal</h1>
+        <p>Astronomical Research & Data Services</p>
+        <div id="hero-time">
+            <div id="small-time"></div>
+            <div id="small-date"></div>
+            <div id="small-century"></div>
+            <div id="cosmic-date"></div>
+        </div>
     </div>
-    <nav>
-        <a href="#home">Home</a>
-        <a href="#services">Services</a>
-        <a href="#earth">Earth Data</a>
-        <a href="#about">About</a>
-    </nav>
-</header>
 
-<!-- Hero with custom image -->
-<div class="hero" id="home">
-    <h1>UR Frequency Official Portal</h1>
-    <p>Astronomical Research & Data Services</p>
-    <div id="hero-time">
-        <div id="small-time"></div>
-        <div id="small-date"></div>
-        <div id="small-century"></div>
-        <div id="cosmic-date"></div>
-    </div>
-</div>
+    <!-- Services -->
+    <section id="services">
+        <h2>Research Services</h2>
+        <div class="grid">
 
-<!-- Services -->
-<section id="services">
-    <h2>Research Services</h2>
-    <div class="grid">
-         <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
-          <div class="card"><a href="https://urfrequency.github.io/urfrequency/engine">Engine</a></div>
+            <!-- ★ UR Frequency OS – Featured Box with Image ★ -->
+            <a href="https://urfrequency.github.io/urfrequency/os.html"
+            target="_blank"
+            rel="noopener"
+            class="os-feature-box"
+            title="Open UR Frequency OS – runs in your browser">
+            <span class="os-arrow">↗</span>
+            <div class="os-image-wrap">
+                <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/Ubaidos.png"
+                alt="UR Frequency OS Screenshot"
+                loading="lazy">
+            </div>
+            <div class="os-info">
+                <span class="os-badge">Featured</span>
+                <h3 class="os-title">UR Frequency OS</h3>
+                <p class="os-subtitle">A full web-based operating environment — launch directly in your browser.</p>
+                <p class="os-memory-note">
+                    <span class="mem-icon">💾</span>
+                    <span><strong>Note:</strong> This will use your browser memory. Do not clear browser data if you want to save your data. It takes only ~500 MB of memory.</span>
+                </p>
+            </div>
+        </a>
+
+        <!-- Other service cards -->
+        <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
+        <div class="card"><a href="https://urfrequency.github.io/urfrequency/engine">Engine</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/bearing">World Bearings DATA</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/gears">Gear train</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tunnel</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023–2050</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Celestial Data</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Moon & Sun Data</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/os.html">Live Web OS</a></div>
         <div class="card"><a href="https://urfrequency.github.io/urfrequency/mrst.html">Mars Time</a></div>
         <div class="card"><a href="#">Books</a></div>
         <div class="card"><a href="#">Courses</a></div>
@@ -283,18 +481,40 @@ https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urfrequency
 <!-- Earth Weather Widget -->
 <section id="earth">
     <a class="weatherwidget-io" href="https://forecast7.com/en/30d0571d82/jahanian/" data-label_1="our location Region" data-label_2="WEATHER" data-font="Arial Black" data-theme="dark">our location Region WEATHER</a>
-    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
+    <script>
+        ! function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (!d.getElementById(id)) {
+                js = d.createElement(s);
+                js.id = id;
+                js.src = 'https://weatherwidget.io/js/widget.min.js';
+                fjs.parentNode.insertBefore(js, fjs);
+            }
+        }(document, 'script', 'weatherwidget-io-js');
+    </script>
 </section>
 
 <!-- Astronomy Data -->
 <section id="astronomy">
     <h2>Real-Time Sun & Moon — Our Location (our location)</h2>
     <div class="grid">
-        <div class="card"><p>Sunrise</p><div id="sunriseTime" class="data-badge">Loading...</div></div>
-        <div class="card"><p>Sunset</p><div id="sunsetTime" class="data-badge">Loading...</div></div>
-        <div class="card"><p>Moonrise</p><div id="moonriseTime" class="data-badge">Loading...</div></div>
-        <div class="card"><p>Moonset</p><div id="moonsetTime" class="data-badge">Loading...</div></div>
-        
+        <div class="card">
+            <p>Sunrise</p>
+            <div id="sunriseTime" class="data-badge">Loading...</div>
+        </div>
+        <div class="card">
+            <p>Sunset</p>
+            <div id="sunsetTime" class="data-badge">Loading...</div>
+        </div>
+        <div class="card">
+            <p>Moonrise</p>
+            <div id="moonriseTime" class="data-badge">Loading...</div>
+        </div>
+        <div class="card">
+            <p>Moonset</p>
+            <div id="moonsetTime" class="data-badge">Loading...</div>
+        </div>
+
         <div class="card">
             <p>Moon Phase</p>
             <table cellpadding="0" cellspacing="0" border="0" width="130" style="margin:0 auto;">
@@ -334,47 +554,51 @@ https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/urfrequency
 </footer>
 
 <script>
-// Live Clock
-function updateCelestialClock() {
-    const now = luxon.DateTime.local();
-    document.getElementById("small-time").innerText = now.toFormat("HH:mm:ss.SSS");
-    document.getElementById("small-date").innerText = now.toFormat("dd:MM:yyyy");
-    const century = Math.floor((parseInt(now.toFormat("yyyy")) - 1) / 100) + 1;
-    document.getElementById("small-century").innerText = `Century: ${century}`;
-    const jd = 2440587.5 + now.toSeconds() / 86400;
-    document.getElementById("cosmic-date").innerText = `Cosmic: ${jd.toFixed(5)}`;
-}
-setInterval(updateCelestialClock, 50);
-updateCelestialClock();
-
-function openVideo() { document.getElementById("videoModal").style.display = "block"; }
-function closeVideo() { 
-    document.getElementById("videoModal").style.display = "none";
-    let iframe = document.getElementById("videoFrame");
-    iframe.src = iframe.src;
-}
-
-async function loadAstronomyData() {
-    const lat = 30.0487, lon = 71.8156;
-    const apiKey = "4baaeb64a9a645cfbe6f52908d32f807";
-    const url = `https://api.ipgeolocation.io/astronomy?apiKey=${apiKey}&lat=${lat}&long=${lon}`;
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        document.getElementById("sunriseTime").innerHTML = data.sunrise || "N/A";
-        document.getElementById("sunsetTime").innerHTML = data.sunset || "N/A";
-        document.getElementById("moonriseTime").innerHTML = data.moonrise || "N/A";
-        document.getElementById("moonsetTime").innerHTML = data.moonset || "N/A";
-    } catch(err) {
-        console.error("Astronomy API error:", err);
-        document.getElementById("sunriseTime").innerHTML = "Unavailable";
-        document.getElementById("sunsetTime").innerHTML = "Unavailable";
-        document.getElementById("moonriseTime").innerHTML = "Unavailable";
-        document.getElementById("moonsetTime").innerHTML = "Unavailable";
+    // Live Clock
+    function updateCelestialClock() {
+        const now = luxon.DateTime.local();
+        document.getElementById("small-time").innerText = now.toFormat("HH:mm:ss.SSS");
+        document.getElementById("small-date").innerText = now.toFormat("dd:MM:yyyy");
+        const century = Math.floor((parseInt(now.toFormat("yyyy")) - 1) / 100) + 1;
+        document.getElementById("small-century").innerText = `Century: ${century}`;
+        const jd = 2440587.5 + now.toSeconds() / 86400;
+        document.getElementById("cosmic-date").innerText = `Cosmic: ${jd.toFixed(5)}`;
     }
-}
-loadAstronomyData();
-setInterval(loadAstronomyData, 60 * 60 * 1000);
+    setInterval(updateCelestialClock, 50);
+    updateCelestialClock();
+
+    function openVideo() {
+        document.getElementById("videoModal").style.display = "block";
+    }
+
+    function closeVideo() {
+        document.getElementById("videoModal").style.display = "none";
+        let iframe = document.getElementById("videoFrame");
+        iframe.src = iframe.src;
+    }
+
+    async function loadAstronomyData() {
+        const lat = 30.0487,
+            lon = 71.8156;
+        const apiKey = "4baaeb64a9a645cfbe6f52908d32f807";
+        const url = `https://api.ipgeolocation.io/astronomy?apiKey=${apiKey}&lat=${lat}&long=${lon}`;
+        try {
+            const res = await fetch(url);
+            const data = await res.json();
+            document.getElementById("sunriseTime").innerHTML = data.sunrise || "N/A";
+            document.getElementById("sunsetTime").innerHTML = data.sunset || "N/A";
+            document.getElementById("moonriseTime").innerHTML = data.moonrise || "N/A";
+            document.getElementById("moonsetTime").innerHTML = data.moonset || "N/A";
+        } catch (err) {
+            console.error("Astronomy API error:", err);
+            document.getElementById("sunriseTime").innerHTML = "Unavailable";
+            document.getElementById("sunsetTime").innerHTML = "Unavailable";
+            document.getElementById("moonriseTime").innerHTML = "Unavailable";
+            document.getElementById("moonsetTime").innerHTML = "Unavailable";
+        }
+    }
+    loadAstronomyData();
+    setInterval(loadAstronomyData, 60 * 60 * 1000);
 </script>
 </body>
 </html>
