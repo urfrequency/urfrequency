@@ -88,6 +88,7 @@
             font-weight: 600;
         }
 
+        /* Grid for regular service cards */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -122,28 +123,29 @@
             color: #0b4a1a;
         }
 
-        /* Special OS Box Styling */
+        /* ★ Standalone OS Feature Box (outside grid) ★ */
         .os-feature-box {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
             background: linear-gradient(145deg, #ffffff 0%, #f0faf0 100%);
-            padding: 0;
             border-radius: 20px;
-            box-shadow: 0 10px 32px rgba(0, 40, 0, 0.1);
+            box-shadow: 0 10px 32px rgba(0, 40, 0, 0.12);
             border: 2px solid #2e7d32;
             transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1.2);
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            grid-column: span 2;
-            display: flex;
-            flex-direction: row;
-            align-items: stretch;
-            min-height: 220px;
-            text-align: left;
+            text-decoration: none;
+            color: inherit;
+            max-width: 960px;
+            margin: 40px auto 0;
+            min-height: 210px;
         }
 
         .os-feature-box:hover {
             transform: translateY(-6px);
-            box-shadow: 0 22px 48px rgba(0, 60, 0, 0.18);
+            box-shadow: 0 22px 48px rgba(0, 60, 0, 0.2);
             border-color: #1b5e20;
             background: linear-gradient(145deg, #f8fff8 0%, #e8f8e8 100%);
         }
@@ -153,19 +155,19 @@
             letter-spacing: 1.2px;
         }
 
-        .os-feature-box .os-image-wrap {
+        .os-image-wrap {
             flex: 0 0 200px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: #0a1f0a;
             border-radius: 20px 0 0 20px;
-            padding: 16px;
+            padding: 20px;
             position: relative;
             overflow: hidden;
         }
 
-        .os-feature-box .os-image-wrap::after {
+        .os-image-wrap::after {
             content: '';
             position: absolute;
             inset: 0;
@@ -173,10 +175,10 @@
             pointer-events: none;
         }
 
-        .os-feature-box .os-image-wrap img {
+        .os-image-wrap img {
             width: 100%;
             height: auto;
-            max-height: 180px;
+            max-height: 170px;
             object-fit: contain;
             border-radius: 10px;
             position: relative;
@@ -188,7 +190,7 @@
             transform: scale(1.06);
         }
 
-        .os-feature-box .os-info {
+        .os-info {
             flex: 1;
             padding: 24px 28px;
             display: flex;
@@ -197,8 +199,8 @@
             gap: 10px;
         }
 
-        .os-feature-box .os-title {
-            font-size: 1.5rem;
+        .os-title {
+            font-size: 1.6rem;
             font-weight: 800;
             color: #0f3b1a;
             letter-spacing: 0.5px;
@@ -206,34 +208,35 @@
             line-height: 1.2;
         }
 
-        .os-feature-box .os-subtitle {
-            font-size: 0.95rem;
+        .os-subtitle {
+            font-size: 0.98rem;
             color: #3a5a3a;
             margin: 0;
             line-height: 1.5;
         }
 
-        .os-feature-box .os-memory-note {
-            font-size: 0.82rem;
-            color: #6b8f6b;
+        .os-memory-note {
+            font-size: 0.85rem;
+            color: #4a6b4a;
             background: #eaf7ea;
-            border-radius: 8px;
-            padding: 8px 12px;
+            border-radius: 10px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             margin: 0;
             line-height: 1.4;
+            border: 1px solid #c8e0c5;
         }
 
-        .os-feature-box .os-memory-note .mem-icon {
-            font-size: 1.2rem;
+        .mem-icon {
+            font-size: 1.3rem;
         }
 
-        .os-feature-box .os-badge {
+        .os-badge {
             display: inline-block;
             background: #2e7d32;
-            color: #fff;
+            color: white;
             font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -244,59 +247,52 @@
             transition: all 0.3s;
         }
 
-        .os-feature-box .os-arrow {
+        .os-arrow {
             position: absolute;
             top: 16px;
             right: 20px;
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             color: #2e7d32;
-            transition: transform 0.3s;
-            opacity: 0.7;
+            opacity: 0.65;
+            transition: transform 0.3s, opacity 0.2s;
         }
 
         .os-feature-box:hover .os-arrow {
-            transform: translateX(4px);
+            transform: translateX(5px);
             opacity: 1;
         }
 
-        /* Responsive: stack on small screens */
+        /* Responsive stacking for OS box on small screens */
         @media (max-width: 768px) {
             .os-feature-box {
-                grid-column: span 1;
                 flex-direction: column;
                 min-height: auto;
+                margin: 30px 15px 0;
             }
-            .os-feature-box .os-image-wrap {
+            .os-image-wrap {
                 flex: 0 0 auto;
                 border-radius: 20px 20px 0 0;
-                padding: 20px;
+                padding: 18px;
             }
-            .os-feature-box .os-image-wrap img {
-                max-height: 140px;
+            .os-image-wrap img {
+                max-height: 130px;
             }
-            .os-feature-box .os-info {
+            .os-info {
                 padding: 18px 20px;
             }
-            .os-feature-box .os-arrow {
+            .os-arrow {
                 top: auto;
                 bottom: 14px;
                 right: 18px;
             }
         }
 
-        @media (max-width: 500px) {
-            .os-feature-box .os-image-wrap {
-                flex: 0 0 auto;
-                padding: 14px;
+        @media (max-width: 480px) {
+            .os-title {
+                font-size: 1.3rem;
             }
-            .os-feature-box .os-image-wrap img {
-                max-height: 100px;
-            }
-            .os-feature-box .os-title {
-                font-size: 1.2rem;
-            }
-            .os-feature-box .os-subtitle {
-                font-size: 0.85rem;
+            .os-subtitle {
+                font-size: 0.9rem;
             }
         }
 
@@ -423,50 +419,49 @@
         </div>
     </div>
 
-    <!-- Services -->
+    <!-- Services Section -->
     <section id="services">
         <h2>Research Services</h2>
+        <!-- Regular grid of small cards – NO OS box inside -->
         <div class="grid">
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/engine">Engine</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/bearing">World Bearings DATA</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/gears">Gear train</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tunnel</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023–2050</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Celestial Data</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Moon & Sun Data</a></div>
+            <div class="card"><a href="https://urfrequency.github.io/urfrequency/mrst.html">Mars Time</a></div>
+            <div class="card"><a href="#">Books</a></div>
+            <div class="card"><a href="#">Courses</a></div>
+            <div class="card"><a href="#">Articles</a></div>
+            <div class="card"><a href="#">News</a></div>
+            <div class="card"><button onclick="openVideo()" class="video-btn">Watch Video</button></div>
+        </div>
 
-            <!-- ★ UR Frequency OS – Featured Box with Image ★ -->
-            <a href="https://urfrequency.github.io/urfrequency/os.html"
-            target="_blank"
-            rel="noopener"
-            class="os-feature-box"
-            title="Open UR Frequency OS – runs in your browser">
-            <span class="os-arrow">↗</span>
-            <div class="os-image-wrap">
-                <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/Ubaidos.png"
-                alt="UR Frequency OS Screenshot"
-                loading="lazy">
-            </div>
-            <div class="os-info">
-                <span class="os-badge">Featured</span>
-                <h3 class="os-title">UR Frequency OS</h3>
-                <p class="os-subtitle">A full web-based operating environment — launch directly in your browser.</p>
-                <p class="os-memory-note">
-                    <span class="mem-icon">💾</span>
-                    <span><strong>Note:</strong> This will use your browser memory. Do not clear browser data if you want to save your data. It takes only ~500 MB of memory.</span>
-                </p>
-            </div>
-        </a>
-
-        <!-- Other service cards -->
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/time">Time</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/engine">Engine</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/bearing">World Bearings DATA</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/gears">Gear train</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/windtueenel.html">Wind Tunnel</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/alleids">EID Data 2023–2050</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Celestial Data</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/celestial_data">Moon & Sun Data</a></div>
-        <div class="card"><a href="https://urfrequency.github.io/urfrequency/mrst.html">Mars Time</a></div>
-        <div class="card"><a href="#">Books</a></div>
-        <div class="card"><a href="#">Courses</a></div>
-        <div class="card"><a href="#">Articles</a></div>
-        <div class="card"><a href="#">News</a></div>
-        <div class="card"><button onclick="openVideo()" class="video-btn">Watch Video</button></div>
-    </div>
+        <!-- ★ UR Frequency OS – now a standalone block, outside the grid ★ -->
+        <a href="https://urfrequency.github.io/urfrequency/os.html"
+        target="_blank"
+        rel="noopener"
+        class="os-feature-box"
+        title="Open UR Frequency OS – runs in your browser">
+        <span class="os-arrow">↗</span>
+        <div class="os-image-wrap">
+            <img src="https://raw.githubusercontent.com/urfrequency/urindustries/main/pics/Ubaidos.png"
+            alt="UR Frequency OS Screenshot"
+            loading="lazy">
+        </div>
+        <div class="os-info">
+            <span class="os-badge">Launch OS</span>
+            <h3 class="os-title">UR Frequency OS</h3>
+            <p class="os-subtitle">A full web‑based environment — runs securely in your browser. Your data stays local.</p>
+            <p class="os-memory-note">
+                <span class="mem-icon">💾</span>
+                <span><strong>Important:</strong> Uses your browser’s storage. Do not clear browser data if you want to save your files. Memory usage ~500 MB.</span>
+            </p>
+        </div>
+    </a>
 </section>
 
 <!-- Video Modal -->
