@@ -363,6 +363,7 @@
             font-size: 13px;
             font-weight: bold;
             font-family: 'Courier New', monospace;
+            flex-shrink: 0;
         }
         .app-close {
             background: #ff444433;
@@ -385,23 +386,26 @@
             flex: 1;
             overflow: auto;
             padding: 0;
+            display: flex;
+            flex-direction: column;
         }
 
         /* ─── FILE EXPLORER ─── */
         #file-app {
             top: 60px;
             left: 40px;
-            width: 640px;
-            height: 440px;
+            width: 780px;
+            height: 520px;
         }
         .file-toolbar {
             background: #050f05;
             border-bottom: 1px solid #00ff4122;
             padding: 6px 12px;
             display: flex;
-            gap: 8px;
+            gap: 6px;
             align-items: center;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
         .file-btn {
             background: #0a1a0a;
@@ -412,20 +416,31 @@
             cursor: pointer;
             font-size: 11px;
             font-family: 'Courier New', monospace;
+            transition: all 0.15s;
         }
         .file-btn:hover {
             background: #00ff4115;
             color: #00ff41;
+        }
+        .file-btn.danger:hover {
+            background: #ff000015;
+            border-color: #ff444466;
+            color: #ff6666;
         }
         .file-path {
             color: #335533;
             font-size: 11px;
             margin-left: 8px;
             font-family: 'Courier New', monospace;
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         .file-layout {
             display: flex;
-            height: calc(100% - 36px);
+            flex: 1;
+            min-height: 0;
         }
         .file-sidebar {
             width: 160px;
@@ -433,6 +448,7 @@
             border-right: 1px solid #00ff4122;
             padding: 12px 0;
             overflow: auto;
+            flex-shrink: 0;
         }
         .file-sidebar-item {
             padding: 8px 16px;
@@ -443,20 +459,28 @@
             align-items: center;
             gap: 8px;
             font-family: 'Courier New', monospace;
+            transition: all 0.15s;
         }
         .file-sidebar-item:hover,
         .file-sidebar-item.selected {
             background: #00ff4115;
             color: #00ff41;
         }
+        .file-grid-wrap {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
         .file-grid {
             flex: 1;
             padding: 16px;
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-            gap: 16px;
+            gap: 12px;
             align-content: start;
             overflow: auto;
+            min-height: 0;
         }
         .file-item {
             display: flex;
@@ -464,9 +488,12 @@
             align-items: center;
             gap: 6px;
             cursor: pointer;
-            padding: 8px;
+            padding: 8px 4px;
             border-radius: 6px;
             border: 2px solid transparent;
+            transition: all 0.12s;
+            position: relative;
+            min-width: 0;
         }
         .file-item:hover {
             background: #00ff4110;
@@ -476,16 +503,19 @@
             background: #00ff4115;
             border-color: #00ff4166;
         }
-        .file-icon {
+        .file-item .file-icon {
             font-size: 32px;
             line-height: 1;
         }
-        .file-name {
+        .file-item .file-name {
             color: #55aa55;
             font-size: 10px;
             text-align: center;
             word-break: break-word;
             font-family: 'Courier New', monospace;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .file-status {
             padding: 4px 12px;
@@ -494,14 +524,64 @@
             color: #1a3a1a;
             font-size: 10px;
             font-family: 'Courier New', monospace;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* ─── CONTEXT MENU ─── */
+        #ctx-menu {
+            position: fixed;
+            background: #0a0f0a;
+            border: 1px solid #00ff4155;
+            border-radius: 8px;
+            padding: 6px 0;
+            min-width: 170px;
+            display: none;
+            z-index: 999;
+            box-shadow: 0 8px 32px #000c;
+        }
+        #ctx-menu .ctx-item {
+            padding: 8px 18px;
+            color: #55aa55;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.1s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+        #ctx-menu .ctx-item:hover {
+            background: #00ff4115;
+            color: #00ff41;
+        }
+        #ctx-menu .ctx-item.danger:hover {
+            background: #ff000015;
+            color: #ff6666;
+        }
+        #ctx-menu .ctx-sep {
+            height: 1px;
+            background: #00ff4122;
+            margin: 4px 8px;
+        }
+        #ctx-menu .ctx-item .ctx-key {
+            color: #1a3a1a;
+            font-size: 10px;
+            margin-left: auto;
+            padding-left: 16px;
         }
 
         /* ─── TEXT EDITOR ─── */
         #editor-app {
             top: 80px;
             left: 120px;
-            width: 680px;
-            height: 480px;
+            width: 720px;
+            height: 500px;
         }
         .ed-toolbar {
             background: #050f05;
@@ -510,6 +590,7 @@
             display: flex;
             gap: 4px;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
         .ed-btn {
             background: #0a1a0a;
@@ -520,6 +601,7 @@
             cursor: pointer;
             font-size: 11px;
             font-family: 'Courier New', monospace;
+            transition: all 0.12s;
         }
         .ed-btn:hover {
             background: #00ff4115;
@@ -538,6 +620,10 @@
             outline: none;
             overflow: auto;
             caret-color: #00ff41;
+            min-height: 0;
+        }
+        .ed-area:focus {
+            outline: none;
         }
         .ed-status {
             background: #050f05;
@@ -548,23 +634,28 @@
             font-family: 'Courier New', monospace;
             display: flex;
             justify-content: space-between;
+            flex-shrink: 0;
         }
         .ed-filename {
             color: #00ff4188;
+        }
+        .ed-dirty {
+            color: #ffcc44;
         }
 
         /* ─── SETTINGS ─── */
         #settings-app {
             top: 100px;
             left: 200px;
-            width: 540px;
-            height: 460px;
+            width: 560px;
+            height: 480px;
         }
         .settings-nav {
             display: flex;
             border-bottom: 1px solid #00ff4122;
             background: #050f05;
             flex-wrap: wrap;
+            flex-shrink: 0;
         }
         .settings-tab {
             padding: 10px 20px;
@@ -573,14 +664,20 @@
             cursor: pointer;
             border-bottom: 2px solid transparent;
             font-family: 'Courier New', monospace;
+            transition: all 0.15s;
         }
         .settings-tab.active {
             color: #00ff41;
             border-bottom-color: #00ff41;
         }
+        .settings-tab:hover {
+            color: #55aa55;
+        }
         .settings-panel {
             padding: 24px;
             display: none;
+            flex: 1;
+            overflow: auto;
         }
         .settings-panel.active {
             display: block;
@@ -623,6 +720,7 @@
             font-size: 12px;
             font-family: 'Courier New', monospace;
             font-weight: bold;
+            transition: all 0.15s;
         }
         .settings-save:hover {
             opacity: 0.9;
@@ -639,6 +737,7 @@
             border-radius: 50%;
             cursor: pointer;
             border: 2px solid transparent;
+            transition: all 0.15s;
         }
         .color-swatch.picked {
             border-color: #00ff41;
@@ -673,8 +772,8 @@
         #terminal-app {
             top: 100px;
             left: 60px;
-            width: 780px;
-            height: 500px;
+            width: 820px;
+            height: 520px;
             border-color: #00ff4155;
         }
         #terminal-app .app-title {
@@ -736,6 +835,7 @@
             background: #000;
             padding: 4px 16px 12px 16px;
             border-top: 1px solid #00ff4122;
+            flex-shrink: 0;
         }
         .term-input-line .term-prompt {
             color: #00ff41;
@@ -782,6 +882,7 @@
             border-radius: 8px;
             border: 2px solid transparent;
             width: 80px;
+            transition: all 0.12s;
         }
         .desk-icon:hover {
             background: #00ff4110;
@@ -819,6 +920,7 @@
             padding: 32px 40px;
             text-align: center;
             min-width: 300px;
+            max-width: 90vw;
             box-shadow: 0 0 60px #00ff4122;
         }
         .modal-box h3 {
@@ -837,6 +939,7 @@
             display: flex;
             gap: 12px;
             justify-content: center;
+            flex-wrap: wrap;
         }
         .modal-btn {
             background: #0a1a0a;
@@ -847,6 +950,7 @@
             cursor: pointer;
             font-size: 13px;
             font-family: 'Courier New', monospace;
+            transition: all 0.12s;
         }
         .modal-btn:hover {
             background: #00ff4115;
@@ -857,6 +961,15 @@
         }
         .modal-btn.danger:hover {
             background: #ff000011;
+        }
+        .modal-btn.primary {
+            background: linear-gradient(90deg, #00cc33, #00ff41);
+            color: #000;
+            border: none;
+        }
+        .modal-btn.primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 0 20px #00ff4144;
         }
 
         /* ─── SAVE-AS MODAL ─── */
@@ -915,6 +1028,7 @@
             z-index: 9999;
             transition: opacity 0.5s;
             box-shadow: 0 0 30px #00ff4111;
+            max-width: 90vw;
         }
 
         /* ─── BACKUP / RESTORE (Settings) ─── */
@@ -933,6 +1047,7 @@
             cursor: pointer;
             font-family: 'Courier New', monospace;
             font-size: 12px;
+            transition: all 0.12s;
         }
         .backup-btn:hover {
             background: #00ff4115;
@@ -942,25 +1057,43 @@
             display: none;
         }
 
+        /* ─── RENAME MODAL ─── */
+        #rename-modal .rename-input {
+            background: #050f05;
+            border: 1px solid #00ff4133;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #00ff41;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            width: 100%;
+            outline: none;
+            margin-bottom: 16px;
+        }
+        #rename-modal .rename-input:focus {
+            border-color: #00ff4188;
+            box-shadow: 0 0 20px #00ff4122;
+        }
+
         /* ─── RESPONSIVE TWEAKS ─── */
         @media (max-width: 820px) {
             #file-app {
-                width: 90vw;
+                width: 92vw;
                 height: 70vh;
                 top: 50px;
-                left: 5vw;
+                left: 4vw;
             }
             #editor-app {
-                width: 90vw;
+                width: 92vw;
                 height: 70vh;
                 top: 50px;
-                left: 5vw;
+                left: 4vw;
             }
             #settings-app {
-                width: 90vw;
+                width: 92vw;
                 height: 70vh;
                 top: 50px;
-                left: 5vw;
+                left: 4vw;
             }
             #terminal-app {
                 width: 92vw;
@@ -1001,6 +1134,13 @@
             .desk-icon .di-lbl {
                 font-size: 9px;
             }
+            #ctx-menu {
+                min-width: 140px;
+            }
+            #ctx-menu .ctx-item {
+                font-size: 11px;
+                padding: 6px 14px;
+            }
         }
         @media (max-width: 480px) {
             #login .login-box {
@@ -1040,8 +1180,8 @@
                 font-size: 11px;
             }
             .file-toolbar {
-                gap: 4px;
-                padding: 4px 8px;
+                gap: 3px;
+                padding: 4px 6px;
             }
             .file-btn {
                 font-size: 9px;
@@ -1052,21 +1192,22 @@
                 margin-left: 4px;
             }
             .file-sidebar {
-                width: 80px;
+                width: 70px;
             }
             .file-sidebar-item {
-                font-size: 10px;
-                padding: 6px 10px;
+                font-size: 9px;
+                padding: 5px 8px;
+                gap: 4px;
             }
             .file-grid {
                 grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
                 gap: 6px;
                 padding: 6px;
             }
-            .file-icon {
+            .file-item .file-icon {
                 font-size: 24px;
             }
-            .file-name {
+            .file-item .file-name {
                 font-size: 8px;
             }
             .ed-toolbar {
@@ -1100,7 +1241,7 @@
                 padding: 16px;
             }
             .settings-tab {
-                padding: 8px 12px;
+                padding: 6px 10px;
                 font-size: 10px;
             }
             .color-swatch {
@@ -1122,6 +1263,18 @@
             }
             .desk-icon .di-lbl {
                 font-size: 8px;
+            }
+            #ctx-menu {
+                min-width: 120px;
+            }
+            #ctx-menu .ctx-item {
+                font-size: 10px;
+                padding: 5px 12px;
+                gap: 6px;
+            }
+            #ctx-menu .ctx-item .ctx-key {
+                font-size: 8px;
+                padding-left: 8px;
             }
         }
     </style>
@@ -1210,22 +1363,31 @@
                     <div class="file-toolbar">
                         <button class="file-btn" onclick="fileNav('up')">↑ Up</button>
                         <button class="file-btn" onclick="fileNav('back')">← Back</button>
+                        <span style="color:#00ff4122;margin:0 2px;">|</span>
                         <button class="file-btn" onclick="fileNewFolder()">+ Folder</button>
                         <button class="file-btn" onclick="fileNewTxt()">+ Text File</button>
+                        <span style="color:#00ff4122;margin:0 2px;">|</span>
+                        <button class="file-btn" onclick="fileRefresh()">⟳ Refresh</button>
                         <span class="file-path" id="file-path">/Home</span>
+                        <span style="color:#00ff4122;margin:0 2px;">|</span>
+                        <button class="file-btn danger" onclick="fileDeleteSelected()" title="Delete selected">🗑</button>
+                        <button class="file-btn" onclick="fileRenameSelected()" title="Rename selected">✏️</button>
                     </div>
                     <div class="file-layout">
                         <div class="file-sidebar" id="file-sidebar">
-                            <div class="file-sidebar-item selected" onclick="navSidebar('Home')">🏠 Home</div>
-                            <div class="file-sidebar-item" onclick="navSidebar('Documents')">📄 Documents</div>
-                            <div class="file-sidebar-item" onclick="navSidebar('Pictures')">🖼️ Pictures</div>
-                            <div class="file-sidebar-item" onclick="navSidebar('Music')">🎵 Music</div>
-                            <div class="file-sidebar-item" onclick="navSidebar('Videos')">🎬 Videos</div>
-                            <div class="file-sidebar-item" onclick="navSidebar('Trash')">🗑️ Trash</div>
+                            <div class="file-sidebar-item selected" onclick="navSidebar('Home',this)">🏠 Home</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Documents',this)">📄 Documents</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Pictures',this)">🖼️ Pictures</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Music',this)">🎵 Music</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Videos',this)">🎬 Videos</div>
+                            <div class="file-sidebar-item" onclick="navSidebar('Trash',this)">🗑️ Trash</div>
                         </div>
-                        <div style="flex:1;display:flex;flex-direction:column;">
+                        <div class="file-grid-wrap">
                             <div class="file-grid" id="file-grid"></div>
-                            <div class="file-status" id="file-status">Ready</div>
+                            <div class="file-status" id="file-status">
+                                <span>Ready</span>
+                                <span id="file-selection-info"></span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1283,10 +1445,10 @@
                     </div>
                     <div class="app-body">
                         <div class="settings-nav">
-                            <div class="settings-tab active" onclick="settingsTab('password')">Password</div>
-                            <div class="settings-tab" onclick="settingsTab('appearance')">Appearance</div>
-                            <div class="settings-tab" onclick="settingsTab('datetime')">Date &amp; Time</div>
-                            <div class="settings-tab" onclick="settingsTab('backup')">Backup</div>
+                            <div class="settings-tab active" onclick="settingsTab('password',this)">Password</div>
+                            <div class="settings-tab" onclick="settingsTab('appearance',this)">Appearance</div>
+                            <div class="settings-tab" onclick="settingsTab('datetime',this)">Date &amp; Time</div>
+                            <div class="settings-tab" onclick="settingsTab('backup',this)">Backup</div>
                         </div>
                         <!-- Password -->
                         <div class="settings-panel active" id="panel-password">
@@ -1310,13 +1472,13 @@
                             <div class="settings-row">
                                 <div class="settings-label">Text Color Theme</div>
                                 <div class="color-row">
-                                    <div class="color-swatch picked" style="background:#00ff41;" onclick="setTextColor('#00ff41')" title="Matrix Green"></div>
-                                    <div class="color-swatch" style="background:#33ff88;" onclick="setTextColor('#33ff88')" title="Mint"></div>
-                                    <div class="color-swatch" style="background:#ffff44;" onclick="setTextColor('#ffff44')" title="Amber"></div>
-                                    <div class="color-swatch" style="background:#ff88cc;" onclick="setTextColor('#ff88cc')" title="Pink"></div>
-                                    <div class="color-swatch" style="background:#ffffff;" onclick="setTextColor('#ffffff')" title="White"></div>
-                                    <div class="color-swatch" style="background:#ff6644;" onclick="setTextColor('#ff6644')" title="Orange"></div>
-                                    <div class="color-swatch" style="background:#44aaff;" onclick="setTextColor('#44aaff')" title="Cyan"></div>
+                                    <div class="color-swatch picked" style="background:#00ff41;" onclick="setTextColor('#00ff41',this)" title="Matrix Green"></div>
+                                    <div class="color-swatch" style="background:#33ff88;" onclick="setTextColor('#33ff88',this)" title="Mint"></div>
+                                    <div class="color-swatch" style="background:#ffff44;" onclick="setTextColor('#ffff44',this)" title="Amber"></div>
+                                    <div class="color-swatch" style="background:#ff88cc;" onclick="setTextColor('#ff88cc',this)" title="Pink"></div>
+                                    <div class="color-swatch" style="background:#ffffff;" onclick="setTextColor('#ffffff',this)" title="White"></div>
+                                    <div class="color-swatch" style="background:#ff6644;" onclick="setTextColor('#ff6644',this)" title="Orange"></div>
+                                    <div class="color-swatch" style="background:#44aaff;" onclick="setTextColor('#44aaff',this)" title="Cyan"></div>
                                 </div>
                             </div>
                             <div style="margin-top:16px;color:#335533;font-size:12px;font-family:'Courier New',monospace;">Preview:</div>
@@ -1348,7 +1510,7 @@
                             <div class="settings-row">
                                 <div class="settings-label">Export / Backup</div>
                                 <p style="color:#335533;font-size:12px;font-family:'Courier New',monospace;margin-bottom:8px;">
-                                    Download the entire file system and settings as a JSON file. 
+                                    Download the entire file system and settings as a JSON file.
                                     You can store this file in your GitHub repository.
                                 </p>
                                 <button class="backup-btn" onclick="exportBackup()">📥 Export Backup</button>
@@ -1385,7 +1547,19 @@
                     <input class="saveas-input" id="saveas-input" type="text" value="Untitled.txt" placeholder="filename.txt" />
                     <div class="modal-btns">
                         <button class="modal-btn" onclick="document.getElementById('saveas-modal').classList.remove('show')">Cancel</button>
-                        <button class="modal-btn" onclick="doSaveAs()">Save</button>
+                        <button class="modal-btn primary" onclick="doSaveAs()">Save</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-overlay" id="rename-modal">
+                <div class="modal-box">
+                    <h3>Rename</h3>
+                    <p>Enter new name:</p>
+                    <input class="rename-input" id="rename-input" type="text" placeholder="New name" />
+                    <div class="modal-btns">
+                        <button class="modal-btn" onclick="document.getElementById('rename-modal').classList.remove('show')">Cancel</button>
+                        <button class="modal-btn primary" onclick="doRename()">Rename</button>
                     </div>
                 </div>
             </div>
@@ -1400,12 +1574,24 @@
 
         </div>
 
+        <!-- ─── CONTEXT MENU ─── -->
+        <div id="ctx-menu">
+            <button class="ctx-item" data-action="open">📂 Open</button>
+            <div class="ctx-sep"></div>
+            <button class="ctx-item" data-action="rename">✏️ Rename</button>
+            <button class="ctx-item" data-action="copy">📋 Copy</button>
+            <button class="ctx-item" data-action="cut">✂️ Cut</button>
+            <button class="ctx-item" data-action="paste">📄 Paste <span class="ctx-key">Ctrl+V</span></button>
+            <div class="ctx-sep"></div>
+            <button class="ctx-item danger" data-action="delete">🗑 Delete <span class="ctx-key">Del</span></button>
+        </div>
+
         <!-- ─── NOTIFICATION ─── -->
         <div id="notif"></div>
 
         <script>
             // ═══════════════════════════════════════════════════════════
-            //  INDEXEDDB PERSISTENCE (instead of localStorage)
+            //  INDEXEDDB PERSISTENCE
             // ═══════════════════════════════════════════════════════════
             const DB_NAME = 'URFrequencyOSDB';
             const DB_VERSION = 1;
@@ -1503,7 +1689,7 @@
                 }
             };
 
-            // ─── State variables (will be loaded from IndexedDB) ───
+            // ─── State variables ───
             let fs = {};
             let osPass = '';
             let textColor = '#00ff41';
@@ -1521,13 +1707,17 @@
             const termUser = 'ur';
             const termHost = 'frequency';
 
+            // ─── Clipboard for file operations ───
+            let fileClipboard = null; // { action: 'copy'|'cut', path: [...], name: string }
+
             // ─── Helpers ───
             function getNode(path) {
                 let node = fs['Home'];
+                if (!node) return null;
                 if (path[0] === 'Home' && path.length === 1) return node;
                 let parts = path.slice(1);
                 for (let p of parts) {
-                    if (node.children && node.children[p]) node = node.children[p];
+                    if (node && node.children && node.children[p]) node = node.children[p];
                     else return null;
                 }
                 return node;
@@ -1535,10 +1725,11 @@
 
             function getNodeTerm(path) {
                 let node = fs['Home'];
+                if (!node) return null;
                 if (path[0] === 'Home' && path.length === 1) return node;
                 let parts = path.slice(1);
                 for (let p of parts) {
-                    if (node.children && node.children[p]) node = node.children[p];
+                    if (node && node.children && node.children[p]) node = node.children[p];
                     else return null;
                 }
                 return node;
@@ -1546,6 +1737,15 @@
 
             function pathToString(path) {
                 return '/' + path.join('/');
+            }
+
+            function getParentPath(path) {
+                if (path.length <= 1) return ['Home'];
+                return path.slice(0, -1);
+            }
+
+            function getItemFullPath(path, name) {
+                return [...path, name];
             }
 
             // ─── Save all state to IndexedDB ───
@@ -1580,11 +1780,9 @@
                         editorFile = state.editorFile || 'Untitled.txt';
                         termHistory = state.termHistory || [];
                         termCwd = state.termCwd || ['Home'];
-                        // ensure Home exists
                         if (!fs['Home']) fs = JSON.parse(JSON.stringify(defaultFs));
                         return true;
                     } else {
-                        // first run: use defaults
                         fs = JSON.parse(JSON.stringify(defaultFs));
                         osPass = '';
                         textColor = '#00ff41';
@@ -1618,7 +1816,7 @@
             }
 
             // ═══════════════════════════════════════════════════════════
-            //  SPLASH (delayed until state loaded)
+            //  SPLASH
             // ═══════════════════════════════════════════════════════════
             let bootMsgs = [
                 'Initializing kernel...', 'Loading system drivers...', 'Mounting file system...',
@@ -1654,12 +1852,10 @@
                 }, 220);
             }
 
-            // ─── Init: open DB, load state, then start splash ───
             async function init() {
                 try {
                     await openDB();
                     await loadAllState();
-                    // apply text color to preview and editor
                     document.getElementById('color-preview').style.color = textColor;
                     document.querySelectorAll('.color-swatch').forEach(s => {
                         if (s.style.backgroundColor === textColor || s.style.backgroundColor === textColor
@@ -1670,15 +1866,12 @@
                         }
                     });
                     document.getElementById('tz-select').value = tz;
-                    // start splash
                     runSplash();
                 } catch (e) {
                     console.error('Init error:', e);
-                    // fallback: start splash anyway
                     runSplash();
                 }
             }
-
             init();
 
             // ═══════════════════════════════════════════════════════════
@@ -1778,7 +1971,8 @@
             // ═══════════════════════════════════════════════════════════
             function openApp(id) {
                 document.getElementById(id + '-app').classList.add('active');
-                if (id === 'file') renderFileGrid();
+                if (id === 'file') { renderFileGrid();
+                    clearSelection(); }
                 if (id === 'settings') {
                     let dt = document.getElementById('dt-display');
                     if (dt) dt.textContent = new Date().toLocaleString('en-PK', { timeZone: tz });
@@ -1787,6 +1981,9 @@
                     document.getElementById('term-input').focus();
                     termRender();
                 }
+                if (id === 'editor') {
+                    document.getElementById('ed-area').focus();
+                }
             }
 
             function closeApp(id) {
@@ -1794,11 +1991,29 @@
                     if (!confirm('Unsaved changes. Close anyway?')) return;
                 }
                 document.getElementById(id + '-app').classList.remove('active');
+                if (id === 'file') hideContextMenu();
             }
 
             // ═══════════════════════════════════════════════════════════
-            //  FILE EXPLORER
+            //  FILE EXPLORER — Core
             // ═══════════════════════════════════════════════════════════
+            let selectedItems = new Set();
+
+            function clearSelection() {
+                selectedItems.clear();
+                document.querySelectorAll('#file-grid .file-item').forEach(el => el.classList.remove('selected-item'));
+                updateSelectionInfo();
+            }
+
+            function updateSelectionInfo() {
+                let info = document.getElementById('file-selection-info');
+                if (selectedItems.size === 0) {
+                    info.textContent = '';
+                } else {
+                    info.textContent = selectedItems.size + ' selected';
+                }
+            }
+
             function renderFileGrid() {
                 let grid = document.getElementById('file-grid');
                 let pathStr = '/' + currentPath.join('/');
@@ -1808,6 +2023,7 @@
                 if (!node || node.type !== 'folder') {
                     grid.innerHTML =
                         '<div style="color:#335533;padding:20px;font-family:Courier New;font-size:12px;">Empty</div>';
+                    document.getElementById('file-status').innerHTML = '<span>Empty</span><span></span>';
                     return;
                 }
                 let children = node.children || {};
@@ -1815,8 +2031,17 @@
                 if (keys.length === 0) {
                     grid.innerHTML =
                         '<div style="color:#335533;padding:20px;font-family:Courier New;font-size:12px;">Folder is empty</div>';
+                    document.getElementById('file-status').innerHTML = '<span>Folder is empty</span><span></span>';
                     return;
                 }
+                // Sort: folders first, then files
+                keys.sort((a, b) => {
+                    let aIsFolder = children[a].type === 'folder';
+                    let bIsFolder = children[b].type === 'folder';
+                    if (aIsFolder && !bIsFolder) return -1;
+                    if (!aIsFolder && bIsFolder) return 1;
+                    return a.localeCompare(b);
+                });
                 for (let name of keys) {
                     let item = children[name];
                     let icon = item.type === 'folder' ? '📁' : item.type === 'image' ? '🖼️' : '📄';
@@ -1824,28 +2049,83 @@
                     el.className = 'file-item';
                     el.innerHTML = `<div class="file-icon">${icon}</div><div class="file-name">${name}</div>`;
                     el.dataset.name = name;
-                    el.onclick = () => selectFile(name, el);
+                    el.dataset.type = item.type;
+                    if (selectedItems.has(name)) el.classList.add('selected-item');
+                    el.onclick = (e) => {
+                        e.stopPropagation();
+                        if (e.ctrlKey || e.metaKey) {
+                            toggleSelectItem(name, el);
+                        } else {
+                            selectSingleItem(name, el);
+                        }
+                    };
                     el.ondblclick = () => openFileItem(name, item);
-                    el.onkeydown = ev => { if (ev.key === 'Enter') openFileItem(name, item); };
+                    el.onkeydown = ev => {
+                        if (ev.key === 'Enter') openFileItem(name, item);
+                        if (ev.key === 'Delete') { ev.preventDefault();
+                            fileDeleteSelected(); }
+                    };
                     el.tabIndex = 0;
+                    el.oncontextmenu = (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (!selectedItems.has(name)) {
+                            selectSingleItem(name, el);
+                        }
+                        showContextMenu(e.clientX, e.clientY, name);
+                    };
                     grid.appendChild(el);
                 }
-                document.getElementById('file-status').textContent = keys.length + ' item(s) in ' + pathStr;
+                let count = keys.length;
+                document.getElementById('file-status').innerHTML = `<span>${count} item(s) in ${pathStr}</span><span id="file-selection-info"></span>`;
+                updateSelectionInfo();
+                // Restore selected items
+                document.querySelectorAll('#file-grid .file-item').forEach(el => {
+                    if (selectedItems.has(el.dataset.name)) {
+                        el.classList.add('selected-item');
+                    }
+                });
+                // Grid click to deselect
+                grid.onclick = (e) => {
+                    if (e.target === grid || e.target.closest('.file-grid') === grid) {
+                        clearSelection();
+                        hideContextMenu();
+                    }
+                };
                 saveAllState();
             }
 
-            function selectFile(name, el) {
-                document.querySelectorAll('.file-item').forEach(e => e.classList.remove('selected-item'));
-                el.classList.add('selected-item');
-                selectedFile = name;
+            function selectSingleItem(name, el) {
+                document.querySelectorAll('#file-grid .file-item').forEach(e => e.classList.remove('selected-item'));
+                selectedItems.clear();
+                selectedItems.add(name);
+                if (el) el.classList.add('selected-item');
+                updateSelectionInfo();
+            }
+
+            function toggleSelectItem(name, el) {
+                if (selectedItems.has(name)) {
+                    selectedItems.delete(name);
+                    el.classList.remove('selected-item');
+                } else {
+                    selectedItems.add(name);
+                    el.classList.add('selected-item');
+                }
+                updateSelectionInfo();
+            }
+
+            function getSelectedNames() {
+                return Array.from(selectedItems);
             }
 
             function openFileItem(name, item) {
                 if (item.type === 'folder') {
                     fileHistory.push([...currentPath]);
                     currentPath.push(name);
+                    clearSelection();
                     renderFileGrid();
                     saveAllState();
+                    hideContextMenu();
                 } else if (item.type === 'file') {
                     openApp('editor');
                     editorFile = name;
@@ -1855,32 +2135,46 @@
                     editorDirty = false;
                     updateWordCount();
                     saveAllState();
+                    hideContextMenu();
                 } else {
                     notify('Cannot open image files in this version.');
                 }
             }
 
+            function fileRefresh() {
+                renderFileGrid();
+                notify('Refreshed');
+            }
+
+            // ─── Navigation ───
             function fileNav(dir) {
                 if (dir === 'up') {
                     if (currentPath.length > 1) {
                         fileHistory.push([...currentPath]);
                         currentPath.pop();
+                        clearSelection();
                         renderFileGrid();
                         saveAllState();
                     }
                 } else if (dir === 'back') {
                     if (fileHistory.length > 0) {
                         currentPath = [...fileHistory.pop()];
+                        clearSelection();
                         renderFileGrid();
                         saveAllState();
                     }
                 }
+                hideContextMenu();
             }
 
-            function navSidebar(name) {
-                let el = event.target;
-                document.querySelectorAll('.file-sidebar-item').forEach(e => e.classList.remove('selected'));
-                el.classList.add('selected');
+            function navSidebar(name, el) {
+                if (!el) {
+                    el = document.querySelector(`.file-sidebar-item[data-name="${name}"]`);
+                }
+                if (el) {
+                    document.querySelectorAll('.file-sidebar-item').forEach(e => e.classList.remove('selected'));
+                    el.classList.add('selected');
+                }
                 if (name === 'Trash' || name === 'Home') {
                     currentPath = ['Home'];
                     if (name === 'Trash') currentPath = ['Home', 'Trash'];
@@ -1888,15 +2182,18 @@
                     currentPath = ['Home', name];
                 }
                 fileHistory = [];
+                clearSelection();
                 renderFileGrid();
                 saveAllState();
+                hideContextMenu();
             }
 
+            // ─── Create ───
             function fileNewFolder() {
                 let name = prompt('Folder name:', 'New Folder');
                 if (!name) return;
                 let node = getNode(currentPath);
-                if (!node || !node.children) return;
+                if (!node || !node.children) { notify('Cannot create folder here.'); return; }
                 if (node.children[name]) { notify('A folder with that name already exists.'); return; }
                 node.children[name] = { type: 'folder', children: {} };
                 renderFileGrid();
@@ -1907,14 +2204,278 @@
             function fileNewTxt() {
                 let name = prompt('File name:', 'NewFile.txt');
                 if (!name) return;
-                if (!name.endsWith('.txt')) name += '.txt';
+                if (!name.endsWith('.txt') && !name.includes('.')) name += '.txt';
                 let node = getNode(currentPath);
-                if (!node || !node.children) return;
+                if (!node || !node.children) { notify('Cannot create file here.'); return; }
+                if (node.children[name]) { notify('A file with that name already exists.'); return; }
                 node.children[name] = { type: 'file', content: '' };
                 renderFileGrid();
                 saveAllState();
                 notify('File created: ' + name);
             }
+
+            // ─── Delete ───
+            function fileDeleteSelected() {
+                let names = getSelectedNames();
+                if (names.length === 0) { notify('No item selected.'); return; }
+                let msg = names.length === 1 ? `Delete "${names[0]}"?` : `Delete ${names.length} items?`;
+                if (!confirm(msg)) return;
+                let node = getNode(currentPath);
+                if (!node || !node.children) return;
+                let deleted = [];
+                for (let name of names) {
+                    if (node.children[name]) {
+                        delete node.children[name];
+                        deleted.push(name);
+                    }
+                }
+                clearSelection();
+                renderFileGrid();
+                saveAllState();
+                notify('Deleted: ' + deleted.join(', '));
+            }
+
+            // ─── Rename ───
+            function fileRenameSelected() {
+                let names = getSelectedNames();
+                if (names.length !== 1) {
+                    notify('Please select exactly one item to rename.');
+                    return;
+                }
+                let oldName = names[0];
+                document.getElementById('rename-input').value = oldName;
+                document.getElementById('rename-modal').classList.add('show');
+                document.getElementById('rename-input').focus();
+                document.getElementById('rename-input').select();
+                // Store the old name for the rename operation
+                document.getElementById('rename-modal').dataset.oldName = oldName;
+            }
+
+            function doRename() {
+                let oldName = document.getElementById('rename-modal').dataset.oldName;
+                let newName = document.getElementById('rename-input').value.trim();
+                if (!newName) { notify('Name cannot be empty.'); return; }
+                if (oldName === newName) {
+                    document.getElementById('rename-modal').classList.remove('show');
+                    return;
+                }
+                let node = getNode(currentPath);
+                if (!node || !node.children) { notify('Cannot rename here.'); return; }
+                if (node.children[newName]) { notify('An item with that name already exists.'); return; }
+                // Move the item
+                node.children[newName] = node.children[oldName];
+                delete node.children[oldName];
+                document.getElementById('rename-modal').classList.remove('show');
+                clearSelection();
+                renderFileGrid();
+                saveAllState();
+                notify('Renamed: ' + oldName + ' → ' + newName);
+            }
+
+            // ─── Copy / Cut / Paste ───
+            function fileCopySelected() {
+                let names = getSelectedNames();
+                if (names.length === 0) { notify('No item selected.'); return; }
+                if (names.length > 1) { notify('Please select a single item to copy.'); return; }
+                let name = names[0];
+                fileClipboard = { action: 'copy', path: [...currentPath], name: name };
+                notify('Copied: ' + name);
+                hideContextMenu();
+            }
+
+            function fileCutSelected() {
+                let names = getSelectedNames();
+                if (names.length === 0) { notify('No item selected.'); return; }
+                if (names.length > 1) { notify('Please select a single item to cut.'); return; }
+                let name = names[0];
+                fileClipboard = { action: 'cut', path: [...currentPath], name: name };
+                notify('Cut: ' + name);
+                hideContextMenu();
+            }
+
+            function filePaste() {
+                if (!fileClipboard) { notify('Nothing to paste.'); return; }
+                let srcPath = fileClipboard.path;
+                let srcName = fileClipboard.name;
+                let srcNode = getNode(srcPath);
+                if (!srcNode || !srcNode.children || !srcNode.children[srcName]) {
+                    notify('Source item no longer exists.');
+                    fileClipboard = null;
+                    return;
+                }
+                let dstNode = getNode(currentPath);
+                if (!dstNode || !dstNode.children) { notify('Cannot paste here.'); return; }
+                if (dstNode.children[srcName]) {
+                    notify('An item with that name already exists in this location.');
+                    return;
+                }
+                let item = srcNode.children[srcName];
+                // Deep clone
+                let cloned = JSON.parse(JSON.stringify(item));
+                dstNode.children[srcName] = cloned;
+
+                if (fileClipboard.action === 'cut') {
+                    delete srcNode.children[srcName];
+                    fileClipboard = null;
+                    notify('Moved: ' + srcName);
+                } else {
+                    notify('Copied: ' + srcName);
+                }
+                clearSelection();
+                renderFileGrid();
+                saveAllState();
+                hideContextMenu();
+            }
+
+            // ─── Context Menu ───
+            let ctxTarget = null;
+
+            function showContextMenu(x, y, targetName) {
+                let menu = document.getElementById('ctx-menu');
+                ctxTarget = targetName || null;
+                // Adjust position to fit in viewport
+                let w = 180;
+                let h = 240;
+                if (x + w > window.innerWidth) x = window.innerWidth - w - 10;
+                if (y + h > window.innerHeight) y = window.innerHeight - h - 10;
+                if (x < 10) x = 10;
+                if (y < 10) y = 10;
+                menu.style.left = x + 'px';
+                menu.style.top = y + 'px';
+                menu.style.display = 'block';
+
+                // Update menu items based on context
+                let items = menu.querySelectorAll('.ctx-item');
+                let hasSelection = selectedItems.size > 0;
+                let isSingle = selectedItems.size === 1;
+                let isFolder = false;
+                let isFile = false;
+                if (isSingle) {
+                    let name = getSelectedNames()[0];
+                    let node = getNode(currentPath);
+                    if (node && node.children && node.children[name]) {
+                        isFolder = node.children[name].type === 'folder';
+                        isFile = node.children[name].type === 'file';
+                    }
+                }
+                let hasClipboard = fileClipboard !== null;
+                // Open: only for single item
+                items.forEach(el => {
+                    let action = el.dataset.action;
+                    if (action === 'open') {
+                        el.style.display = (isSingle && (isFolder || isFile)) ? 'flex' : 'none';
+                    } else if (action === 'rename') {
+                        el.style.display = isSingle ? 'flex' : 'none';
+                    } else if (action === 'copy') {
+                        el.style.display = isSingle ? 'flex' : 'none';
+                    } else if (action === 'cut') {
+                        el.style.display = isSingle ? 'flex' : 'none';
+                    } else if (action === 'paste') {
+                        el.style.display = hasClipboard ? 'flex' : 'none';
+                    } else if (action === 'delete') {
+                        el.style.display = hasSelection ? 'flex' : 'none';
+                    }
+                });
+            }
+
+            function hideContextMenu() {
+                document.getElementById('ctx-menu').style.display = 'none';
+            }
+
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('#ctx-menu')) {
+                    hideContextMenu();
+                }
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') hideContextMenu();
+            });
+
+            // Context menu actions
+            document.getElementById('ctx-menu').addEventListener('click', (e) => {
+                let btn = e.target.closest('.ctx-item');
+                if (!btn) return;
+                let action = btn.dataset.action;
+                hideContextMenu();
+                switch (action) {
+                    case 'open': {
+                        let names = getSelectedNames();
+                        if (names.length === 1) {
+                            let node = getNode(currentPath);
+                            if (node && node.children && node.children[names[0]]) {
+                                openFileItem(names[0], node.children[names[0]]);
+                            }
+                        }
+                        break;
+                    }
+                    case 'rename':
+                        fileRenameSelected();
+                        break;
+                    case 'copy':
+                        fileCopySelected();
+                        break;
+                    case 'cut':
+                        fileCutSelected();
+                        break;
+                    case 'paste':
+                        filePaste();
+                        break;
+                    case 'delete':
+                        fileDeleteSelected();
+                        break;
+                }
+            });
+
+            // Keyboard shortcuts for file explorer
+            document.addEventListener('keydown', (e) => {
+                let fileApp = document.getElementById('file-app');
+                if (!fileApp.classList.contains('active')) return;
+                if (e.target.closest('input') || e.target.closest('textarea')) return;
+                if (e.key === 'Delete') {
+                    e.preventDefault();
+                    fileDeleteSelected();
+                }
+                if (e.ctrlKey && e.key === 'c') {
+                    e.preventDefault();
+                    fileCopySelected();
+                }
+                if (e.ctrlKey && e.key === 'x') {
+                    e.preventDefault();
+                    fileCutSelected();
+                }
+                if (e.ctrlKey && e.key === 'v') {
+                    e.preventDefault();
+                    filePaste();
+                }
+                if (e.ctrlKey && e.key === 'a') {
+                    e.preventDefault();
+                    let grid = document.getElementById('file-grid');
+                    let items = grid.querySelectorAll('.file-item');
+                    items.forEach(el => {
+                        let name = el.dataset.name;
+                        selectedItems.add(name);
+                        el.classList.add('selected-item');
+                    });
+                    updateSelectionInfo();
+                }
+                if (e.key === 'F5') {
+                    e.preventDefault();
+                    fileRefresh();
+                }
+            });
+
+            // ─── Also handle paste from global ───
+            document.addEventListener('keydown', (e) => {
+                if (e.ctrlKey && e.key === 'v') {
+                    // Check if file app is active and no input is focused
+                    let fileApp = document.getElementById('file-app');
+                    if (fileApp.classList.contains('active') && !e.target.closest('input') && !e.target.closest(
+                        'textarea')) {
+                        // Let the file-paste handler above handle it
+                    }
+                }
+            });
 
             // ═══════════════════════════════════════════════════════════
             //  TEXT EDITOR
@@ -1967,6 +2528,8 @@
                         editorDirty = false;
                         saveAllState();
                         notify('Saved: ' + editorFile);
+                    } else {
+                        notify('Cannot save: no valid location.');
                     }
                 }
             }
@@ -1975,18 +2538,25 @@
                 document.getElementById('saveas-input').value = editorFile;
                 document.getElementById('saveas-modal').classList.add('show');
                 document.getElementById('saveas-input').focus();
+                document.getElementById('saveas-input').select();
             }
 
             function doSaveAs() {
                 let name = document.getElementById('saveas-input').value.trim();
                 if (!name) return;
-                if (!name.endsWith('.txt')) name += '.txt';
+                if (!name.endsWith('.txt') && !name.includes('.')) name += '.txt';
+                let node = getNode(currentPath);
+                if (!node || !node.children) { notify('Cannot save here.'); return; }
+                let content = document.getElementById('ed-area').innerText;
+                node.children[name] = { type: 'file', content: content };
                 editorFile = name;
                 document.getElementById('ed-title-name').textContent = name;
                 document.getElementById('ed-status-file').textContent = name;
                 document.getElementById('saveas-modal').classList.remove('show');
-                edSave();
+                editorDirty = false;
                 saveAllState();
+                renderFileGrid();
+                notify('Saved as: ' + name);
             }
 
             function edNew() {
@@ -2003,7 +2573,6 @@
             function edChanged() {
                 editorDirty = true;
                 updateWordCount();
-                saveAllState();
             }
 
             function updateWordCount() {
@@ -2285,11 +2854,13 @@
             // ═══════════════════════════════════════════════════════════
             //  SETTINGS
             // ═══════════════════════════════════════════════════════════
-            function settingsTab(tab) {
-                let el = event.target;
-                document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+            function settingsTab(tab, el) {
+                if (!el) el = event?.target || document.querySelector(`.settings-tab[data-tab="${tab}"]`);
+                if (el) {
+                    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+                    el.classList.add('active');
+                }
                 document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
-                el.classList.add('active');
                 document.getElementById('panel-' + tab).classList.add('active');
             }
 
@@ -2314,11 +2885,10 @@
                 setTimeout(() => msg.textContent = '', 3000);
             }
 
-            function setTextColor(color) {
+            function setTextColor(color, el) {
                 textColor = color;
                 document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('picked'));
-                let el = event.target;
-                el.classList.add('picked');
+                if (el) el.classList.add('picked');
                 document.getElementById('color-preview').style.color = color;
                 applyTextColor();
                 saveAllState();
@@ -2375,10 +2945,9 @@
                 reader.onload = async (e) => {
                     try {
                         const data = JSON.parse(e.target.result);
-                        if (!data.fs || !data.osPass !== undefined) {
+                        if (!data.fs || data.osPass === undefined) {
                             throw new Error('Invalid backup file.');
                         }
-                        // Restore all state
                         fs = data.fs;
                         osPass = data.osPass || '';
                         textColor = data.textColor || '#00ff41';
@@ -2390,17 +2959,13 @@
                         editorFile = data.editorFile || 'Untitled.txt';
                         termHistory = data.termHistory || [];
                         termCwd = data.termCwd || ['Home'];
-                        // Ensure Home exists
                         if (!fs['Home']) fs = JSON.parse(JSON.stringify(defaultFs));
-                        // Save to IndexedDB
                         await saveAllState();
-                        // Refresh UI
                         renderFileGrid();
                         termInit();
                         applyTextColor();
                         document.getElementById('tz-select').value = tz;
                         notify('System restored from backup!');
-                        // Reset file input
                         event.target.value = '';
                     } catch (err) {
                         notify('Restore failed: ' + err.message);
@@ -2424,7 +2989,7 @@
                 notifTimer = setTimeout(() => {
                     n.style.opacity = '0';
                     setTimeout(() => n.style.display = 'none', 500);
-                }, 2500);
+                }, 2800);
             }
 
             // ═══════════════════════════════════════════════════════════
@@ -2435,6 +3000,8 @@
                     document.getElementById('start-menu').style.display = 'none';
                     document.getElementById('power-modal').classList.remove('show');
                     document.getElementById('saveas-modal').classList.remove('show');
+                    document.getElementById('rename-modal').classList.remove('show');
+                    hideContextMenu();
                 }
                 if (e.ctrlKey && e.key === 't') {
                     e.preventDefault();
@@ -2449,6 +3016,9 @@
                     openApp('file');
                 }
             });
+
+            // ─── Also handle paste for file explorer from global ───
+            // (already handled above)
 
             // ═══════════════════════════════════════════════════════════
             //  FINAL NOTE
